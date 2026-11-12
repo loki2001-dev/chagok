@@ -12,6 +12,27 @@
 
 ---
 
+## 시연 영상
+
+![차곡 시연](demo/chagok-demo.gif)
+
+- 자막이 들어간 원본 영상(MP4, 2분 52초): [demo/chagok-demo.mp4](demo/chagok-demo.mp4)
+- Pleos Connect Emulator에서 실제 Pleos SDK로 동작하는 화면을 녹화했습니다. 차량 값(주행거리, SoC)은 Virtual Console로 넣은 가상 값입니다.
+- 에뮬레이터에 마이크 입력이 없어, 발화는 예시 발화 버튼으로 STT 결과와 같은 해석 경로를 실행했습니다.
+
+| 순서 | 장면 |
+|---|---|
+| 1 | 차량에서 누적 주행거리 47,200km 수신 |
+| 2 | 관리 일정에 시연용 주기(10,000km · 12개월) 설정 |
+| 3 | "타이어 위치 교환했어. 3만 원" → 날짜 · 차량 주행거리 · 비용이 붙은 초안 → 확인하고 저장 |
+| 4 | SoC 30% → 80% 상승 → 정차 중 안정 판정 후 충전 후보 생성 |
+| 5 | "충전했어. 1만 2천 원" → 후보와 연결된 초안 저장 |
+| 6 | 일지·비용에서 확정 기록만 월 합계(42,000원)에 반영 |
+| 7 | 관리 일정에서 거리·날짜 중 먼저 오는 조건 확인 |
+| 8 | 관리 도감에서 오답 힌트 → 정답 → 도장 2개 |
+
+---
+
 ## 스크린샷
 
 - 오늘의 관리: 차량에서 받은 누적 주행거리와 다음 관리
@@ -167,6 +188,20 @@ tools/vc.sh state         # 현재 값 확인
 
 > Virtual Console로 넣은 값은 **가상 값 주입**입니다. 실제 차량에서 받은 값과 구분해서 기록합니다.
 
+### 시연 영상 만들기
+
+에뮬레이터를 녹화하면서 전체 시나리오를 자동으로 실행하고, 자막과 제목 화면을 입혀 MP4와 GIF를 만듭니다. `ffmpeg`와 나눔스퀘어 글꼴(`fonts-nanum`)이 필요합니다.
+
+```bash
+sudo apt-get install -y ffmpeg fonts-nanum
+
+# 녹화 (앱 데이터를 초기화하고 시나리오를 자동 실행, 약 4분)
+tools/demo-record.sh
+
+# 합성 → demo/chagok-demo.mp4, demo/chagok-demo.gif
+python3 tools/demo-render.py
+```
+
 ### 대표 시연 순서
 
 1. `tools/vc.sh odo 47200`으로 주행거리를 넣고 앱의 **오늘의 관리**에서 수신을 확인
@@ -195,8 +230,13 @@ tools/vc.sh state         # 현재 값 확인
 ```
 chagok/
 ├── assets/                                 # README 스크린샷
+├── demo/
+│   ├── chagok-demo.mp4                     # 시연 영상 (자막 포함)
+│   └── chagok-demo.gif                     # README 표시용 시연 영상
 ├── tools/
-│   └── vc.sh                               # Virtual Console 시연 값 주입 스크립트
+│   ├── vc.sh                               # Virtual Console 시연 값 주입 스크립트
+│   ├── demo-record.sh                      # 시나리오 자동 실행 + 에뮬레이터 화면 녹화
+│   └── demo-render.py                      # 자막·제목 화면 합성, MP4·GIF 생성
 ├── app/
 │   ├── build.gradle.kts                    # 앱 모듈 빌드 (Pleos SDK 의존성)
 │   └── src/
