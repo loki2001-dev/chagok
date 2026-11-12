@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 차곡차곡 쌓인 세 장의 일지 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:fillColor="#66FFFFFF" android:pathData="M36,64h36a4,4 0,0 1,4 4v4a4,4 0,0 1,-4 4h-36a4,4 0,0 1,-4 -4v-4a4,4 0,0 1,4 -4z" />
+    <path android:fillColor="#B3FFFFFF" android:pathData="M38,50h32a4,4 0,0 1,4 4v4a4,4 0,0 1,-4 4h-32a4,4 0,0 1,-4 -4v-4a4,4 0,0 1,4 -4z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M40,36h28a4,4 0,0 1,4 4v4a4,4 0,0 1,-4 4h-28a4,4 0,0 1,-4 -4v-4a4,4 0,0 1,4 -4z" />
+</vector>
