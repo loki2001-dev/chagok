@@ -235,33 +235,44 @@ chagok/
 
 ### 구조
 
+```mermaid
+flowchart TB
+    UI["UI · MainActivity<br/>오늘의 관리 · 정비 입력 · 자동 기록 후보<br/>일지·비용 · 관리 일정 · 관리 도감"]
+
+    subgraph ADAPTER["플랫폼 어댑터"]
+        SI["SpeechInput<br/>Pleos STT ON_DEVICE<br/>(Android 대체)"]
+        PV["PleosVehicle<br/>capability → get / register<br/>시간 초과 3초"]
+        DR["DrivingState<br/>CarUxRestrictions"]
+    end
+
+    subgraph DOMAIN["DiaryService (domain)"]
+        UP["UtteranceParser"]
+        SC["ScheduleCalculator"]
+        LG["Ledger"]
+        ET["EnergyTracker"]
+        LC["LearningCatalog"]
+    end
+
+    PSS["Pleos Speech Service<br/>(차량 내 엔진)"]
+    PVS["Pleos Vehicle Service<br/>(IPC)"]
+    DB[("SqliteStore<br/>로컬 DB")]
+
+    UI -->|"최종 인식 텍스트"| SI
+    UI -->|"주행거리·잔량"| PV
+    UI -->|"주행 제한"| DR
+    UI -->|"확인·수정·취소"| DOMAIN
+    DR --> DOMAIN
+    SI --> PSS
+    PV --> PVS
+    DOMAIN --> DB
 ```
-┌──────────────────────────────────────────────────────────────────────────────────────┐
-│                                  UI (MainActivity)                                   │
-│   오늘의 관리 · 정비 입력 · 자동 기록 후보 · 일지·비용 · 관리 일정 · 관리 도감        │
-└───────┬───────────────────┬────────────────────┬───────────────────────┬─────────────┘
-        │ 최종 인식 텍스트   │ 주행거리·잔량       │ 주행 제한              │ 확인·수정·취소
-        ▼                   ▼                    ▼                       ▼
-┌───────────────┐   ┌────────────────┐   ┌────────────────┐   ┌─────────────────────────┐
-│ SpeechInput   │   │ PleosVehicle   │   │ DrivingState   │   │ DiaryService (domain)   │
-│ Pleos STT     │   │ capability →   │   │ CarUx          │   │ ├ UtteranceParser       │
-│ ON_DEVICE     │   │ get / register │   │ Restrictions   │──▶│ ├ ScheduleCalculator    │
-│ (Android 대체)│   │ 시간 초과 3초   │   │                │   │ ├ Ledger                │
-└───────┬───────┘   └───────┬────────┘   └────────────────┘   │ ├ EnergyTracker         │
-        │                   │                                 │ └ LearningCatalog       │
-        ▼                   ▼                                 └────────────┬────────────┘
-┌───────────────┐   ┌────────────────┐                                     │
-│ Pleos Speech  │   │ Pleos Vehicle  │                                     ▼
-│ Service       │   │ Service (IPC)  │                       ┌─────────────────────────┐
-│ (차량 내 엔진)│   │                │                       │ SqliteStore (로컬 DB)    │
-└───────────────┘   └────────────────┘                       └─────────────────────────┘
 
 데이터 흐름:
-- 음성 입력: SpeechInput → 최종 텍스트 → 주행거리 조회 → DiaryService.handleVoice → 초안(DRAFT)
-- 저장: 사용자 확인 → DiaryService.confirm → 확정(CONFIRMED) → 비용·일정·도감 갱신
-- 후보: 잔량 리스너 + 5초 주기 재입력 → EnergyTracker(정차·안정 판정) → 후보(PENDING) → 사용자 확인
-- 비동기 결과: Vehicle·STT 콜백은 모두 메인 스레드로 옮겨 처리
-```
+
+- **음성 입력**: SpeechInput → 최종 텍스트 → 주행거리 조회 → `DiaryService.handleVoice` → 초안(DRAFT)
+- **저장**: 사용자 확인 → `DiaryService.confirm` → 확정(CONFIRMED) → 비용·일정·도감 갱신
+- **후보**: 잔량 리스너 + 5초 주기 재입력 → EnergyTracker(정차·안정 판정) → 후보(PENDING) → 사용자 확인
+- **비동기 결과**: Vehicle·STT 콜백은 모두 메인 스레드로 옮겨 처리
 
 ---
 
