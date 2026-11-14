@@ -34,10 +34,14 @@ data class ScheduleStatus(
     /** 현재 km가 기준 정비 km보다 작다. 차량 변경·계기판 교체 등 검토가 필요하다 */
     val odometerReversed: Boolean,
 ) {
+    val firstFill get() = basis == null && plan.item == Item.COOLANT
+    val intervalKm get() = if (firstFill) plan.initialKm else plan.intervalKm
+    val intervalMonths get() = plan.intervalMonths.takeIf { basis != null }
     val state: ScheduleState
         get() = when {
-            plan.intervalKm == null && plan.intervalMonths == null -> ScheduleState.NO_PLAN
-            basis == null -> ScheduleState.NO_RECORD
+            plan.intervalKm == null && plan.intervalMonths == null &&
+                !(firstFill && intervalKm != null) -> ScheduleState.NO_PLAN
+            basis == null && nextKm == null -> ScheduleState.NO_RECORD
             kmState == ConditionState.DUE || dateState == ConditionState.DUE -> ScheduleState.DUE
             kmState == ConditionState.SOON || dateState == ConditionState.SOON -> ScheduleState.SOON
             else -> ScheduleState.UPCOMING
@@ -46,7 +50,7 @@ data class ScheduleStatus(
     /** 사용한 주기 비율. 거리와 날짜 중 진행이 빠른 쪽을 표시한다. */
     val progressPercent: Int?
         get() {
-            val distance = plan.intervalKm?.takeIf { it > 0 }?.let { interval ->
+            val distance = intervalKm?.takeIf { it > 0 }?.let { interval ->
                 remainingKm?.let { (interval - it) * 100 / interval }
             }
             val date = if (basis != null && nextDate != null && remainingDays != null) {
@@ -82,19 +86,23 @@ object ScheduleCalculator {
         entries: List<DiaryEntry>,
         currentKm: Double?,
         today: LocalDate,
+        reportedServiceKm: Double? = null,
     ): ScheduleStatus {
         val basis = basisOf(plan.item, entries)
-        val basisKm = basis?.odometer?.value
-
-        val nextKm = if (basisKm != null && plan.intervalKm != null) basisKm + plan.intervalKm else null
+        val firstFill = plan.item == Item.COOLANT && basis == null
+        val kmInterval = if (firstFill) plan.initialKm else plan.intervalKm
+        val months = plan.intervalMonths.takeIf { basis != null }
+        val startDate = basis?.performedOn
+        val basisKm = if (basis == null) reportedServiceKm else basis.odometer?.value
+        val nextKm = if (basisKm != null && kmInterval != null) basisKm + kmInterval else null
         // plusMonths는 말일을 맞춰 준다: 1월 31일 + 1개월 = 2월 28일(윤년 29일)
-        val nextDate = if (basis != null && plan.intervalMonths != null) basis.performedOn.plusMonths(plan.intervalMonths.toLong()) else null
+        val nextDate = if (startDate != null && months != null) startDate.plusMonths(months.toLong()) else null
 
         val reversed = basisKm != null && currentKm != null && currentKm < basisKm
         val remainingKm = if (nextKm != null && currentKm != null && !reversed) nextKm - currentKm else null
         val kmState = when {
-            plan.intervalKm == null -> ConditionState.NOT_SET
-            basis == null || nextKm == null || currentKm == null || reversed -> ConditionState.PENDING
+            kmInterval == null -> ConditionState.NOT_SET
+            nextKm == null || currentKm == null || reversed -> ConditionState.PENDING
             currentKm >= nextKm -> ConditionState.DUE
             nextKm - currentKm <= SOON_KM -> ConditionState.SOON
             else -> ConditionState.UPCOMING
@@ -102,7 +110,7 @@ object ScheduleCalculator {
 
         val remainingDays = nextDate?.let { ChronoUnit.DAYS.between(today, it) }
         val dateState = when {
-            plan.intervalMonths == null -> ConditionState.NOT_SET
+            months == null -> ConditionState.NOT_SET
             nextDate == null -> ConditionState.PENDING
             !today.isBefore(nextDate) -> ConditionState.DUE
             remainingDays!! <= SOON_DAYS -> ConditionState.SOON

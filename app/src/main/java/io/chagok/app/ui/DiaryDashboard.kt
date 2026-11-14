@@ -38,8 +38,8 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
     fun home(
         currentKm: Double?,
         driveCard: View,
-        openSchedule: () -> Unit,
-        setUpPlan: (Item) -> Unit,
+        editPlan: (Item, ScheduleStatus?) -> Unit,
+        editMileage: () -> Unit,
         openReview: () -> Unit,
         openDiary: () -> Unit,
         openStats: () -> Unit,
@@ -62,20 +62,21 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
             tag = "summary-mileage-card"
         }
         val items = service.maintenanceItems()
-        val schedules = service.schedules(currentKm).filter {
-            it.plan.item in items && it.state != ScheduleState.NO_PLAN
-        }
+        val allPlans = service.schedules(currentKm).associateBy { it.plan.item }
+        val schedules = allPlans.values.filter { it.plan.item in items && it.state != ScheduleState.NO_PLAN }
         val scheduledItems = schedules.map { it.plan.item }.toSet()
         return ui.column(16).apply {
-            addView(ui.section("정비 주기", if (schedules.isNotEmpty()) "마지막 정비 이후 사용한 주기" else null))
-            schedules.map { maintenanceCard(it, openSchedule) }.chunked(2).forEach { cards ->
+            addView(ui.section("정비 주기", "항목을 눌러 내 차의 주기를 수정하세요."))
+            val mileageLabel = service.reportedServiceKm()?.let(::km) ?: "기록 없는 항목의 기준 입력"
+            addView(ui.actionRow("마지막 정비 주행거리", mileageLabel, Icon.CAR, editMileage))
+            schedules.map { status -> maintenanceCard(status) { editPlan(status.plan.item, status) } }.chunked(2).forEach { cards ->
                 addView(if (cards.size == 2) pair(cards[0], cards[1]) else cards.single())
             }
             val unconfigured = items.filterNot { it in scheduledItems }
             if (unconfigured.isNotEmpty()) {
                 addView(ui.section("주기 미설정 · ${unconfigured.size}개"))
                 unconfigured.map { item ->
-                    ui.actionRow(item.label, "주기 설정", Icon.WRENCH) { setUpPlan(item) }
+                    ui.actionRow(item.label, "주기 설정", Icon.WRENCH) { editPlan(item, allPlans[item]) }
                 }.chunked(2).forEach { rows ->
                     addView(if (rows.size == 2) pair(rows[0], rows[1]) else rows.single())
                 }
@@ -111,7 +112,7 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
         }
         val percent = status.progressPercent
         val label = when (status.state) {
-            ScheduleState.DUE -> needsAction
+            ScheduleState.DUE -> if (item == Item.TRANSMISSION_OIL) "교체 여부 점검" else needsAction
             ScheduleState.SOON -> "임박"
             ScheduleState.UPCOMING -> if (percent == null) "계산 보류" else "예정"
             else -> status.state.label
@@ -120,6 +121,15 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
         val tone = if (urgent) Palette.danger else Palette.accent
         return ui.card().apply {
             addView(cardHeading(item.label, Icon.WRENCH, true, tone))
+            MaintenanceRecommendation.byItem[item]?.let { rec ->
+                addView(ui.text("권장 · ${rec.description()}", 20f, Palette.sub))
+            }
+            val active = listOfNotNull(status.intervalKm?.let { "%,dkm".format(it) },
+                status.intervalMonths?.let { "${it}개월" }).joinToString(" 또는 ")
+            if (active.isNotEmpty()) {
+                val phase = if (status.basis == null) "최초 기준" else "적용 기준"
+                addView(ui.text("$phase · $active", 22f, Palette.text))
+            }
             addView(ui.text(listOfNotNull(percent?.let { "$it%" }, label).joinToString(" · "),
                 if (percent == null) 24f else 30f, tone, true))
             if (percent != null) {
@@ -138,6 +148,7 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
             }
             background = ui.touch(Palette.surface, 20, if (urgent) tone else Palette.border)
             isFocusable = true
+            contentDescription = "${item.label} 주기 수정"
             setOnClickListener { open() }
         }
     }

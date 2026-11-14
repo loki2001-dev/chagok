@@ -29,7 +29,7 @@ internal enum class BayJob(val label: String) {
             Item.BRAKE_PAD_CHECK -> BRAKES
             Item.BATTERY_12V_CHECK -> BATTERY
             Item.WASHER_REFILL -> WASHER
-            Item.OTHER -> GENERAL
+            Item.COOLANT, Item.OTHER -> GENERAL
             Item.SYMPTOM_NOTE, Item.REFUEL, Item.CHARGE -> null
         }
     }

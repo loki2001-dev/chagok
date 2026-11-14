@@ -94,11 +94,21 @@ class WorkshopVisitIntegrationTest {
                 assertEquals(entry.id, store.visits(car).single().linkedEntryId)
                 assertEquals(VisitState.CONFIRMED, store.visits(car).single().state)
                 assertEquals(0, diary.reviewCount())
-                val receipt = withContentDescription(Item.DRIVE_BELT.label + " 기록 저장 완료")
-                onView(receipt).check(doesNotExist())
+                // Observe the transient animation on a frame, without waiting for UI animations to go idle.
+                fun receiptShown(): Boolean {
+                    var visible = false
+                    app.onActivity {
+                        val matches = ArrayList<android.view.View>()
+                        it.window.decorView.findViewsWithText(matches, Item.DRIVE_BELT.label + " 기록 저장 완료",
+                            android.view.View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION)
+                        visible = matches.any { view -> view.isShown }
+                    }
+                    return visible
+                }
+                assertFalse(receiptShown())
                 signal("PARK")
-                await("정차 후 저장된 정비 연출 미표시") { runCatching { onView(receipt).check(matches(isDisplayed())) }.isSuccess }
-                await("정비 연출이 끝나지 않음") { runCatching { onView(receipt).check(doesNotExist()) }.isSuccess }
+                await("정차 후 저장된 정비 연출 미표시") { receiptShown() }
+                await("정비 연출이 끝나지 않음") { !receiptShown() }
                 onView(withContentDescription("차량 일지와 관리 열기")).perform(click())
                 onView(withContentDescription("차량 요약 탭")).perform(click())
                 val due = entry.performedOn.plusMonths(12).format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))

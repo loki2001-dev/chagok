@@ -92,6 +92,8 @@ class UtteranceParser(private val today: () -> LocalDate) {
     }
 
     private fun detectItem(t: String): Item? = when {
+        (t.contains("냉각수") || t.contains("부동액")) &&
+            Regex("교체|교환|갈았|갈아|바꿨|바꾸").containsMatchIn(t) -> Item.COOLANT
         t.contains("워셔") -> Item.WASHER_REFILL
         t.contains("타이어") && (t.contains("위치") || t.contains("로테이션")) -> Item.TIRE_ROTATION
         t.contains("타이어") && Regex("교체|갈았|갈아|바꿨|바꾸|새로").containsMatchIn(t) -> Item.TIRE_REPLACE
@@ -200,6 +202,18 @@ class UtteranceParser(private val today: () -> LocalDate) {
         private fun trimToDigits(token: String): String? {
             val firstDigit = token.indexOfFirst { it.isDigit() }
             return if (firstDigit >= 0) token.substring(firstDigit) else null
+        }
+
+        fun serviceMileage(raw: String): Double? {
+            val answer = raw.lowercase().trim().trimEnd('.', '!', '?')
+            val match = Regex("""(?:약\s*)?([0-9일이삼사오육칠팔구십백천만영공.,\s]+?)\s*(?:km|킬로미터|킬로|키로미터|키로)?\s*(?:입니다|였어요|이었어요|이에요|예요|요)?""")
+                .matchEntire(answer) ?: return null
+            val number = match.groupValues[1].replace(Regex("""\s+"""), "")
+            if (',' in number && !Regex("""\d{1,3}(,\d{3})+(\.\d+)?""").matches(number)) return null
+            val compact = number.replace(",", "")
+            if (compact == "영" || compact == "공") return 0.0
+            if (compact.all { it.isDigit() || it == '.' }) return compact.toDoubleOrNull()?.takeIf { it.isFinite() }
+            return parseNumber(compact)?.toDouble()
         }
 
         fun parseNumber(s: String): Long? {

@@ -53,6 +53,17 @@ class ParkedDiarySmokeTest {
     private fun parked() = await("parked") { runCatching {
         onView(withText("정차 상태가 확인되면 이용할 수 있어요")).check(matches(not(isDisplayed())));true
     }.getOrDefault(false) }
+    private fun signal(value: String) = instrument.sendStatus(2, android.os.Bundle().apply { putString("chagok_signal", value) })
+
+    private fun driveUntilMileageQuestion(scenario: ActivityScenario<CompanionActivity>) {
+        scenario.onActivity { assertTrue(it.scene.question.isEmpty()) }
+        signal("DRIVE")
+        await("첫 주행 정비 거리 질문") {
+            var shown = false
+            scenario.onActivity { shown = it.scene.question.replace('\n', ' ') == "마지막으로 정비한 주행거리가 몇 km였나요?" }
+            shown
+        }
+    }
     private fun tap(label: String) {
         if(label in listOf("요약","일지","관리","통계")) {
             // The native AAOS surface may still be moving after Park/recreation.
@@ -197,6 +208,89 @@ class ParkedDiarySmokeTest {
                     companion?.let { a -> a.scene.pause();ready=all(a.window.decorView).any { it.contentDescription=="차량 일지와 관리 열기" && it.isShown } }
                 };ready
             }
+        }
+    }
+
+    @Test fun dashboardDefaultsCanBeEditedAndPersistAfterReopening() {
+        ActivityScenario.launch(MainActivity::class.java).use {
+            parked()
+            onView(withText("권장 · 7,000~10,000km 또는 6개월~1년 · 오일 필터 포함")).perform(scrollTo()).check(matches(isDisplayed()))
+            onView(withContentDescription("엔진오일 교환 주기 수정")).perform(scrollTo(), click())
+            onView(withHint("거리 주기 km")).check(matches(withText("7000"))).perform(scrollTo(),replaceText("8500"),closeSoftKeyboard())
+            onView(withHint("기간 주기 개월")).perform(scrollTo(),replaceText("8"),closeSoftKeyboard())
+            tap("저장")
+        }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            parked()
+            onView(withText("최초 기준 · 8,500km")).perform(scrollTo()).check(matches(isDisplayed()))
+            onView(withText("마지막 정비 주행거리")).perform(scrollTo(),click())
+            onView(withHint("마지막 정비 주행거리 km")).perform(replaceText("37000"),closeSoftKeyboard())
+            tap("저장")
+            onView(withText("예정 거리 45,500km")).perform(scrollTo()).check(matches(isDisplayed()))
+            onView(withContentDescription("냉각수 교환 주기 수정")).perform(scrollTo(), click())
+            onView(withHint("최초 거리 km")).check(matches(withText("200000")))
+            onView(withHint("최초 기간 개월")).check(androidx.test.espresso.assertion.ViewAssertions.doesNotExist())
+            onView(withHint("거리 주기 km")).check(matches(withText("40000")))
+            onView(withHint("기간 주기 개월")).check(matches(withText("24")))
+        }
+    }
+
+    @Test fun firstDriveAsksOnceAndUsesSpokenServiceMileage() {
+        org.junit.Assume.assumeTrue(InstrumentationRegistry.getArguments().getString("virtualConsole") == "true")
+        ActivityScenario.launch(CompanionActivity::class.java).use { scenario ->
+            driveUntilMileageQuestion(scenario)
+            scenario.onActivity {
+                it.receiveAnswer("900만 킬로")
+                assertTrue(it.scene.questionHint.contains("이하"))
+                it.receiveAnswer("4만 2천 킬로")
+                assertTrue(it.scene.question.isEmpty())
+            }
+            db { _, diary ->
+                assertEquals(42_000.0, diary.reportedServiceKm()!!, .0)
+                val oil = diary.schedules(47_000.0).single { it.plan.item == Item.ENGINE_OIL }
+                assertEquals(49_000.0, oil.nextKm!!, .0)
+                assertNull(oil.nextDate)
+                assertTrue(diary.timeline().isEmpty())
+            }
+            scenario.recreate()
+            await("주행 신호 복구") {
+                var moving = false
+                scenario.onActivity { moving = (it.monitorState.motion.speedMps ?: 0f) > .3f }
+                moving
+            }
+            Thread.sleep(1500)
+            scenario.onActivity { assertTrue(it.scene.question.isEmpty()) }
+            signal("PARK")
+        }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            parked()
+            onView(withText("예정 거리 49,000km")).perform(scrollTo()).check(matches(isDisplayed()))
+            onView(withText("마지막 정비 주행거리")).perform(scrollTo(),click())
+            onView(withHint("마지막 정비 주행거리 km")).check(matches(withText("42000")))
+        }
+    }
+
+    @Test fun unknownMileageLeavesFirstScheduleOpenForParkedEntry() {
+        org.junit.Assume.assumeTrue(InstrumentationRegistry.getArguments().getString("virtualConsole") == "true")
+        ActivityScenario.launch(CompanionActivity::class.java).use { scenario ->
+            driveUntilMileageQuestion(scenario)
+            scenario.onActivity {
+                it.receiveAnswer("잘 몰라요")
+                assertTrue(it.scene.question.isEmpty())
+            }
+            db { _, diary ->
+                assertFalse(diary.offerServiceMileage())
+                assertNull(diary.reportedServiceKm())
+                assertTrue(diary.schedules(47_000.0).all { it.nextKm == null && it.nextDate == null })
+            }
+            signal("PARK")
+        }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            parked()
+            onView(withText("마지막 정비 주행거리")).perform(scrollTo(),click())
+            onView(withHint("마지막 정비 주행거리 km")).perform(replaceText("40000"),closeSoftKeyboard())
+            tap("저장")
+            onView(withText("예정 거리 47,000km")).perform(scrollTo()).check(matches(isDisplayed()))
         }
     }
 
