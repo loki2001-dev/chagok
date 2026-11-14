@@ -21,6 +21,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
+import java.time.Instant
 
 @RunWith(AndroidJUnit4::class)
 class LandscapeUiSmokeTest {
@@ -36,22 +37,44 @@ class LandscapeUiSmokeTest {
         bmp.recycle()
     }
 
-    @Test fun summaryCardsHaveEqualHeightWithEmptyAndPendingRecordsAtEveryWidth() {
+    @Test fun summaryShowsMaintenanceUrgencyAndKeepsCardsReadableAtEveryWidth() {
         val evidence=JSONArray()
         ActivityScenario.launch(CompanionHarnessActivity::class.java).use { s -> s.onActivity { a ->
             a.scene.pause()
             val store=SqliteStore(context)
             try {
                 val diary=DiaryService(store)
+                val today = diary.today()
+                for ((item, date) in listOf(
+                    Item.BRAKE_PAD_CHECK to today.minusMonths(12).minusDays(1),
+                    Item.WASHER_REFILL to today.plusDays(10).minusMonths(12),
+                    Item.TIRE_ROTATION to today.minusMonths(6),
+                )) {
+                    store.saveEntry(DiaryEntry("summary-$item", diary.profile().id, item, date,
+                        Instant.now(), null, null, status = EntryStatus.CONFIRMED, author = "나"))
+                    diary.setPlan(item, null, 12, "시연용 주기")
+                }
                 for(pending in listOf(false,true)) {
                     if(pending)diary.manualDraft(Item.REFUEL,diary.today(),null,Reading.Unavailable("test"),"나")
                     for(width in listOf(320,841,1682)) for(fontScale in listOf(1f,1.3f)) {
                         val ctx=a.createConfigurationContext(Configuration(a.resources.configuration).apply { this.fontScale=fontScale;screenWidthDp=width })
                         val ui=Ui(ctx).apply { availableWidthDp=width }
-                        val page=DiaryDashboard(ctx,ui,diary).home(47200.0,{},{},{},{},{}).apply { setBackgroundColor(Palette.bg) }
+                        val drive = AutoDiaryView(ui, store, diary, "나").today {}
+                        var selected: Item? = null
+                        val page=DiaryDashboard(ctx,ui,diary).home(47200.0,drive,{},{ selected = it },{},{},{},{}).apply { setBackgroundColor(Palette.bg) }
                         val w=ui.dp(width)
                         page.measure(View.MeasureSpec.makeMeasureSpec(w,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED))
                         capture(page,w,page.measuredHeight,if(fontScale==1f)"summary-${if(pending)"pending" else "empty"}-$width" else null)
+                        val labels = all(page).filterIsInstance<TextView>()
+                        assertEquals(Palette.danger, labels.single { it.text == "100% · 점검 필요" }.currentTextColor)
+                        assertEquals(Palette.danger, labels.single { it.text.endsWith("% · 임박") }.currentTextColor)
+                        assertTrue(labels.any { it.text.startsWith("보충 예정일 ") })
+                        assertTrue(labels.any { it.text.endsWith("% · 예정") && it.currentTextColor == Palette.accent })
+                        assertTrue(labels.any { it.text == "주기 미설정 · 4개" })
+                        val tireLabel = labels.single { it.text == Item.TIRE_REPLACE.label }
+                        val tireRow = (tireLabel.parent.parent as View)
+                        assertTrue(tireRow.performClick())
+                        assertEquals(Item.TIRE_REPLACE, selected)
                         val review=all(page).single { it.tag=="summary-review-card" };val mileage=all(page).single { it.tag=="summary-mileage-card" }
                         assertTrue(review.height>0);assertEquals("Cards at $width / font $fontScale",review.height,mileage.height)
                         if(width>=700)assertEquals(review.top,mileage.top) else assertTrue(mileage.top>=review.bottom)

@@ -347,9 +347,10 @@ class MainActivity : Activity() {
     // ------------------------------------------------------------------ 01 오늘의 관리
 
     private fun home() {
-        content.addView(AutoDiaryView(ui,store,service,user).today { month=YearMonth.now();go(Screen.DRIVES) })
-        content.addView(dashboard().home(currentKm(), { go(Screen.SCHEDULE) }, { go(Screen.CANDIDATES) },
-            { go(Screen.DIARY) }, { go(Screen.STATS) }, ::openEntry))
+        val driveCard = AutoDiaryView(ui, store, service, user).today { month=YearMonth.now();go(Screen.DRIVES) }
+        content.addView(dashboard().home(currentKm(), driveCard, { go(Screen.SCHEDULE) },
+            { item -> planDialog(item, null) }, { go(Screen.CANDIDATES) },
+            { go(Screen.DIARY) }, { month = YearMonth.from(service.today()); go(Screen.STATS) }, ::openEntry))
         val changes = service.changesSince(user)
         if (changes.isNotEmpty()) content.addView(ui.card(
             ui.text("함께 쓰는 차량의 새 기록 ${changes.size}건", 24f, bold = true),
@@ -908,7 +909,7 @@ class MainActivity : Activity() {
         val urgent = ordered.count { it.state == ScheduleState.DUE || it.state == ScheduleState.SOON }
         content.addView(ui.card(ui.text(if (urgent > 0) "먼저 살펴볼 관리 ${urgent}건" else "다음 교환·점검을 미리 준비해요", 28f, bold = true),
             ui.text("날짜와 거리 중 먼저 도래하는 기준으로 알려드려요. 주기는 차량 매뉴얼에 맞춰 설정해 주세요.", 22f, Palette.sub)))
-        val items = service.items().filter { it.kind == ItemKind.REPLACE || it.kind == ItemKind.INSPECT }
+        val items = service.maintenanceItems()
             .sortedBy { item -> ordered.indexOfFirst { it.plan.item == item }.let { if (it < 0) Int.MAX_VALUE else it } }
         items.forEach { item ->
             val s = statuses[item]

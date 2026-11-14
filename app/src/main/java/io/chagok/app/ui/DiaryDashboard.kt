@@ -35,39 +35,135 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
         }
     }
 
-    fun home(currentKm:Double?,openSchedule:()->Unit,openReview:()->Unit,openDiary:()->Unit,openStats:()->Unit,openEntry:(DiaryEntry)->Unit):View {
-        val ledger=service.ledger(YearMonth.from(service.today()))
-        val next=service.schedules(currentKm).firstOrNull { it.state in setOf(ScheduleState.DUE,ScheduleState.SOON,ScheduleState.UPCOMING) }
-        val nextCard=ui.card(
-            ui.withIcon(ui.text("다음 차량 관리",22f,Palette.onAccent),Icon.WRENCH,Palette.onAccent),
-            ui.text(next?.plan?.item?.label?:"관리 주기 설정",32f,Palette.onAccent,true),
-            ui.text(next?.let(::remaining)?:"차량 매뉴얼에 맞춰 알려주세요",26f,Palette.onAccent,true),
-            ui.text("관리 일정 보기  ›",22f,Palette.onAccent),tint=Palette.accent)
-        val costCard=ui.card(
-            ui.withIcon(ui.text("이번 달 지출",22f,Palette.sub),Icon.CHART,Palette.sub),
-            ui.text(if(ledger.entryCount==0)"첫 기록을 기다려요" else if(ledger.missingCostCount==ledger.entryCount)"금액 미입력" else won(ledger.total),40f,bold=true),
-            ui.text("확정 ${ledger.entryCount}건 · 금액 미입력 ${ledger.missingCostCount}건",22f,Palette.sub),
-            ui.text("비용 통계 보기  ›",22f,Palette.accent))
-        val reviews=service.reviewCount()
-        val review=ui.actionRow(if(reviews==0)"확인할 기록이 없어요" else "${reviews}건만 확인해 주세요",
-            "자동 감지·작성 중인 기록",Icon.JOURNAL,openReview)
-        review.contentDescription="확인할 기록 $reviews 건"
-        val reviewCard=ui.card(review).apply { gravity=Gravity.CENTER_VERTICAL;tag="summary-review-card" }
-        val mileage=ui.card(ui.text("차량 누적 거리",22f,Palette.sub),ui.text(currentKm?.let(::km)?:"수신 대기",34f,bold=true)).apply {
-            gravity=Gravity.CENTER_VERTICAL;tag="summary-mileage-card"
+    fun home(
+        currentKm: Double?,
+        driveCard: View,
+        openSchedule: () -> Unit,
+        setUpPlan: (Item) -> Unit,
+        openReview: () -> Unit,
+        openDiary: () -> Unit,
+        openStats: () -> Unit,
+        openEntry: (DiaryEntry) -> Unit,
+    ): View {
+        val ledger = service.ledger(YearMonth.from(service.today()))
+        val reviews = service.reviewCount()
+        val cost = when {
+            ledger.entryCount == 0 -> "기록 없음"
+            ledger.missingCostCount == ledger.entryCount -> "금액 미입력"
+            else -> won(ledger.total)
         }
-        return ui.column(20).apply {
-            addView(pair(action(nextCard,"다음 관리 보기",openSchedule),action(costCard,"이번 달 통계 보기",openStats)))
-            addView(pair(reviewCard,mileage))
-            addView(ui.section("최근 차량 일지","차곡에 남은 최근 기록이에요"))
-            val recent=ui.card()
-            val entries=service.timeline().take(3)
-            if(entries.isEmpty()) recent.addView(empty("아직 남겨진 기록이 없어요","주유·충전을 감지하면 확인할 기록으로 모아둘게요.",Icon.JOURNAL))
-            entries.forEachIndexed { index,e -> if(index>0)recent.addView(ui.divider());recent.addView(recordRow(e) { openEntry(e) }) }
-            recent.addView(ui.actionRow("일지 전체 보기",null,Icon.JOURNAL,openDiary))
+        val costDetails = if (ledger.missingCostCount > 0) "금액 미입력 ${ledger.missingCostCount}건" else null
+        val costCard = metricCard("이번 달 지출", cost, Icon.CHART, costDetails, open = openStats)
+        val reviewCard = metricCard("확인할 기록", "${reviews}건", Icon.JOURNAL,
+            color = if (reviews > 0) Palette.accent else Palette.text, open = openReview).apply {
+            tag = "summary-review-card"
+        }
+        val mileage = metricCard("차량 누적 거리", currentKm?.let(::km) ?: "수신 대기", Icon.CAR).apply {
+            tag = "summary-mileage-card"
+        }
+        val items = service.maintenanceItems()
+        val schedules = service.schedules(currentKm).filter {
+            it.plan.item in items && it.state != ScheduleState.NO_PLAN
+        }
+        val scheduledItems = schedules.map { it.plan.item }.toSet()
+        return ui.column(16).apply {
+            addView(ui.section("정비 주기", if (schedules.isNotEmpty()) "마지막 정비 이후 사용한 주기" else null))
+            schedules.map { maintenanceCard(it, openSchedule) }.chunked(2).forEach { cards ->
+                addView(if (cards.size == 2) pair(cards[0], cards[1]) else cards.single())
+            }
+            val unconfigured = items.filterNot { it in scheduledItems }
+            if (unconfigured.isNotEmpty()) {
+                addView(ui.section("주기 미설정 · ${unconfigured.size}개"))
+                unconfigured.map { item ->
+                    ui.actionRow(item.label, "주기 설정", Icon.WRENCH) { setUpPlan(item) }
+                }.chunked(2).forEach { rows ->
+                    addView(if (rows.size == 2) pair(rows[0], rows[1]) else rows.single())
+                }
+            }
+            addView(pair(driveCard, costCard))
+            addView(pair(reviewCard, mileage))
+            addView(ui.section("최근 차량 일지"))
+            val recent = ui.card()
+            val entries = service.timeline().take(3)
+            if (entries.isEmpty()) recent.addView(ui.text("아직 남겨진 기록이 없어요", 22f, Palette.sub))
+            entries.forEachIndexed { index, entry ->
+                if (index > 0) recent.addView(ui.divider())
+                recent.addView(recordRow(entry) { openEntry(entry) })
+            }
+            recent.addView(ui.actionRow("일지 전체 보기", null, Icon.JOURNAL, openDiary))
             addView(recent)
         }
     }
+
+    private fun maintenanceCard(status: ScheduleStatus, open: () -> Unit): View {
+        val item = status.plan.item
+        val dateLabel = when {
+            item.kind == ItemKind.REPLACE || item == Item.TIRE_REPLACE -> "교체 예정일"
+            item.kind == ItemKind.INSPECT -> "점검 예정일"
+            item.kind == ItemKind.REFILL -> "보충 예정일"
+            else -> "관리 예정일"
+        }
+        val needsAction = when {
+            item.kind == ItemKind.REPLACE || item == Item.TIRE_REPLACE -> "교체 필요"
+            item.kind == ItemKind.INSPECT -> "점검 필요"
+            item.kind == ItemKind.REFILL -> "보충 필요"
+            else -> "관리 필요"
+        }
+        val percent = status.progressPercent
+        val label = when (status.state) {
+            ScheduleState.DUE -> needsAction
+            ScheduleState.SOON -> "임박"
+            ScheduleState.UPCOMING -> if (percent == null) "계산 보류" else "예정"
+            else -> status.state.label
+        }
+        val urgent = status.state == ScheduleState.DUE || status.state == ScheduleState.SOON
+        val tone = if (urgent) Palette.danger else Palette.accent
+        return ui.card().apply {
+            addView(cardHeading(item.label, Icon.WRENCH, true, tone))
+            addView(ui.text(listOfNotNull(percent?.let { "$it%" }, label).joinToString(" · "),
+                if (percent == null) 24f else 30f, tone, true))
+            if (percent != null) {
+                addView(android.widget.ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply {
+                    max = 100
+                    progress = percent
+                    progressTintList = android.content.res.ColorStateList.valueOf(tone)
+                    progressBackgroundTintList = android.content.res.ColorStateList.valueOf(Palette.surface2)
+                    importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                }, LinearLayout.LayoutParams(MATCH_PARENT, ui.dp(12)))
+            }
+            status.nextDate?.let { addView(ui.text("$dateLabel ${it.format(dates)}", 20f, Palette.sub)) }
+            status.nextKm?.let { addView(ui.text("예정 거리 ${km(it)}", 20f, Palette.sub)) }
+            if (percent != null && status.kmState == ConditionState.PENDING) {
+                addView(ui.text("거리 기준 계산 보류", 20f, Palette.sub))
+            }
+            background = ui.touch(Palette.surface, 20, if (urgent) tone else Palette.border)
+            isFocusable = true
+            setOnClickListener { open() }
+        }
+    }
+
+    private fun metricCard(
+        title: String,
+        value: String,
+        icon: Icon,
+        detail: String? = null,
+        color: Int = Palette.text,
+        open: (() -> Unit)? = null,
+    ): View = ui.card(cardHeading(title, icon, open != null), ui.text(value, 36f, color, true)).apply {
+        detail?.let { addView(ui.text(it, 20f, Palette.sub)) }
+        if (open != null) {
+            background = ui.touch(Palette.surface, 20, Palette.border)
+            isFocusable = true
+            setOnClickListener { open() }
+        }
+    }
+
+    private fun cardHeading(title: String, icon: Icon, clickable: Boolean, tone: Int = Palette.sub): View =
+        horizontal().apply {
+            addView(ui.withIcon(ui.text(title, 22f, Palette.text, true), icon, tone),
+                LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f))
+            if (clickable) addView(ui.icon(Icon.CHEVRON, 20, tone))
+        }
 
     fun empty(title:String,message:String,icon:Icon):View = ui.column(12).apply {
         setPadding(ui.dp(8),ui.dp(20),ui.dp(8),ui.dp(20));addView(ui.icon(icon,40));addView(ui.text(title,26f,bold=true));addView(ui.text(message,22f,Palette.sub))

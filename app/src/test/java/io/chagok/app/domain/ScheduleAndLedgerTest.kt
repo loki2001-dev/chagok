@@ -33,6 +33,7 @@ class ScheduleAndLedgerTest {
         assertEquals(ConditionState.DUE, s.kmState)
         assertEquals(ConditionState.UPCOMING, s.dateState)
         assertEquals(ScheduleState.DUE, s.state)
+        assertEquals(100, s.progressPercent)
     }
 
     @Test
@@ -42,6 +43,7 @@ class ScheduleAndLedgerTest {
         assertEquals(ConditionState.UPCOMING, s.kmState)
         assertEquals(ConditionState.DUE, s.dateState)
         assertEquals(ScheduleState.DUE, s.state)
+        assertEquals(100, s.progressPercent)
     }
 
     @Test
@@ -56,6 +58,7 @@ class ScheduleAndLedgerTest {
         val s = ScheduleCalculator.evaluate(plan, listOf(base), 56_500.0, LocalDate.of(2027, 1, 1))
         assertEquals(ScheduleState.SOON, s.state)
         assertEquals(700.0, s.remainingKm!!, 0.0)
+        assertEquals(93, s.progressPercent)
     }
 
     @Test
@@ -71,6 +74,7 @@ class ScheduleAndLedgerTest {
     fun `주기 미설정`() {
         val s = ScheduleCalculator.evaluate(plan.copy(intervalKm = null, intervalMonths = null), listOf(base), 50_000.0, LocalDate.of(2027, 1, 1))
         assertEquals(ScheduleState.NO_PLAN, s.state)
+        assertNull(s.progressPercent)
     }
 
     @Test
@@ -78,6 +82,7 @@ class ScheduleAndLedgerTest {
         val s = ScheduleCalculator.evaluate(plan, listOf(base), null, LocalDate.of(2027, 1, 1))
         assertEquals(ConditionState.PENDING, s.kmState)
         assertEquals(ConditionState.UPCOMING, s.dateState)
+        assertEquals(14, s.progressPercent)
         val noKmBasis = ScheduleCalculator.evaluate(plan, listOf(entry(LocalDate.of(2026, 11, 8), null)), 50_000.0, LocalDate.of(2027, 1, 1))
         assertEquals(ConditionState.PENDING, noKmBasis.kmState)
         assertNull(noKmBasis.nextKm)
@@ -88,6 +93,8 @@ class ScheduleAndLedgerTest {
         val s = ScheduleCalculator.evaluate(plan, listOf(base), 30_000.0, LocalDate.of(2027, 1, 1))
         assertTrue(s.odometerReversed)
         assertEquals(ConditionState.PENDING, s.kmState)
+        assertNull(ScheduleCalculator.evaluate(plan.copy(intervalMonths = null), listOf(base), 30_000.0,
+            LocalDate.of(2027, 1, 1)).progressPercent)
     }
 
     @Test

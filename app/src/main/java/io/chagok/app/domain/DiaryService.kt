@@ -61,6 +61,11 @@ class DiaryService(
 
     fun items(): List<Item> = Item.entries.filter { it.availableFor(profile().powertrain) }
 
+    fun maintenanceItems(): List<Item> = items().filter {
+        it.kind == ItemKind.REPLACE || it.kind == ItemKind.INSPECT ||
+            it.kind == ItemKind.REFILL || it == Item.TIRE_REPLACE
+    }
+
     // ---------------------------------------------------------------- 음성 → 초안
 
     sealed interface VoiceOutcome {
