@@ -89,6 +89,30 @@ class ScheduleAndLedgerTest {
     }
 
     @Test
+    fun `마모도는 주행과 기간을 따로 계산하고 초과분을 숨기지 않는다`() {
+        val half = ScheduleCalculator.evaluate(plan, listOf(base), 52_200.0, LocalDate.of(2027, 2, 8))
+        assertEquals(5_000.0, half.usedKm!!, 0.0)
+        assertEquals(50, half.wearPercent)
+        assertEquals(LocalDate.of(2027, 2, 8), half.asOf)
+        assertEquals(25, half.agePercent)
+        assertEquals(50, half.progressPercent)
+
+        val over = ScheduleCalculator.evaluate(plan, listOf(base), 62_200.0, LocalDate.of(2028, 5, 8))
+        assertEquals(150, over.wearPercent)
+        assertEquals(149, over.agePercent)
+        assertEquals(100, over.progressPercent)
+
+        val noKm = ScheduleCalculator.evaluate(plan, listOf(base), null, LocalDate.of(2027, 2, 8))
+        assertNull(noKm.usedKm)
+        assertNull(noKm.wearPercent)
+        assertEquals(25, noKm.agePercent)
+        val distanceOnly = ScheduleCalculator.evaluate(plan.copy(intervalMonths = null), listOf(base), 52_200.0, LocalDate.of(2027, 2, 8))
+        assertNull(distanceOnly.asOf)
+        assertNull(distanceOnly.agePercent)
+        assertEquals(50, distanceOnly.wearPercent)
+    }
+
+    @Test
     fun `거리 역행은 검토 대상`() {
         val s = ScheduleCalculator.evaluate(plan, listOf(base), 30_000.0, LocalDate.of(2027, 1, 1))
         assertTrue(s.odometerReversed)
