@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Chagok.DatePicker" parent="@android:style/Theme.Material.Dialog.Alert">
+        <item name="android:colorAccent">#78DDB3</item>
+        <item name="android:datePickerStyle">@style/Widget.Chagok.DatePicker</item>
+        <item name="android:fontFamily">@font/chagok_sans</item>
+    </style>
+    <style name="Widget.Chagok.DatePicker" parent="@android:style/Widget.Material.DatePicker">
+        <item name="android:datePickerMode">spinner</item>
+        <item name="android:calendarViewShown">false</item>
+    </style>
+</resources>
