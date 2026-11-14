@@ -1,0 +1,53 @@
+차곡 V6 Android 연결 및 검증
+작업일: 2026-11-14 (개발 PC 기준)
+
+구현 범위
+• CompanionActivity를 기본 실행 화면으로 연결했다. 생성된 WebP 15개를 APK에 포함하고 Android Canvas로 그린다. 브라우저나 원격 이미지 다운로드가 필요하지 않다.
+• 네온 레이서 / 현대 세단, 위를 향하는 작은 차량, 방향지시등에 따른 좌우 이동과 점멸, 속도 기반 도로 스크롤, 속도 차이로 계산한 가속도 기반 레이서 부스터를 연결했다.
+• 도시가 기본이다. 만남 선택 시 도시 75%, 시골 25% 확률을 사용하며 연속 같은 장면을 피하고 같은 환경 내 미수집 장면을 우선한다. 실제 도로 종류나 위치와 무관하다.
+• 삼색이, 자전거 소녀, 코기, 배달원, 꽃수레, 우산, 기타리스트, 오리 가족, 귤 농부, 화가의 10종 만남을 제공한다. 최소 1.5초 이상 화면에 보이고 차량 부근을 통과한 장면만 저장한다.
+• 만남은 차량·로컬 사용자별 첫/최근 시각과 횟수를 저장한다. 장면 통과 토큰과 수집 갱신을 하나의 SQLite 트랜잭션으로 처리해 재생성·반복 콜백의 중복 저장을 막는다. 일지·비용과는 별개인 가상의 수집이다.
+• 앞유리 와이퍼 스위치와 ON/OFF를 2초마다 읽는다. 60초 작동 근거로 비를 시작하고 수동 지원 단계별로 강도를 조절한다. 수신 공백 5초 초과/알 수 없는 값은 판정 초기화. OFF 30초 후 종료한다. AUTO는 실제 ON 근거가 필요하며 MIST/SERVICE는 지속 강우 근거로 쓰지 않는다. 간헐 모드는 실제 한 번의 작동을 본 뒤 같은 모드의 휴지 간격을 허용한다.
+• VehicleMonitorService가 단일 주유·충전 감지기를 소유한다. 앱이 뒤로 가도 전경 서비스 알림과 함께 후보를 수집하고 화면은 같은 상태를 관찰한다. 서비스는 마이크·위치·네트워크를 수집하지 않는다.
+• 최근 후보를 화면의 차량 말풍선으로 질문한다. 금액을 받아 초안에 반영한 다음 명시적인 두 번째 확인을 받아야 비용으로 확정한다. 무응답·취소·앱 이탈은 초안으로 남긴다. 중복 의심 기록은 자동으로 강제 확정하지 않는다.
+• 기존 6개 관리 화면과 리포트는 메뉴 → 일지·차량 관리로 연결했다. 기존 화면에 주행 화면 복귀 버튼을 추가했다.
+• 폭 320dp의 좁은 창부터 넓은 창까지 대응하며 넓은 창에서는 본문을 560dp로 제한한다. 스킨·스크롤·진행 중 만남을 복원하고 주야간 전환 시 색과 배치를 다시 적용한다.
+
+주행 제한과 실제 허용 범위
+• 추가 실측: D 기어·25km/h(6.9444447m/s), 방향지시등 OFF 상태에서 차곡 Activity의 화면 표시와 포커스 유지 확인. 앱 전체가 주행 중 일괄 차단되는 것은 아니다. android-evidence/companion-driving-window.png와 companion-driving-visibility.json에 증거를 보관했다.
+• CarUxRestrictions의 NO_VIDEO일 때 도로·캐릭터·깜빡이 연출·비·부스터를 정지하고 간단한 기록 상태를 표시한다. 메뉴·수집 화면은 정차 중에만 제공한다. 주유·충전 후보 수집은 계속된다.
+• 위 연출 정지는 현재 앱이 택한 보수적인 구현 정책이다. NO_VIDEO는 영상 재생 제한이며 Android가 모든 Canvas 애니메이션의 렌더링을 자동 차단한다는 의미가 아니다. 공식 안전 설계 가이드는 시선을 끄는 동영상/애니메이션의 최소화·제한과 장식적/반복적 움직임 지양을 요구한다. 지속적인 도로 스크롤·부스터·랜덤 만남을 주행 중 허용받을 수 있는지는 확정하지 못했다.
+• 제품 판단: 자동 차량일지·간결한 보조 화면까지 정차 전용으로 바꿔야 한다는 근거는 없다. 다만 원래 목표인 ‘주행 중 재미있는 동반 연출’은 현재 제한 처리 상태에서 충족되지 않는다. 기능 시험 통과와 그 연출의 배포 적합성은 별개의 검증이다. 주행 중 연출 허용 범위를 확인하기 전에는 해당 기획이 검증 완료됐다고 판단하지 않는다.
+• 현재 Pleos 에뮬레이터는 주행 중 NO_VIDEO를 설정한다. 따라서 이 이미지에서 실제 차량 속도를 주입해도 주행 중 화려한 연출이 표시되지는 않는다. 전체 연출은 정차 중 메뉴 → 주행 연출 미리보기에서 볼 수 있다. 미리보기는 만남을 수집하지 않는다.
+• distractionOptimized 선언과 specialUse 전경 서비스 용도 선언은 배포 심사 승인을 뜻하지 않는다. 실차/OEM의 제한 정책과 배포 허용 범위는 별도 확인해야 한다.
+• 내비 뒤에서의 기록 수집은 구현했으나 전역 호출 버튼·웨이크워드는 구현하지 않았다. 앱을 한 번 열어 시작하며 부팅 자동 실행이나 강제 종료 후 자동 재시작은 하지 않는다.
+• 실제 도로 분류·실제 동물/사람 감지·실제 강수량·물리적 와이퍼 왕복 속도를 주장하지 않는다. privileged/signature 권한을 추가하지 않았다.
+
+검증 방법과 증거
+• 단위 시험: ./gradlew.bat :app:testSmokeUnitTest
+• 전체 기기 시험: ./tools/smoke-windows.ps1
+• 빌드/정적 점검: ./gradlew.bat :app:assembleDebug :app:lintDebug
+• 시험용 앱 ID io.chagok.app.smoke에서만 DB를 초기화한다. 차량 신호 주입 전에 일반 앱의 수집 프로세스를 종료한다. 실제 차량에서는 신호 주입 스크립트가 실행되지 않도록 emulator 확인을 강제한다.
+• 시험 전경 서비스 종료 후에만 DB를 초기화한다. 10분 watchdog과 Virtual Console 세션 유지 기능을 사용한다. 시험 후 속도 0/Park 및 원래 SoC·와이퍼·깜빡이를 복원한다. 누적 km는 콘솔 제약으로 감소시키지 않는다.
+• 실제 Android Canvas 캡처와 전체 창 캡처는 android-evidence/에 보관한다. CompanionHarnessActivity는 .smoke 변형에만 있고 일반 debug APK에는 없다.
+• 최종 집계와 APK SHA-256: android-verification.json
+• 최종 전체 기기 출력: android-evidence/final-full-smoke.log
+• 실제 SDK 값/판정 시각: android-evidence/companion-sdk-integration.json
+
+시험 범위
+1. 기존 회귀: 실제 SQLite 업그레이드/롤백, 후보·공유·도장 지속성, 차량 연결 실패, 일지 생성/화면 재생성/수정/취소/학습, 충전량과 제외, 로컬 사용자 공유, 리포트 저장/읽기/공유 URI/삭제, 실제 SDK SOC·주행 제한, ON_DEVICE 음성 시작/취소.
+2. 순수 로직: 와이퍼 60초·OFF 30초·결측/공백·AUTO/간헐/MIST, 지원 단계 강도, 속도 결측/가속도/만료, 도시·시골/중복 회피/미수집 우선, 가시성/정지/제한 중 미수집, 저장 실패 재시도, 질문 중 장면 지연, 금액 해석·수정·확인·보류·중복 방지.
+3. Android UI/DB: 10종 이미지 실제 렌더·수집, 두 스킨 좌우 이동과 각도 고정/깜빡이/비/부스터, 제한 시 정지, 화면 이탈 시 애니메이션 중지, 반복 만남 및 재생성 복원, 미리보기 미수집, 수집 트랜잭션/사용자·차량 분리, 말풍선 확인과 초안 보류, 메뉴 스킨 저장, 좁은/넓은 창 배치, 주야간 전환.
+4. 실제 SDK 경로: PERF_VEHICLE_SPEED → 서비스 → 화면, 좌우 신호, NO_VIDEO 적용/해제, 앞유리 저속 와이퍼를 실제 60초 유지한 후 비 판정, 고속 강도 상승, OFF 후 종료, Activity가 STOPPED일 때 SOC 상승 후보 생성 및 복귀 후 재연결. 속도·기어·와이퍼 값은 에뮬레이터 Virtual Console로 주입했다.
+5. 반복 시험 중 Pleos 사각지대 카메라가 깜빡이 입력에 반응해 Activity를 가리는 상황과 앱 창 재배치 직후 첫 입력이 유실되는 상황이 발생했다. 서비스 상태 관찰과 UI 표시 검증을 구분하고, 매 시험 전 차량 상태를 초기화하도록 시험 드라이버를 보강했다. 실패 기록은 intermediate-surface-failure.log에 보존했다.
+
+자동 시험 밖의 항목
+실차 하드웨어 수신/성능, 실제 한국어 마이크 발화의 인식 정확도, 실제 통화/오디오 경쟁, 실제 내비 앱과의 오디오 포커스 상호작용, 공유 대상 앱의 최종 전달, 배포 심사 및 실차 DPI/사용성은 검증하지 않았다. 금액 질문의 텍스트 해석·확정·보류는 시험했고 음성 엔진 초기화/시작/취소도 시험했으나, 사람이 마이크로 말하는 종단 시험과 동일하지 않다.
+
+플랫폼 근거
+https://document.pleos.ai/docs/pleos-only/vehicle-app-developer-guide/driving-restriction-development-guide
+https://document.pleos.ai/docs/pleos-only/distribute/app-review-guide/review-driver-distraction-elements
+https://developer.android.com/develop/background-work/services/fgs/service-types
+https://document.pleos.ai/docs/connect/guide/docs-design/getting-started/layout
+https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/driver-distraction-guideline
+https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/app-category

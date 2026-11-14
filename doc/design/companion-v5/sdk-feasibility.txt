@@ -1,0 +1,115 @@
+차곡 주행 보조 화면 — SDK 구현 가능성 검증
+검증일: 2026-11-14 (Asia/Seoul)
+
+결론
+속도·좌우 방향지시등·와이퍼 상태·내비 위치 응답은 현재 Pleos 에뮬레이터에서 읽었다.
+도시/시골/숲길과 실제 날씨를 직접 반환하는 항목은 조사한 공개 SDK에 없다.
+따라서 모든 기능이 현재 앱에 연결되어 있다고 말할 수 없다. 아래는 API 존재,
+앱 연결 상태, 에뮬레이터 실측, 추가 구현 필요 사항을 구분한 결과다.
+
+현재 제품 앱
+- Vehicle 2.3.2: 누적 주행거리, 연료 비율, 배터리 SoC만 사용.
+- SpeechToText 3.3.1: ON_DEVICE 음성 입력, Android SpeechRecognizer 대체 경로.
+- android.car 표준 라이브러리: 현재는 주행 제한 확인에 사용.
+- NaviHelper, CAR_SPEED, CAR_LIGHTS, CAR_WINDOWS, NAVI_ROUTE는 제품 앱에 아직 없다.
+- 이번 진단에만 smokeImplementation(NaviHelper 3.0.5)와 src/smoke 권한을 추가했다.
+  제품 debug/release 의존성 및 main Manifest의 권한을 확대하지 않았다.
+
+1. 속도와 노면 이동 — 에뮬레이터 수신 확인
+Vehicle 2.3.2에 VehicleSpeedListener가 없으며 공식 릴리스 노트에도 제거가 명시돼 있다.
+대신 AAOS CarPropertyManager / VehiclePropertyIds.PERF_VEHICLE_SPEED를 사용한다.
+단위 m/s, 부호는 전진/후진 방향이므로 km/h 표시에는 변환이 필요하다.
+android.car.permission.CAR_SPEED는 에뮬레이터에서 Dangerous(1)이며 동의가 필요하다.
+테스트 앱은 adb install -g로 해당 권한을 부여받았다. 제품의 런타임 권한 동의 UI는 미구현이다.
+실측: property READ, subscription=true, 현재값 및 이벤트 0 → 10 → 0m/s (=0 → 36 → 0km/h).
+설정의 min/max sample rate는 10/20Hz, 이번 5Hz 요청에서 총 130개의 이벤트를 수신했다.
+차종마다 property 및 권한 가용성이 달라질 수 있어 실차 전역 보장은 아니다.
+
+2. 급가속 부스터 — 구현 가능, 가속도 처리 구현 필요
+조사한 Vehicle API에는 직접적인 종방향 가속도 항목이 없다.
+속도 이벤트의 timestampNanos로 Δv/Δt를 계산하고 평활화·히스테리시스를 적용한다.
+누락/오래된/역순 timestamp, 비정상 큰 속도 점프는 연출에 쓰지 않아야 한다.
+에뮬레이터의 속도 단계 변경은 실제 차량의 가속도 정확도를 입증하지 않는다.
+현재 시안의 가속도는 목표 속도를 향해 변하는 시뮬레이션 값이다.
+
+3. 좌우 위치 및 깜빡이 — 에뮬레이터 수신 확인
+Vehicle.getTurnSignal(): checkTurnSignalStateCapabilities, getCurrentTurnSignalState,
+registerTurnSignalState를 사용. CAR_LIGHTS는 Normal(0).
+실측: READ, OFF → LEFT → RIGHT → OFF 콜백 및 현재값 조회 성공.
+이 값을 이용해 왼쪽/오른쪽에 차를 배치하고 같은 쪽 램프를 점멸시킬 수 있다.
+TurnSignalValue는 OFF/LEFT/RIGHT이며, 이 API에 비상등 전용 값은 없다.
+깜빡이는 운전 의도이며 실제 차선이나 회전 완료를 나타내는 측정값이 아니다.
+내비의 다음 회전 안내(TBT)와 현재 차량 깜빡이는 서로 다른 입력으로 취급한다.
+
+4. 비와 날씨 — 와이퍼 수신 확인, 강수 판정 미지원
+추가 결정: 와이퍼 60초 지속 작동을 비 연출 기준으로 채택. 단계별 강도 및 도로 분류는 environment-policy.txt 참고.
+추가 실측: getCurrentWiperSwitch의 저속=CONTINUOUS_LEVEL_1, 고속=CONTINUOUS_LEVEL_3, 자동=AUTO 수신 확인.
+자동 모드의 실제 왕복 속도는 이 getter에서 제공되지 않는다. wiper-sdk-probe.json에 별도 기록했다.
+Vehicle.getWiper(): checkWiperStateCapabilities, getCurrentWiperState,
+registerWiperState 사용. CAR_WINDOWS는 Normal(0).
+실측: READ, 앞유리 OFF → ON → OFF. 지원 상태 목록에는 OFF/ON/SERVICE가 있다.
+와이퍼 ON은 비가 온다는 확정 정보가 아니다. 세척 등에서도 동작한다.
+정확한 날씨/강수량은 별도 기상 데이터와 위치, 갱신 주기, 오류 처리가 필요하다.
+와이퍼 기반 빗줄기는 제품에서 채택한다면 '와이퍼 반응 연출'로 정의한다.
+
+5. 내비로 도시/시골 판단 — 위치는 가능, 분류는 별도 구현
+추가 결정: 최종 배경 분류를 고속도로 / 일반도로(국도·지방도) 중심으로 변경. 현재 도로 등급도 별도 데이터가 필요하다.
+NaviHelper 3.0.5를 테스트 앱에서 추가해 실제 서비스 연결을 확인했다.
+getCurrentLocationInfo: 좌표 필드와 비어 있지 않은 주소 응답 수신.
+getRouteStateInfo: isRouting=false. getTBTInfo: 빈 목록(경로 안내 미실행).
+주행 중 연속 위치 갱신과 실제 경로 안내 중 TBT 변화까지 검증한 것은 아니다.
+NAVI_ROUTE는 Normal(0). 정확한 좌표/주소는 진단 로그에 저장하지 않았다.
+이 SDK가 사용하는 navi-data 3.0.4의 CurrentLocationInfo 필드:
+latitude, longitude, heading, address, routeId, currentRouteIndex.
+TBTInfo에는 type, distance, description이 있다. 고속도로 진입/진출 TurnType도 있지만
+안내 이벤트이지 현재 도로 전체의 속성/도시·시골 구분을 직접 제공하는 값은 아니다.
+조사한 공개 데이터 모델에는 urban/rural/city/forest/roadType/weather 필드가 없다.
+도시·시골 배경 자동화에는 위치 + 토지이용/건물밀도/도로 분류 등 지도 데이터가 필요하다.
+주소의 '시/군' 또는 제한속도만으로 숲길/도심을 확정해서는 안 된다.
+SDK 제공 경로 외의 임의 내비 앱(Naver/TMap 등) 데이터 접근을 보장하지 않는다.
+NaviProvider 연동 및 차량 내비 탑재 여부에 따라 실제 응답이 달라진다.
+배경 분류가 없거나 오래되면 중립 도로를 유지하는 것이 구현 기본값이다.
+
+6. 질문 말풍선, 음성 응답, 백그라운드 호출
+말풍선/두 스킨/애니메이션 자체는 앱 렌더링이며 특별한 차량 SDK는 필요 없다.
+STT는 이미 사용 중이지만 현재 화면의 질문·금액 버튼은 디자인 시뮬레이션이다.
+자동 질문 음성 출력(TTS), 응답을 기다리는 상태 전환, 오디오 포커스 및 사용자 설정은 추가 구현 대상이다.
+STT 사용만으로 '차곡 불러줘'와 같은 시스템 음성 호출이 생기지는 않는다.
+Gleo Interface는 App Schema와 action/callback 연동을 별도로 제공한다.
+component=activity는 앱 화면 호출, component=service는 broadcast를 통한 UI 없는 처리를 정의한다.
+공식 가이드는 assets/schema.json, action filter, 스키마 검토·승인 후 활성화를 안내한다.
+차곡에는 이 연동이 없고 이번에 Gleo 실제 호출도 시험하지 않았다.
+자동 상시 녹음이나 내비 위 플로팅 오버레이 권한이 있다고 해석하면 안 된다.
+
+7. 지금 제품 앱에서 먼저 해결할 구조
+MainActivity.onPause()가 speech.cancel() 및 vehicle.stop()을 호출한다.
+따라서 내비가 전면으로 이동해 차곡이 pause되면 현재 차량 구독이 중단된다.
+지속 자동기록을 위해 화면 수명주기와 수집 수명주기를 분리해야 한다.
+또한 현재 Activity는 정차 전용이며 distractionOptimized 선언이 없어 주행 중 플랫폼이 막는다.
+주행용 읽기 화면의 별도 구성과 Pleos 주행 UI 심사 조건은 실제 배포 전에 검증해야 한다.
+이번 디자인 미리보기가 실제 주행 허용 상태나 백그라운드 수집 완성을 의미하지 않는다.
+
+실행 증거 및 재현
+CompanionSdkProbeTest.auditReadOnlyCapabilities: OK (1 test), 약 20초.
+이는 진단 실행 성공이며 모든 제품 기능의 완성을 뜻하지 않는다.
+sdk-probe.json: 원본 이벤트, 권한, 디바이스, Virtual Console 테스트 입력.
+sdk-probe-instrumentation.log: Android 계측 결과.
+테스트 앱은 SDK 읽기/구독만 호출하며 실제 차량 제어 setter를 호출하지 않는다.
+속도/깜빡이/와이퍼 변경은 로컬 Pleos Virtual Console 에뮬레이터에서만 주입했다.
+완료 후 0km/h, Park, 원래 와이퍼·깜빡이 상태로 복구했다.
+실차/백그라운드 장시간 수집/실제 경로 안내/Gleo/TTS/기상 연동은 이번 실측 범위가 아니다.
+재현: tools/dev-env.ps1 로드 → assembleSmoke, assembleSmokeAndroidTest → 두 테스트 APK install -r -g
+→ python tools/probe-companion-sdk.py (emulator 전용, SDK 진단만 선택 실행).
+
+검토한 근거
+현재 프로젝트: app/build.gradle.kts, app/src/main/AndroidManifest.xml,
+app/src/main/java/io/chagok/app/vehicle/PleosVehicle.kt,
+app/src/main/java/io/chagok/app/ui/MainActivity.kt.
+실제 배포 소스: Vehicle 2.3.2 / NaviHelper 3.0.5 / navi-data 3.0.4 sources.jar.
+로컬 검토 사본: .dev/sdk-audit/vehicle-sources, navi-sources, navi-data.
+https://document.pleos.ai/docs/pleos-only/release-note/sdk-release-note
+https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/NaviHelper/importing-sdk
+https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/api-compatibility-availability
+https://developer.android.com/reference/android/car/VehiclePropertyIds#PERF_VEHICLE_SPEED
+https://document.pleos.ai/docs/pleos-only/app-integration-guide/guide/app-capability
+https://document.pleos.ai/docs/pleos-only/app-integration-guide/guide/deliver-schema
