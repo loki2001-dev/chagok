@@ -13,6 +13,10 @@ interface DiaryStore {
     fun saveGap(gap: RecordingGap)
     fun energyCheckpoint(vehicleId: String, kind: EnergyKind): EnergyCheckpoint?
     fun saveEnergyCheckpoint(vehicleId: String, kind: EnergyKind, value: EnergyCheckpoint)
+    fun places(): List<ServicePlace>
+    fun replacePlaces(places: List<ServicePlace>)
+    fun visits(vehicleId: String): List<PlaceVisit>
+    fun saveVisit(visit: PlaceVisit)
     fun profile(): VehicleProfile?
     fun saveProfile(profile: VehicleProfile)
 
@@ -43,6 +47,12 @@ interface DiaryStore {
 
 class MemoryStore : DiaryStore {
     override fun <T> transaction(block: () -> T): T = block()
+    private var catalogue = emptyList<ServicePlace>()
+    private val visits = linkedMapOf<String, PlaceVisit>()
+    override fun places() = catalogue
+    override fun replacePlaces(places: List<ServicePlace>) { catalogue = places.toList(); saveSetting("places.revision", java.util.UUID.randomUUID().toString()) }
+    override fun visits(vehicleId: String) = visits.values.filter { it.vehicleId == vehicleId }
+    override fun saveVisit(visit: PlaceVisit) { visits[visit.id] = visit }
     private var profile: VehicleProfile? = null
     private val entries = linkedMapOf<String, DiaryEntry>()
     private val plans = linkedMapOf<Pair<String, Item>, MaintenancePlan>()

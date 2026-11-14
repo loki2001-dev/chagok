@@ -342,8 +342,14 @@ class DiaryService(
             return ConfirmResult.Rejected("이 후보는 이미 다른 기록으로 확정됐어요.")
         }
 
+        val visit = draft.visitId?.let { id -> store.visits(draft.vehicleId).firstOrNull { it.id == id } }
+        if(draft.visitId != null && (visit == null || visit.user != draft.author || visit.state != VisitState.READY))
+            return ConfirmResult.Rejected("이미 처리되었거나 없는 방문 후보예요.")
+        if(visit != null && (if(visit.place.kind == PlaceKind.FUEL) draft.item != Item.REFUEL else draft.item == Item.REFUEL || draft.item == Item.CHARGE))
+            return ConfirmResult.Rejected("방문 장소와 기록 항목을 확인해 주세요.")
         val saved = draft.copy(status = EntryStatus.CONFIRMED, updatedAt = now())
         store.saveEntry(saved)
+        visit?.let { store.saveVisit(it.copy(state = VisitState.CONFIRMED, linkedEntryId = saved.id)) }
         candidate?.let { store.saveCandidate(it.copy(state = CandidateState.CONFIRMED, linkedEntryId = saved.id)) }
         if (store.progress(saved.author).none { it.topic == Topic.FIRST_DIARY && !it.needsReview }) {
             store.saveProgress(LearningProgress(saved.author, Topic.FIRST_DIARY, LearningCatalog.CONTENT_VERSION, now(), saved.id))
@@ -387,6 +393,9 @@ class DiaryService(
                         store.saveCandidate(it.copy(state = CandidateState.PENDING, linkedEntryId = null))
                     }
                 }
+                entry.visitId?.let { id -> store.visits(entry.vehicleId).firstOrNull { it.id == id && it.linkedEntryId == entry.id }?.let {
+                    store.saveVisit(it.copy(state = VisitState.READY, linkedEntryId = null))
+                } }
                 reviewStampsAfterCancel(entry)
             }
         }
@@ -403,7 +412,43 @@ class DiaryService(
         return pendingCandidates().filter { it.id !in drafting }
     }
 
-    fun reviewCount() = drafts().size + unreviewedCandidates().size
+    fun pendingVisits(user: String): List<PlaceVisit> {
+        require(viewer == null || viewer == user)
+        val drafting = drafts().mapNotNull { it.visitId }.toSet()
+        return store.visits(profile().id).filter { it.user == user && it.state == VisitState.READY && it.id !in drafting &&
+            (it.place.kind != PlaceKind.FUEL || Item.REFUEL.availableFor(profile().powertrain)) }
+            .sortedBy { it.arrivedAt }
+    }
+
+    fun visitDraft(id: String, user: String, item: Item): DiaryEntry = store.transaction {
+        require(viewer == null || viewer == user)
+        val visit = store.visits(profile().id).first { it.id == id && it.user == user }
+        require(visit.state == VisitState.READY) { "이미 처리된 방문 후보예요" }
+        store.entries(profile().id).firstOrNull { it.visitId == id && it.status == EntryStatus.DRAFT }?.let { return@transaction it }
+        require(item.availableFor(profile().powertrain))
+        require(if(visit.place.kind == PlaceKind.FUEL) item == Item.REFUEL else item != Item.REFUEL && item != Item.CHARGE)
+        val date = visit.arrivedAt.atZone(zone).toLocalDate()
+        require(date <= today())
+        val candidate = if(item == Item.REFUEL) unreviewedCandidates().filter {
+            it.kind == EnergyKind.FUEL && !it.collecting && it.after.receivedAt.atZone(zone).toLocalDate() == date &&
+                it.after.receivedAt >= visit.arrivedAt.minusSeconds(600) && it.after.receivedAt <= visit.lastAt.plusSeconds(1800)
+        }.singleOrNull() else null
+        val draft = DiaryEntry(id = newId(), vehicleId = profile().id, item = item, performedOn = date,
+            createdAt = now(), author = user, status = EntryStatus.DRAFT, cost = null,
+            odometer = visit.odometer?.let { FieldEvidence(it.value, "km", Source.VEHICLE, it.receivedAt, it) },
+            visitId = id, placeName = visit.place.name, candidateId = candidate?.id)
+        store.saveEntry(draft); draft
+    }
+
+    fun rejectVisit(id: String, user: String) = store.transaction {
+        require(viewer == null || viewer == user)
+        val visit = store.visits(profile().id).first { it.id == id && it.user == user }
+        require(visit.state == VisitState.READY)
+        require(store.entries(profile().id).none { it.visitId == id && it.status != EntryStatus.CANCELLED }) { "작성 중인 초안을 먼저 버려 주세요" }
+        store.saveVisit(visit.copy(state = VisitState.EXCLUDED))
+    }
+
+    fun reviewCount() = drafts().size + unreviewedCandidates().size + (viewer?.let { pendingVisits(it).size } ?: 0)
 
     /** 타임라인: 확정·취소 기록, 최근 순 */
     fun timeline(): List<DiaryEntry> =

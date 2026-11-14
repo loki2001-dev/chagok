@@ -121,6 +121,8 @@ data class DiaryEntry(
     val energyAmount: Double? = null,
     /** 날짜를 바꾸어 자동 첨부를 해제한 경우에도 원래 관측을 보존한다. */
     val detachedObservation: Observation? = null,
+    val visitId: String? = null,
+    val placeName: String? = null,
 )
 
 /** 같은 차량의 로컬 프로필 간 열람 범위. null은 공용, 빈 집합은 나만 보기. */

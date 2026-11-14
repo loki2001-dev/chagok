@@ -26,7 +26,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <uses-permission android:name="pleos.car.permission.FUSED_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <queries>
+        <package android:name="ai.pleos.playground.service.location.fused" />
         <intent>
             <action android:name="android.speech.RecognitionService" />
         </intent>
@@ -56,7 +59,7 @@
         <service android:name=".companion.VehicleMonitorService" android:exported="false"
             android:foregroundServiceType="specialUse">
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="User-started, on-device vehicle diary: continuously observe fuel and battery readings to detect refueling or charging across navigation and application switches. No network, microphone, or location collection in this service." />
+                android:value="User-started, on-device vehicle diary: continuously observe fuel and battery readings to detect refueling or charging across navigation and application switches. Optional user-enabled local place visit detection using Pleos location. Network downloads place catalogues only; coordinates are never uploaded. No microphone collection in this service." />
         </service>
         <!-- Read-only companion: animated artwork pauses under NO_VIDEO; parked UI is disabled
              under UX restrictions. This declaration is not a Pleos distribution approval. -->
@@ -69,6 +72,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.PlacesActivity" android:exported="false" />
         <!-- Existing diary/editor/learning screens remain parked-only. -->
         <activity
             android:name=".ui.MainActivity"

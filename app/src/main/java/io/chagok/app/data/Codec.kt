@@ -24,7 +24,7 @@ import java.time.LocalDate
 
 /** 도메인 객체 ↔ JSON. 저장 형식이 바뀌면 [VERSION]을 올린다 */
 object Codec {
-    const val VERSION = 3
+    const val VERSION = 4
 
     fun profile(p: VehicleProfile) = JSONObject()
         .put("id", p.id).put("name", p.name).put("powertrain", p.powertrain.name)
@@ -65,6 +65,7 @@ object Codec {
         .putOpt("candidateId", e.candidateId).putOpt("spokenText", e.spokenText).putOpt("memo", e.memo)
         .put("updatedAt", e.updatedAt.toString()).putOpt("energyAmount", e.energyAmount)
         .putOpt("detachedObservation", e.detachedObservation?.let(::observation))
+        .putOpt("visitId", e.visitId).putOpt("placeName", e.placeName)
 
     fun entry(o: JSONObject) = DiaryEntry(
         id = o.getString("id"),
@@ -88,6 +89,7 @@ object Codec {
             ?: Instant.parse(o.getString("createdAt")),
         energyAmount = if (o.has("energyAmount")) o.getDouble("energyAmount") else null,
         detachedObservation = o.optJSONObject("detachedObservation")?.let(::observation),
+        visitId = o.optStringOrNull("visitId"), placeName = o.optStringOrNull("placeName"),
     )
 
     fun plan(p: MaintenancePlan) = JSONObject()
@@ -151,6 +153,18 @@ object Codec {
     fun energyCheckpoint(o: JSONObject) = EnergyCheckpoint(o.optJSONObject("baseline")?.let(::observation),
         o.optJSONObject("anchor")?.let(::observation),o.optStringOrNull("increase")?.let(Instant::parse),
         o.optStringOrNull("raw")?.let(Instant::parse),o.optBoolean("gap"))
+
+    fun place(p: ServicePlace) = JSONObject().put("id",p.id).put("name",p.name).put("kind",p.kind.name)
+        .put("latitude",p.latitude).put("longitude",p.longitude).put("address",p.address).put("source",p.source)
+    fun place(o: JSONObject) = ServicePlace(o.getString("id"),o.getString("name"),PlaceKind.valueOf(o.getString("kind")),
+        o.getDouble("latitude"),o.getDouble("longitude"),o.getString("address"),o.getString("source"))
+    fun visit(v: PlaceVisit) = JSONObject().put("id",v.id).put("vehicle",v.vehicleId).put("user",v.user)
+        .put("place",place(v.place)).put("arrival",v.arrivedAt.toString()).put("last",v.lastAt.toString())
+        .putOpt("odometer",v.odometer?.let(::observation)).put("state",v.state.name).put("seconds",v.observedSeconds)
+        .put("gap",v.hasGap).put("exited",v.exited).putOpt("linked",v.linkedEntryId)
+    fun visit(o: JSONObject) = PlaceVisit(o.getString("id"),o.getString("vehicle"),o.getString("user"),place(o.getJSONObject("place")),
+        Instant.parse(o.getString("arrival")),Instant.parse(o.getString("last")),o.optJSONObject("odometer")?.let(::observation),
+        VisitState.valueOf(o.getString("state")),o.getLong("seconds"),o.getBoolean("gap"),o.getBoolean("exited"),o.optStringOrNull("linked"))
 
     private fun JSONObject.optStringOrNull(key: String): String? = if (has(key) && !isNull(key)) getString(key) else null
     private fun JSONArray.objects() = (0 until length()).map { getJSONObject(it) }

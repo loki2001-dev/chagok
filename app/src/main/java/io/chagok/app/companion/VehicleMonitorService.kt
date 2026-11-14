@@ -33,6 +33,10 @@ class VehicleMonitorService : Service() {
     private var lastEnergy = -5000L
     private var lastOdometer = -30000L
     private var generation = 0
+    private val location by lazy { io.chagok.app.vehicle.PleosLocation(this) }
+    private lateinit var visits: PlaceVisitTracker
+    private var lastLocation = -5000L
+    private var lastCatalogue = -3600000L
     private lateinit var trips: TripRecorder
     private var lastTripSample = -1000L
     private var lastRecovery = 0L
@@ -49,7 +53,7 @@ class VehicleMonitorService : Service() {
             .setContentIntent(open).setOngoing(true).setShowWhen(false).build()
         startForeground(1042, notification)
         store = SqliteStore(this); diary = DiaryService(store)
-        trips=TripRecorder(store)
+        trips=TripRecorder(store); visits=PlaceVisitTracker(store)
         lastRecovery=SystemClock.elapsedRealtime()
         lastHealthy=store.setting("monitor.lastHealthy")?.let { runCatching { Instant.parse(it) }.getOrNull() }
         gapStart=store.setting("monitor.gapStart")?.takeIf { it.isNotBlank() }?.let { runCatching { Instant.parse(it) }.getOrNull() }
@@ -73,6 +77,13 @@ class VehicleMonitorService : Service() {
             if (closed) return
             if(store.setting(RecordingStartup.ENABLED)!="true") { trips.stop(Instant.now());stopSelf();return }
             val now = SystemClock.elapsedRealtime()
+            val visitEnabled = store.setting(PlaceVisitTracker.ENABLED) == "true"
+            if(now - lastLocation >= 5000) {
+                lastLocation = now; location.poll(visitEnabled)
+            }
+            if(visitEnabled && now - lastCatalogue >= 3600000) {
+                lastCatalogue = now; io.chagok.app.data.CatalogueDownloads.check(this@VehicleMonitorService)
+            }
             val desired = diary.energyKinds().first()
             if (state.kind != desired) {
                 generation++
@@ -114,6 +125,10 @@ class VehicleMonitorService : Service() {
                     if(gapStart!=null) { gapStart=null;store.saveSetting("monitor.gapStart","") }
                     if(lastHealthy==null||Duration.between(lastHealthy,at).seconds>=5) { lastHealthy=at;store.saveSetting("monitor.lastHealthy",at.toString()) }
                 } else if(gapStart==null) { gapStart=lastHealthy ?: at;store.saveSetting("monitor.gapStart",gapStart.toString()) }
+                if(visitEnabled) visits.sample(diary.profile().id, store.setting("user") ?: "나", location.fix, at,
+                    parked, (state.odometer as? Reading.Value)?.observation, Item.REFUEL.availableFor(diary.profile().powertrain))
+                val visitStatus = if(!visitEnabled || location.fix == null) location.status else visits.status
+                if(store.setting("places.status") != visitStatus) store.saveSetting("places.status", visitStatus)
                 val trip=trips.sample(diary.profile().id,store.setting("user") ?: "나",at,state.motion.speedMps,parked,(state.odometer as? Reading.Value)?.observation)
                 val kmObservation=(state.odometer as? Reading.Value)?.observation
                 val distanceAvailable=kmObservation!=null&&Duration.between(kmObservation.receivedAt,at).seconds in 0..45
@@ -137,6 +152,7 @@ class VehicleMonitorService : Service() {
     }
     override fun onDestroy() {
         closed = true; generation++; main.removeCallbacksAndMessages(null); observers.clear()
+        location.close()
         if(::telemetry.isInitialized)telemetry.close()
         if(::vehicle.isInitialized)vehicle.stop()
         if(::driving.isInitialized)driving.release()
