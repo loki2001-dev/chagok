@@ -7,11 +7,10 @@ import io.chagok.app.data.SqliteStore
 
 /** User choice survives app/process/vehicle restarts. Force-stop remains under OS control. */
 object RecordingStartup {
-    const val ENABLED="monitor.enabled"
-    fun start(context: Context, firstUse: Boolean=false): Boolean {
+    const val ENABLED=io.chagok.app.domain.FirstRunSetup.RECORDING
+    fun start(context: Context): Boolean {
         val store=SqliteStore(context)
         return try {
-            if(firstUse&&store.setting(ENABLED)==null)store.saveSetting(ENABLED,"true")
             if(store.setting(ENABLED)!="true")false
             else try {
                 context.startForegroundService(Intent(context,VehicleMonitorService::class.java))

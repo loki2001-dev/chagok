@@ -9,7 +9,7 @@ import io.chagok.app.companion.VehicleMonitorService
 import io.chagok.app.drive.DrivingState
 
 /** Stop the foreground SQLite owner before resetting ONLY the disposable smoke database. */
-fun resetSmoke(context: Context) {
+fun resetSmoke(context: Context, freshInstall: Boolean = false) {
     check(context.packageName.endsWith(".smoke")) { "Never reset the production database" }
     context.stopService(Intent(context, VehicleMonitorService::class.java))
     val until=System.currentTimeMillis()+5000
@@ -21,6 +21,14 @@ fun resetSmoke(context: Context) {
     }
     InstrumentationRegistry.getInstrumentation().waitForIdleSync()
     context.deleteDatabase("chagok.db")
+    // Most scenarios exercise an already configured app. First-run tests explicitly opt out.
+    if (!freshInstall) {
+        val store=io.chagok.app.data.SqliteStore(context)
+        try {
+            store.saveSetting(io.chagok.app.domain.FirstRunSetup.COMPLETED,"true")
+            store.saveSetting(io.chagok.app.companion.RecordingStartup.ENABLED,"true")
+        } finally { store.close() }
+    }
     if(InstrumentationRegistry.getArguments().getString("virtualConsole")=="true") {
         val instrument=InstrumentationRegistry.getInstrumentation()
         instrument.sendStatus(2,Bundle().apply{putString("chagok_signal","RESET")})

@@ -1,0 +1,8 @@
+
+io.chagok.app.PermissionReviewTest:......
+io.chagok.app.FirstRunExperienceTest:.....
+io.chagok.app.CompanionSmokeTest:..
+
+Time: 89.437
+
+OK (13 tests)
