@@ -66,6 +66,9 @@ object Codec {
         .put("updatedAt", e.updatedAt.toString()).putOpt("energyAmount", e.energyAmount)
         .putOpt("detachedObservation", e.detachedObservation?.let(::observation))
         .putOpt("visitId", e.visitId).putOpt("placeName", e.placeName)
+        .putOpt("engineOil", e.engineOil?.let {
+            JSONObject().putOpt("manufacturer", it.manufacturer).putOpt("liters", it.liters)
+        })
 
     fun entry(o: JSONObject) = DiaryEntry(
         id = o.getString("id"),
@@ -90,6 +93,9 @@ object Codec {
         energyAmount = if (o.has("energyAmount")) o.getDouble("energyAmount") else null,
         detachedObservation = o.optJSONObject("detachedObservation")?.let(::observation),
         visitId = o.optStringOrNull("visitId"), placeName = o.optStringOrNull("placeName"),
+        engineOil = o.optJSONObject("engineOil")?.let {
+            EngineOilDetails(it.optStringOrNull("manufacturer"), it.optDouble("liters").takeIf(Double::isFinite))
+        },
     )
 
     fun plan(p: MaintenancePlan) = JSONObject()

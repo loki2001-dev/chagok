@@ -448,10 +448,23 @@ class DiaryService(
         require(if(visit.place.kind == PlaceKind.FUEL) item == Item.REFUEL else item != Item.REFUEL && item != Item.CHARGE)
         val date = visit.arrivedAt.atZone(zone).toLocalDate()
         require(date <= today())
-        val candidate = if(item == Item.REFUEL) unreviewedCandidates().filter {
-            it.kind == EnergyKind.FUEL && !it.collecting && it.after.receivedAt.atZone(zone).toLocalDate() == date &&
-                it.after.receivedAt >= visit.arrivedAt.minusSeconds(600) && it.after.receivedAt <= visit.lastAt.plusSeconds(1800)
+        val entries = store.entries(visit.vehicleId)
+        fun linkedEntries(candidate: DetectionCandidate) = entries.filter {
+            it.candidateId == candidate.id && it.status != EntryStatus.CANCELLED
+        }
+        val candidate = if(item == Item.REFUEL) pendingCandidates().filter { c ->
+            c.kind == EnergyKind.FUEL && !c.collecting && c.after.receivedAt.atZone(zone).toLocalDate() == date &&
+                c.after.receivedAt >= visit.arrivedAt.minusSeconds(600) && c.after.receivedAt <= visit.lastAt.plusSeconds(1800) &&
+                linkedEntries(c).let { linked -> linked.isEmpty() || (linked.size == 1 && linked.single().let {
+                    it.status == EntryStatus.DRAFT && it.author == user && it.visitId == null &&
+                        it.item == Item.REFUEL && it.performedOn == date
+                }) }
         }.singleOrNull() else null
+        candidate?.let { c -> linkedEntries(c).singleOrNull()?.let { existing ->
+            // Keep the user's date, cost, amount, mileage and notes; attach only visit evidence.
+            return@transaction existing.copy(visitId = id, placeName = visit.place.name, updatedAt = now())
+                .also(store::saveEntry)
+        } }
         val draft = DiaryEntry(id = newId(), vehicleId = profile().id, item = item, performedOn = date,
             createdAt = now(), author = user, status = EntryStatus.DRAFT, cost = null,
             odometer = visit.odometer?.let { FieldEvidence(it.value, "km", Source.VEHICLE, it.receivedAt, it) },

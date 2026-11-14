@@ -36,7 +36,11 @@ enum class VisitState { WATCHING, READY, CONFIRMED, EXCLUDED }
 data class PlaceVisit(val id: String, val vehicleId: String, val user: String, val place: ServicePlace,
     val arrivedAt: Instant, val lastAt: Instant, val odometer: Observation?,
     val state: VisitState = VisitState.WATCHING, val observedSeconds: Long = 0,
-    val hasGap: Boolean = false, val exited: Boolean = false, val linkedEntryId: String? = null)
+    val hasGap: Boolean = false, val exited: Boolean = false, val linkedEntryId: String? = null,
+    // Keep whole seconds for older readers; milliseconds are the accumulation source of truth.
+    val observedMillis: Long = observedSeconds * 1000,
+    val lastObservedAt: Instant = lastAt,
+    val lastMatchedParked: Boolean = true)
 
 /** One writer in VehicleMonitorService. Persist arrivals before ignition/process loss.
  * SDK confidence is not documented as accuracy in metres; do not invent an accuracy conversion.
@@ -50,6 +54,9 @@ class PlaceVisitTracker(private val store: DiaryStore) {
 
     fun sample(vehicle: String, user: String, fix: PlaceFix?, now: Instant, parked: Boolean?, km: Observation?, fuelAllowed: Boolean = true) {
         if (scope != (vehicle to user)) { scope = vehicle to user; previous = null; previousParked = false }
+        // A known departure from P breaks stop recovery even when the location is cached/missing.
+        if (parked == false) store.visits(vehicle).filter { it.user == user && !it.exited && it.lastMatchedParked }
+            .forEach { store.saveVisit(it.copy(lastMatchedParked = false)) }
         if (fix == null || !fix.fresh(now)) {
             previousParked = false; status = "위치 미수신·오래된 위치 · 방문 판단 보류"; return
         }
@@ -57,8 +64,8 @@ class PlaceVisitTracker(private val store: DiaryStore) {
             if(parked != true) previousParked = false
             status = "새 위치 대기"; return
         }
-        val elapsed = previous?.let { Duration.between(it, fix.at).seconds }
-        val continuous = previousParked && parked == true && elapsed != null && elapsed in 1..20
+        val elapsed = previous?.let { Duration.between(it, fix.at).toMillis() }
+        val continuous = previousParked && parked == true && elapsed != null && elapsed in 1..20_000
         previous = fix.at; previousParked = parked == true
         val places = store.places()
         if (places.isEmpty()) { status = "정비소·주유소 목록을 먼저 내려받으세요"; return }
@@ -74,22 +81,30 @@ class PlaceVisitTracker(private val store: DiaryStore) {
         store.transaction {
             val visits = store.visits(vehicle).filter { it.user == user }
             visits.filter { !it.exited }.forEach { v ->
-                // Unknown gear/UX state cannot prove a departure, even if a new location arrives.
-                if (parked != null && distanceMeters(fix.latitude, fix.longitude, v.place.latitude, v.place.longitude) > EXIT_METERS) {
-                    store.saveVisit(v.copy(exited = true, state = if(v.state == VisitState.WATCHING)
-                        if(v.observedSeconds >= MIN_STOP_SECONDS) VisitState.READY else VisitState.EXCLUDED else v.state))
-                } else if (parked == true && match?.id == v.place.id && fix.at > v.lastAt) {
-                    val gap = Duration.between(v.lastAt, fix.at).seconds
-                    // Recovered arrival may be offered as an interrupted observation, never counted as dwell.
-                    val recovered = gap >= RECOVERY_SECONDS
-                    store.saveVisit(v.copy(lastAt = fix.at, hasGap = v.hasGap || gap > 20,
-                        observedSeconds = v.observedSeconds + if(continuous && gap in 1..20) gap else 0,
-                        state = if(v.state == VisitState.WATCHING && (recovered ||
-                            v.observedSeconds + (if(continuous && gap in 1..20) gap else 0) >= MIN_STOP_SECONDS)) VisitState.READY else v.state))
-                }
+                if (fix.at <= v.lastObservedAt) return@forEach
+                val observedGap = Duration.between(v.lastObservedAt, fix.at).toMillis()
+                val matchingStop = parked == true && match?.id == v.place.id
+                val recovered = matchingStop && v.lastMatchedParked && observedGap >= RECOVERY_SECONDS * 1000
+                val additionalMillis = if (continuous && matchingStop && v.lastMatchedParked && observedGap in 1..20_000)
+                    observedGap else 0L
+                val totalMillis = v.observedMillis + additionalMillis
+                // Every fresh fix advances the observation clock, including driving and ambiguity.
+                // This is distinct from lastAt, the last parked fix matching this particular place.
+                val updated = v.copy(lastObservedAt = fix.at, lastMatchedParked = matchingStop,
+                    lastAt = if (matchingStop) fix.at else v.lastAt,
+                    hasGap = v.hasGap || observedGap > 20_000,
+                    observedMillis = totalMillis, observedSeconds = totalMillis / 1000)
+                val departed = parked != null &&
+                    distanceMeters(fix.latitude, fix.longitude, v.place.latitude, v.place.longitude) > EXIT_METERS
+                store.saveVisit(updated.copy(exited = departed, state = when {
+                    v.state != VisitState.WATCHING -> v.state
+                    totalMillis >= MIN_STOP_SECONDS * 1000 || recovered -> VisitState.READY
+                    departed -> VisitState.EXCLUDED
+                    else -> VisitState.WATCHING
+                }))
             }
-            if (match != null && parked == true && visits.none { it.place.id == match.id &&
-                    (!it.exited || it.state == VisitState.READY || it.state == VisitState.WATCHING) }) {
+            // Unanswered historical visits stay in the inbox, but cannot suppress a new arrival.
+            if (match != null && parked == true && visits.none { it.place.id == match.id && !it.exited }) {
                 val freshKm = km?.takeIf { it.value.isFinite() && it.value >= 0 && Duration.between(it.receivedAt, now).seconds in 0..45 }
                 store.saveVisit(PlaceVisit(UUID.randomUUID().toString(), vehicle, user, match, fix.at, fix.at, freshKm))
             }
