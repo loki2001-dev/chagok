@@ -1,0 +1,6 @@
+
+io.chagok.app.FirstRunExperienceTest:.....
+
+Time: 41.299
+
+OK (5 tests)

@@ -17,7 +17,7 @@ internal enum class BayJob(val label: String) {
     companion object {
         fun forItem(item: Item) = when (item) {
             Item.TIRE_REPLACE -> TIRE
-            Item.WIPER_CHECK -> WIPER
+            Item.WIPER_CHECK, Item.WIPER_REPLACE -> WIPER
             Item.ENGINE_OIL -> OIL
             Item.DRIVE_BELT -> DRIVE_BELT
             Item.TRANSMISSION_OIL -> TRANSMISSION_FLUID
@@ -26,7 +26,7 @@ internal enum class BayJob(val label: String) {
             Item.CABIN_FILTER -> CABIN_FILTER
             Item.BATTERY_12V_REPLACE -> BATTERY_REPLACE
             Item.TIRE_ROTATION -> ROTATION
-            Item.BRAKE_PAD_CHECK -> BRAKES
+            Item.BRAKE_PAD_CHECK, Item.BRAKE_PAD_REPLACE -> BRAKES
             Item.BATTERY_12V_CHECK -> BATTERY
             Item.WASHER_REFILL -> WASHER
             Item.COOLANT, Item.OTHER -> GENERAL

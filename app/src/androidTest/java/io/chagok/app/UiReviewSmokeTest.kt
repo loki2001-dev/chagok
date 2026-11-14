@@ -116,7 +116,7 @@ class UiReviewSmokeTest {
 
     @Test fun companionCollectionAndMenus() {
         ActivityScenario.launch(CompanionHarnessActivity::class.java).use { s ->
-            s.onActivity { a ->a.inject(MotionSnapshot(speedMps=0f,restricted=false,animationAllowed=true));a.scene.pause();all(a.window.decorView).filterIsInstance<android.widget.TextView>().single { it.text.toString()=="친구 0/10" }.performClick();assertTrue(a.showingCollection) }
+            s.onActivity { a ->a.inject(MotionSnapshot(speedMps=0f,restricted=false,animationAllowed=true));a.scene.pause();a.openCollection();assertTrue(a.showingCollection) }
             onView(withText("만난 친구들")).check { view,error->if(error!=null)throw error;capture(view.rootView,"collection") }
             s.onActivity { a -> all(a.window.decorView).filterIsInstance<android.widget.TextView>().single { it.text.toString()=="주행으로" }.performClick();a.scene.pause();all(a.window.decorView).filterIsInstance<android.widget.TextView>().single { it.text.toString()=="메뉴" }.performClick() };popup("차량 스킨","companion-menu")
             tap("차량 스킨");popup("차량 스킨","skins");tap("닫기")

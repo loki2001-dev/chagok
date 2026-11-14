@@ -1,0 +1,8 @@
+
+io.chagok.app.PermissionDialogDeviceTest:INSTRUMENTATION_STATUS: chagok_permission=ALLOW_MICROPHONE
+INSTRUMENTATION_STATUS_CODE: 2
+.
+
+Time: 10.405
+
+OK (1 test)

@@ -47,6 +47,12 @@
 
 앱의 기본 화면은 **주행 동반 화면**입니다. 정차했다고 차량 일지로 자동 이동하지 않습니다. 일지를 보고 싶을 때 하단의 **차량 일지 · 관리**를 열고, 다시 주행 화면으로 돌아옵니다.
 
+처음 실행하면 정차 상태에서 **차량 종류 선택 → 자동 기록 안내 확인 → 자동 기록 시작**을 한 화면에서 진행합니다. 시작하기 전에는 자동 기록을 켜지 않습니다. 마이크 권한은 **말로 기록 확인**이나 **말하기 시작**을 직접 선택할 때, 위치 권한은 방문 감지를 켤 때 요청합니다. 정비 주기와 장소 목록은 나중에 설정할 수 있습니다. 기존 사용자의 차량 설정과 자동 기록 켜짐·꺼짐 선택은 유지합니다.
+
+주행 화면에는 **오늘의 운행 횟수·관측 거리**와 **확인할 기록 수**가 표시됩니다. 정차 후 하단의 **확인할 기록 N건**을 누르면 검토 화면으로 바로 연결됩니다. 친구 수집은 **메뉴 → 만난 친구들**에서 볼 수 있으며, 화면을 차지하던 수집 진행률 대신 자동으로 남긴 기록을 먼저 보여 줍니다. 거리를 받지 못한 운행은 0km로 표시하지 않고 누락을 알립니다.
+
+[첫 실행·첫 화면의 최신 캡처와 검증](doc/design/first-run-ux/README.md)에서 이번 구성을 확인할 수 있습니다. 위 소개 시나리오의 11월 14일 캡처는 변경 전 화면입니다.
+
 ## 1. 화면 뒤에서도 이어지는 자동 운행 기록
 
 `VehicleMonitorService`가 알림을 표시하는 포그라운드 서비스로 차량 신호를 관측합니다. 내비게이션을 크게 열거나 차곡 화면을 벗어나도 서비스가 실행 중이면 수집이 이어집니다. 화면과 기록 수집의 수명을 분리했습니다.
@@ -351,7 +357,8 @@ flowchart TD
 | 글꼴·색상·공통 카드·버튼 | [Ui.kt](app/src/main/java/io/chagok/app/ui/Ui.kt), [font](app/src/main/res/font) |
 | 기록·후보·수정·공유 규칙 | [DiaryService.kt](app/src/main/java/io/chagok/app/domain/DiaryService.kt) |
 | 잔량 상승 감지 | [Detection.kt](app/src/main/java/io/chagok/app/domain/Detection.kt) |
-| 주기·비용·학습·발화 해석 | [domain](app/src/main/java/io/chagok/app/domain) |
+| 발화 해석·관리 주기 계산 규칙 | [core](core) 모듈(순수 Kotlin). 앱 쪽 연결층은 [UtteranceParser.kt](app/src/main/java/io/chagok/app/domain/UtteranceParser.kt)·[Schedule.kt](app/src/main/java/io/chagok/app/domain/Schedule.kt) |
+| 비용·학습·앱 항목 체계 | [domain](app/src/main/java/io/chagok/app/domain) |
 | 저장 형식·마이그레이션 | [SqliteStore.kt](app/src/main/java/io/chagok/app/data/SqliteStore.kt), [Codec.kt](app/src/main/java/io/chagok/app/data/Codec.kt) |
 | SDK 어댑터·속도·방향지시등·와이퍼 | [vehicle](app/src/main/java/io/chagok/app/vehicle) |
 | 음성 인식·오디오 처리 | [SpeechInput.kt](app/src/main/java/io/chagok/app/speech/SpeechInput.kt) |
@@ -377,6 +384,7 @@ UI를 바꿀 때도 도메인의 “초안은 비용에서 제외”, “관측 
 | Pleos FusedLocation | 1.1.3 | 선택적 정비소·주유소 방문 후보 감지 |
 | Pleos NaviHelper | 3.0.5 | **smoke 변형에만** 포함되는 SDK 가능 범위 조사 |
 | AndroidX Core | 1.13.1 | Android 호환 기능·FileProvider |
+| kotlinx-coroutines-core | 1.9.0 | `:core` 모듈 의존성(일지 엔진의 이벤트 처리). 앱 화면은 직접 쓰지 않는다 |
 | JUnit | 4.13.2 | JVM 테스트 |
 | org.json | 20240303 | JVM 테스트에서 Android 스텁 대신 JSON 실행 |
 | AndroidX Test Runner / Core | 1.6.2 / 1.6.1 | 기기 테스트 실행·ActivityScenario |
@@ -478,6 +486,9 @@ maven { url = uri("https://nexus-playground.pleos.ai/repository/maven-releases/"
 ```powershell
 # JVM 로직 테스트: 에뮬레이터 없이 실행 가능
 .\gradlew.bat :app:testSmokeUnitTest --console=plain
+
+# 일지 규칙 엔진(core) 테스트: Android SDK 없이도 실행 가능
+.\gradlew.bat :core:test --console=plain
 
 # 일반 앱 APK
 .\gradlew.bat :app:assembleDebug --console=plain

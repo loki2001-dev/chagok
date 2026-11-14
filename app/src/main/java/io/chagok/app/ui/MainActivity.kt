@@ -409,6 +409,10 @@ class MainActivity : Activity() {
     }
 
     private fun openVisitDraft(intent: android.content.Intent) {
+        if (intent.getBooleanExtra("openReview", false)) {
+            screen = Screen.CANDIDATES
+            intent.removeExtra("openReview")
+        }
         val id = intent.getStringExtra("visitDraft") ?: return
         service.entry(id)?.takeIf { it.author == user && it.status == EntryStatus.DRAFT && it.visitId != null }?.let {
             activeDraftId = it.id; screen = Screen.INPUT

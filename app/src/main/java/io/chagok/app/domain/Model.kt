@@ -70,9 +70,12 @@ enum class Item(val label: String, val kind: ItemKind, val powertrains: Set<Powe
     TIRE_ROTATION("타이어 위치 교환", ItemKind.REPLACE, Powertrain.entries.toSet()),
     TIRE_REPLACE("타이어 교체", ItemKind.OTHER, Powertrain.entries.toSet()),
     BRAKE_PAD_CHECK("브레이크 패드 점검", ItemKind.INSPECT, Powertrain.entries.toSet()),
+    /** 교체 기록. 기획서대로 패드·와이퍼는 교체 주기 대신 점검 일정부터 두므로 주기 관리 대상(REPLACE)이 아니다 */
+    BRAKE_PAD_REPLACE("브레이크 패드 교체", ItemKind.OTHER, Powertrain.entries.toSet()),
     BATTERY_12V_CHECK("12V 배터리 점검", ItemKind.INSPECT, Powertrain.entries.toSet()),
     BATTERY_12V_REPLACE("12V 배터리 교체", ItemKind.REPLACE, Powertrain.entries.toSet()),
     WIPER_CHECK("와이퍼 점검", ItemKind.INSPECT, Powertrain.entries.toSet()),
+    WIPER_REPLACE("와이퍼 교체", ItemKind.OTHER, Powertrain.entries.toSet()),
     WASHER_REFILL("워셔액 보충", ItemKind.REFILL, Powertrain.entries.toSet()),
     REFUEL("주유", ItemKind.ENERGY, setOf(Powertrain.ICE, Powertrain.HYBRID)),
     CHARGE("충전", ItemKind.ENERGY, setOf(Powertrain.EV)),

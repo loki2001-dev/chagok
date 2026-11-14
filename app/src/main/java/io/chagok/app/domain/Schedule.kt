@@ -1,7 +1,17 @@
 package io.chagok.app.domain
 
+import ai.chagok.core.diary.EntryType
+import ai.chagok.core.diary.MaintenanceItem
+import ai.chagok.core.model.EvidenceSource
+
+import ai.chagok.core.schedule.ScheduleConfig
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import ai.chagok.core.diary.DiaryEntry as CoreEntry
+import ai.chagok.core.diary.EntryStatus as CoreStatus
+import ai.chagok.core.model.FieldEvidence as CoreEvidence
+import ai.chagok.core.schedule.MaintenancePlan as CorePlan
+import ai.chagok.core.schedule.ScheduleCalculator as CoreSchedule
 
 /** 거리 또는 날짜 조건 하나의 상태 */
 enum class ConditionState(val label: String) {
@@ -81,6 +91,10 @@ object ScheduleCalculator {
                     .thenBy { it.createdAt },
             )
 
+    /**
+     * 기준 기록은 앱 항목 체계로 고르고([basisOf]), 다음 거리·날짜와 도래 판단은 `:core`에 맡긴다.
+     * 임박 기준과 역행 판단(허용 오차 0)은 앱의 기존 값을 그대로 넘긴다.
+     */
     fun evaluate(
         plan: MaintenancePlan,
         entries: List<DiaryEntry>,
@@ -91,15 +105,12 @@ object ScheduleCalculator {
         val basis = basisOf(plan.item, entries)
         val firstFill = plan.item == Item.COOLANT && basis == null
         val kmInterval = if (firstFill) plan.initialKm else plan.intervalKm
-        val months = plan.intervalMonths.takeIf { basis != null }
-        val startDate = basis?.performedOn
-        val basisKm = if (basis == null) reportedServiceKm else basis.odometer?.value
-        val nextKm = if (basisKm != null && kmInterval != null) basisKm + kmInterval else null
-        // plusMonths는 말일을 맞춰 준다: 1월 31일 + 1개월 = 2월 28일(윤년 29일)
-        val nextDate = if (startDate != null && months != null) startDate.plusMonths(months.toLong()) else null
 
+        val basisKm = if (basis == null) reportedServiceKm else basis.odometer?.value
+        val core = CoreSchedule.status(corePlan(plan), basis?.let(::coreBase), currentKm, today, CORE_CONFIG)
+        val nextKm = if (basis == null && basisKm != null && kmInterval != null) basisKm + kmInterval else core.nextKm
         val reversed = basisKm != null && currentKm != null && currentKm < basisKm
-        val remainingKm = if (nextKm != null && currentKm != null && !reversed) nextKm - currentKm else null
+        val remainingKm = if (!reversed && nextKm != null && currentKm != null) nextKm - currentKm else null
         val kmState = when {
             kmInterval == null -> ConditionState.NOT_SET
             nextKm == null || currentKm == null || reversed -> ConditionState.PENDING
@@ -107,16 +118,28 @@ object ScheduleCalculator {
             nextKm - currentKm <= SOON_KM -> ConditionState.SOON
             else -> ConditionState.UPCOMING
         }
-
-        val remainingDays = nextDate?.let { ChronoUnit.DAYS.between(today, it) }
         val dateState = when {
-            months == null -> ConditionState.NOT_SET
-            nextDate == null -> ConditionState.PENDING
-            !today.isBefore(nextDate) -> ConditionState.DUE
-            remainingDays!! <= SOON_DAYS -> ConditionState.SOON
+            plan.intervalMonths == null -> ConditionState.NOT_SET
+            core.nextDate == null -> ConditionState.PENDING
+            core.dateDue -> ConditionState.DUE
+            core.daysLeft!! <= SOON_DAYS -> ConditionState.SOON
             else -> ConditionState.UPCOMING
         }
-
-        return ScheduleStatus(plan, basis, nextKm, nextDate, kmState, dateState, remainingKm, remainingDays, reversed)
+        return ScheduleStatus(plan, basis, nextKm, core.nextDate, kmState, dateState, remainingKm, core.daysLeft, reversed)
     }
+
+    private val CORE_CONFIG = ScheduleConfig(soonKm = SOON_KM, soonDays = SOON_DAYS, regressionToleranceKm = 0.0)
+
+    /** core 계산에는 주기와 설정 정보만 쓰인다. 항목은 표시용이라 가까운 것으로 옮긴다. */
+    private fun corePlan(p: MaintenancePlan) = CorePlan(
+        vehicleId = p.vehicleId, item = MaintenanceItem.OTHER,
+        intervalKm = p.intervalKm?.toDouble(), intervalMonths = p.intervalMonths, source = p.source, setOn = p.setOn,
+    )
+
+    private fun coreBase(e: DiaryEntry) = CoreEntry(
+        id = e.id, vehicleId = e.vehicleId, type = EntryType.MAINTENANCE, item = MaintenanceItem.OTHER,
+        performedOn = e.performedOn, createdAt = e.createdAt, authorId = e.author,
+        odometer = e.odometer?.let { CoreEvidence(it.value, it.unit, EvidenceSource.USER, it.receivedAt) },
+        status = CoreStatus.CONFIRMED, confirmedAt = e.updatedAt,
+    )
 }
