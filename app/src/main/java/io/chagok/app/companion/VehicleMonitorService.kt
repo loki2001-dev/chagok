@@ -16,7 +16,7 @@ import io.chagok.app.vehicle.PleosVehicle
 
 data class MonitorState(val motion: MotionSnapshot = MotionSnapshot(), val kind: EnergyKind? = null,
     val energy: Double? = null, val energyStatus: String = "차량 연결 중", val odometer: Reading = Reading.Unavailable("아직 읽지 않음"),
-    val recordingStatus: String = "기록 연결 확인 중", val enabled: Boolean = true, val trip: DriveTrip? = null, val fuelVisitId: String? = null)
+    val recordingStatus: String = "기록 연결 확인 중", val enabled: Boolean = true, val trip: DriveTrip? = null, val fuelVisitId: String? = null, val roadStatus: String? = null)
 
 /** The single energy tracker survives UI/background transitions. Only local vehicle data is retained. */
 class VehicleMonitorService : Service() {
