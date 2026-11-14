@@ -162,9 +162,13 @@ object Codec {
         .put("place",place(v.place)).put("arrival",v.arrivedAt.toString()).put("last",v.lastAt.toString())
         .putOpt("odometer",v.odometer?.let(::observation)).put("state",v.state.name).put("seconds",v.observedSeconds)
         .put("gap",v.hasGap).put("exited",v.exited).putOpt("linked",v.linkedEntryId)
+        .put("millis",v.observedMillis).put("lastObserved",v.lastObservedAt.toString()).put("matchedParked",v.lastMatchedParked)
     fun visit(o: JSONObject) = PlaceVisit(o.getString("id"),o.getString("vehicle"),o.getString("user"),place(o.getJSONObject("place")),
         Instant.parse(o.getString("arrival")),Instant.parse(o.getString("last")),o.optJSONObject("odometer")?.let(::observation),
-        VisitState.valueOf(o.getString("state")),o.getLong("seconds"),o.getBoolean("gap"),o.getBoolean("exited"),o.optStringOrNull("linked"))
+        VisitState.valueOf(o.getString("state")),o.getLong("seconds"),o.getBoolean("gap"),o.getBoolean("exited"),o.optStringOrNull("linked"),
+        o.optLong("millis",o.getLong("seconds") * 1000),
+        o.optStringOrNull("lastObserved")?.let(Instant::parse) ?: Instant.parse(o.getString("last")),
+        o.optBoolean("matchedParked",true))
 
     private fun JSONObject.optStringOrNull(key: String): String? = if (has(key) && !isNull(key)) getString(key) else null
     private fun JSONArray.objects() = (0 until length()).map { getJSONObject(it) }
