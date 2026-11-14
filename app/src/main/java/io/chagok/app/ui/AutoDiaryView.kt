@@ -5,7 +5,6 @@ import android.view.Gravity
 import android.widget.LinearLayout
 import android.view.ViewGroup.LayoutParams.*
 import io.chagok.app.domain.*
-import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -15,12 +14,40 @@ class AutoDiaryView(private val ui: Ui,private val store: DiaryStore,private val
     private val zone=ZoneId.systemDefault()
     private val clock=DateTimeFormatter.ofPattern("HH:mm").withZone(zone)
     private fun own()=store.trips(diary.profile().id).filter { it.user==user }.sortedByDescending { it.startedAt }
-    fun today(open:()->Unit): View {
-        val list=own().filter { it.startedAt.atZone(zone).toLocalDate()==LocalDate.now() }
-        val km=list.mapNotNull { it.distanceKm }.sum()
-        val distance=if(list.any { it.distanceKm==null })"거리 일부 미수신" else "%.1fkm".format(km)
-        val detail=if(list.isEmpty())"달리면 거리와 시간이 자동으로 남아요" else "${list.size}회 · $distance · 친구 ${list.flatMap { it.friends }.toSet().size}명"
-        return ui.card(ui.actionRow("오늘의 드라이브",detail,Icon.CAR,open))
+    fun today(open: () -> Unit): View {
+        val trips = own().filter { it.startedAt.atZone(zone).toLocalDate() == diary.today() }
+        val distances = trips.mapNotNull { it.distanceKm }
+        val distance = when {
+            trips.isEmpty() -> "운행 없음"
+            distances.isEmpty() -> "거리 미수신"
+            else -> "%,.1f km".format(distances.sum())
+        }
+        val seconds = trips.sumOf { it.movingSeconds }
+        val duration = when {
+            seconds >= 3600 -> "${seconds / 3600}시간 ${seconds % 3600 / 60}분"
+            seconds >= 60 -> "${seconds / 60}분"
+            else -> "${seconds}초"
+        }
+        return ui.card(tint = Palette.accent).apply {
+            addView(LinearLayout(context).apply {
+                gravity = Gravity.CENTER_VERTICAL
+                addView(ui.withIcon(ui.text("오늘의 드라이브", 22f, Palette.onAccent, true), Icon.CAR),
+                    LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f))
+                addView(ui.icon(Icon.CHEVRON, 22, Palette.onAccent))
+            })
+            addView(ui.text(distance, if (distances.isEmpty()) 36f else 52f, Palette.onAccent, true))
+            if (trips.isNotEmpty()) {
+                val friends = trips.flatMap { it.friends }.toSet().size
+                val detail = "${trips.size}회 운행 · 관측 이동 $duration" + if (friends > 0) " · 친구 ${friends}명" else ""
+                addView(ui.text(detail, 22f, Palette.onAccent))
+                if (distances.size < trips.size || trips.any { it.hasGap }) {
+                    addView(ui.text("일부 구간의 차량 신호를 받지 못했어요", 20f, Palette.onAccent))
+                }
+            }
+            background = ui.touch(Palette.accent, 20)
+            isFocusable = true
+            setOnClickListener { open() }
+        }
     }
     fun history(month: YearMonth,previous:()->Unit,next:()->Unit): View = ui.column(16).apply {
         addView(ui.text("거리·시간은 관측한 구간만 남겨요. 위치는 수집하지 않아요.",22f,Palette.sub))

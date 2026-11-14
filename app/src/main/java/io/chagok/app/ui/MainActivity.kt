@@ -31,6 +31,7 @@ import io.chagok.app.domain.DiaryService
 import io.chagok.app.domain.DiaryService.Companion.km
 import io.chagok.app.domain.DiaryService.Companion.won
 import io.chagok.app.domain.EnergyKind
+import io.chagok.app.domain.EngineOilDetails
 import io.chagok.app.domain.EntryStatus
 import io.chagok.app.domain.Item
 import io.chagok.app.domain.ItemKind
@@ -347,9 +348,10 @@ class MainActivity : Activity() {
     // ------------------------------------------------------------------ 01 오늘의 관리
 
     private fun home() {
-        content.addView(AutoDiaryView(ui,store,service,user).today { month=YearMonth.now();go(Screen.DRIVES) })
-        content.addView(dashboard().home(currentKm(), { go(Screen.SCHEDULE) }, { go(Screen.CANDIDATES) },
-            { go(Screen.DIARY) }, { go(Screen.STATS) }, ::openEntry))
+        val driveCard = AutoDiaryView(ui, store, service, user).today { month=YearMonth.now();go(Screen.DRIVES) }
+        content.addView(dashboard().home(currentKm(), driveCard, { go(Screen.SCHEDULE) },
+            { item -> planDialog(item, null) }, { go(Screen.CANDIDATES) },
+            { go(Screen.DIARY) }, { month = YearMonth.from(service.today()); go(Screen.STATS) }, ::openEntry))
         val changes = service.changesSince(user)
         if (changes.isNotEmpty()) content.addView(ui.card(
             ui.text("함께 쓰는 차량의 새 기록 ${changes.size}건", 24f, bold = true),
@@ -584,6 +586,13 @@ class MainActivity : Activity() {
             card.addView(row)
         }
         if (d.item.kind == ItemKind.ENERGY) card.addView(ui.field(if(d.item==Item.CHARGE)"충전량 · kWh" else "주유량 · L",amountInput))
+        if (d.item == Item.ENGINE_OIL) {
+            val manufacturer = rememberedInput("${d.id}.oilManufacturer", "제조사", d.engineOil?.manufacturer, false)
+            val liters = rememberedInput("${d.id}.oilLiters", "사용량 L", d.engineOil?.liters?.toString(), true).apply {
+                inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+            }
+            card.addView(dashboard().pair(ui.field("엔진오일 제조사", manufacturer), ui.field("엔진오일 사용량 · L", liters)))
+        }
         card.addView(ui.field("메모 · 선택",memoInput))
         d.detachedObservation?.let { card.addView(ui.label("이전 차량 관측 ${km(it.value)}는 참고값으로 보존했어요. 당시 km를 확인해 주세요.")) }
         d.candidateId?.let { card.addView(ui.button("후보 연결 해제") { service.unlinkCandidate(d.id); render() }) }
@@ -599,6 +608,8 @@ class MainActivity : Activity() {
         service.replaceItem(d.id, item)
         editValues.remove("${d.id}.amount")
         editValues.remove("${d.id}.wheels")
+        editValues.remove("${d.id}.oilManufacturer")
+        editValues.remove("${d.id}.oilLiters")
         render()
     }
 
@@ -607,7 +618,11 @@ class MainActivity : Activity() {
         val updated = runCatching {
             service.updateEntry(d.id, d.performedOn, number(kmInput.text.toString(), "주행거리"),
                 money(costInput.text.toString()), number(editValues["${d.id}.amount"].orEmpty(), "수량"),
-                editValues["${d.id}.memo"] ?: d.memo, wheels)
+                editValues["${d.id}.memo"] ?: d.memo, wheels,
+                engineOil = if (d.item == Item.ENGINE_OIL) EngineOilDetails(
+                    editValues["${d.id}.oilManufacturer"] ?: d.engineOil?.manufacturer,
+                    number(editValues["${d.id}.oilLiters"] ?: d.engineOil?.liters?.toString().orEmpty(), "엔진오일 사용량"),
+                ) else null)
         }
         if (updated.isFailure) { message = updated.exceptionOrNull()?.message; render(); return }
         when (val r = service.confirm(d.id, allowDuplicate)) {
@@ -759,6 +774,11 @@ class MainActivity : Activity() {
             ui.divider(),
             ui.text(if (e.candidateId != null) "자동 감지한 후보를 확인한 기록이에요." else "직접 남긴 기록이에요.", 22f, Palette.sub))
         e.energyAmount?.let { details.addView(ui.text("${if (e.item == Item.CHARGE) "충전량" else "주유량"} $it ${if (e.item == Item.CHARGE) "kWh" else "L"}", 24f)) }
+        if (e.item == Item.ENGINE_OIL) {
+            details.addView(ui.text("엔진오일 제조사 · ${e.engineOil?.manufacturer ?: "미입력"}", 22f))
+            val liters = e.engineOil?.liters?.let { "$it L" } ?: "미입력"
+            details.addView(ui.text("엔진오일 사용량 · $liters", 22f))
+        }
         if (e.wheels.isNotEmpty()) details.addView(ui.text(e.wheels.joinToString { it.label }, 22f))
         details.addView(ui.text("메모",22f,bold=true))
         details.addView(ui.text(e.memo?.takeIf { it.isNotBlank() } ?: "남긴 메모가 없어요.", 22f, Palette.sub))
@@ -778,6 +798,10 @@ class MainActivity : Activity() {
             inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
         }
         val memo = ui.input("메모", e.memo, false)
+        val oilManufacturer = ui.input("제조사", e.engineOil?.manufacturer, false)
+        val oilLiters = ui.input("사용량 L", e.engineOil?.liters?.toString(), true).apply {
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+        }
         val dateButton = ui.button("날짜: $date") {}
         dateButton.setOnClickListener { pickDate(date) { picked ->
             if (picked != date && e.odometer?.source == Source.VEHICLE) kmIn.setText("")
@@ -788,6 +812,7 @@ class MainActivity : Activity() {
             addView(dateButton); addView(ui.label("날짜 변경 시 자동 km는 해제돼요. 당시 값을 입력해 주세요."))
             addView(dashboard().pair(ui.field("주행거리 · km",kmIn),ui.field("비용 · 원",cost)))
             if (e.item.kind == ItemKind.ENERGY) addView(ui.field(if(e.item==Item.CHARGE)"충전량 · kWh" else "주유량 · L",amount))
+            if (e.item == Item.ENGINE_OIL) addView(dashboard().pair(ui.field("엔진오일 제조사", oilManufacturer), ui.field("엔진오일 사용량 · L", oilLiters)))
             addView(ui.field("메모 · 선택",memo))
             if (e.item == Item.TIRE_REPLACE) Wheel.entries.forEach { w ->
                 addView(ui.checkbox(w.label,w in wheels).apply {
@@ -803,7 +828,10 @@ class MainActivity : Activity() {
         }
         dialog("${e.item.label} 기록 수정", body) {
             service.updateEntry(e.id, date, number(kmIn.text.toString(), "주행거리"), money(cost.text.toString()),
-                number(amount.text.toString(), "수량"), memo.text.toString(), wheels)
+                number(amount.text.toString(), "수량"), memo.text.toString(), wheels,
+                engineOil = if (e.item == Item.ENGINE_OIL) EngineOilDetails(
+                    oilManufacturer.text.toString(), number(oilLiters.text.toString(), "엔진오일 사용량"),
+                ) else null)
             message = "기록을 수정했어요. 비용과 일정을 다시 계산했어요."
             render()
         }
@@ -908,7 +936,7 @@ class MainActivity : Activity() {
         val urgent = ordered.count { it.state == ScheduleState.DUE || it.state == ScheduleState.SOON }
         content.addView(ui.card(ui.text(if (urgent > 0) "먼저 살펴볼 관리 ${urgent}건" else "다음 교환·점검을 미리 준비해요", 28f, bold = true),
             ui.text("날짜와 거리 중 먼저 도래하는 기준으로 알려드려요. 주기는 차량 매뉴얼에 맞춰 설정해 주세요.", 22f, Palette.sub)))
-        val items = service.items().filter { it.kind == ItemKind.REPLACE || it.kind == ItemKind.INSPECT }
+        val items = service.maintenanceItems()
             .sortedBy { item -> ordered.indexOfFirst { it.plan.item == item }.let { if (it < 0) Int.MAX_VALUE else it } }
         items.forEach { item ->
             val s = statuses[item]

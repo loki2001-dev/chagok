@@ -24,7 +24,7 @@ import java.time.LocalDate
 
 /** 도메인 객체 ↔ JSON. 저장 형식이 바뀌면 [VERSION]을 올린다 */
 object Codec {
-    const val VERSION = 4
+    const val VERSION = 5
 
     fun profile(p: VehicleProfile) = JSONObject()
         .put("id", p.id).put("name", p.name).put("powertrain", p.powertrain.name)

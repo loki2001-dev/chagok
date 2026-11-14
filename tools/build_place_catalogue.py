@@ -19,10 +19,8 @@ def convert(path, kind, encoding='utf-8-sig'):
         for row in csv.DictReader(stream):
             def field(*names):
                 return next((row[n].strip() for n in names if row.get(n) and row[n].strip()), '')
-            # Public exports use both padded and unpadded numeric status codes.
+            # Repair standard: 1 = operating, 2 = closed, 3 = suspended.
             state = field('영업상태', '영업상태명')
-            if state.isdigit():
-                state = str(int(state))
             if state and state not in ('1', '영업', '정상', '영업/정상'):
                 skipped += 1
                 continue

@@ -95,6 +95,14 @@ class UtteranceParser(private val today: () -> LocalDate) {
         t.contains("워셔") -> Item.WASHER_REFILL
         t.contains("타이어") && (t.contains("위치") || t.contains("로테이션")) -> Item.TIRE_ROTATION
         t.contains("타이어") && Regex("교체|갈았|갈아|바꿨|바꾸|새로").containsMatchIn(t) -> Item.TIRE_REPLACE
+        t.contains("드라이브벨트") -> Item.DRIVE_BELT
+        Regex("(변속기|미션)오일").containsMatchIn(t) -> Item.TRANSMISSION_OIL
+        Regex("브레이크(오일|액)").containsMatchIn(t) -> Item.BRAKE_FLUID
+        t.contains("점화코일") -> Item.IGNITION_COIL
+        t.contains("점화플러그") -> Item.SPARK_PLUG
+        t.contains("에어컨필터") -> Item.CABIN_FILTER
+        Regex("(12[vV]|12볼트|보조)배터리").containsMatchIn(t) &&
+            Regex("교체|교환|갈았|갈아|바꿨|바꾸").containsMatchIn(t) -> Item.BATTERY_12V_REPLACE
         t.contains("엔진오일") -> Item.ENGINE_OIL
         t.contains("오일") && !Regex("미션|변속|브레이크|기어").containsMatchIn(t) -> Item.ENGINE_OIL
         t.contains("브레이크") && t.contains("패드") && CHECK_VERB.containsMatchIn(t) -> Item.BRAKE_PAD_CHECK
