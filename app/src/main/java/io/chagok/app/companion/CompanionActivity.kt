@@ -167,6 +167,7 @@ open class CompanionActivity : Activity() {
         super.onResume(); resumed=true
         val currentUser=store.setting("user")?:"나"
         if(currentUser!=user){
+            scene.serviceVisit.cancel()
             conversation.clear();syncQuestion();user=currentUser;diary.selectUser(user);scene.director.active=null
             scene.skin=runCatching{CarSkin.valueOf(store.setting("companion.skin/$user")?:"RACER")}.getOrDefault(CarSkin.RACER)
         }
@@ -176,6 +177,7 @@ open class CompanionActivity : Activity() {
     }
     override fun onPause() {
         resumed=false;speechAttempt++;handler.removeCallbacksAndMessages(null);scene.pause();speech.cancel();listening=false
+        scene.serviceVisit.cancel()
         if(conversation.asking){conversation.defer();syncQuestion()}
         monitor.close();dialog?.dismiss();super.onPause()
     }
@@ -189,6 +191,7 @@ open class CompanionActivity : Activity() {
     }
     protected fun applyMonitorState(value:MonitorState) {
         state=value;scene.motion=value.motion
+        if(!state.enabled)scene.serviceVisit.cancel()
         if(visitDialog && (state.motion.restricted || state.motion.parkGear != true || state.motion.speedMps?.let { kotlin.math.abs(it) < .3f } != true)) dialog?.dismiss()
         if(!parked){
             if(conversation.asking && deferQuestionsWhileMoving) { speech.cancel();listening=false;conversation.defer();questionAt=SystemClock.elapsedRealtime();syncQuestion() }
@@ -218,7 +221,8 @@ open class CompanionActivity : Activity() {
             if(now-checkedAt>=1000){
                 checkedAt=now
                 val candidates=diary.pendingCandidates();pendingCount=candidates.size
-                if(automaticQuestions&&state.enabled&&!scene.preview&&!showingCollection&&!conversation.asking&&conversation.stage==EnergyConversation.Stage.IDLE){
+                syncServiceVisit()
+                if(automaticQuestions&&state.enabled&&!scene.preview&&!showingCollection&&scene.serviceVisit.frame==null&&!conversation.asking&&conversation.stage==EnergyConversation.Stage.IDLE){
                     val audio=getSystemService(android.media.AudioManager::class.java)
                     val safe = parked && state.motion.parkGear == true && state.motion.speedMps?.let { kotlin.math.abs(it) < .3f } == true
                     val queue = diary.questionQueue(user)
@@ -239,6 +243,7 @@ open class CompanionActivity : Activity() {
             if(conversation.asking&&now-questionAt>=20_000){speech.cancel();listening=false;conversation.defer();questionAt=now;syncQuestion()}
             if(conversation.stage==EnergyConversation.Stage.FINISHED&&now-questionAt>=5000){conversation.clear();syncQuestion()}
             footer.text=footerMessage(when{
+                scene.serviceVisit.frame!=null->"${scene.serviceVisit.frame!!.caption}\n방문 기념 연출 · 실제 이용 내역은 확인 후 기록해요."
                 scene.preview->"미리보기 중이에요.\n친구는 실제 기록에 남지 않아요."
                 conversation.asking->if(listening)"답변을 듣고 있어요.\n금액은 확인한 뒤 기록해요." else "음성 연결을 확인하고 있어요.\n응답이 없으면 초안으로 남겨요."
                 toastUntil>now->toastText
@@ -249,6 +254,30 @@ open class CompanionActivity : Activity() {
             })
             handler.postDelayed(this,200)
         }
+    }
+    private fun serviceVisitKey(visit: PlaceVisit) = "companion.service-visit/${visit.vehicleId}/${visit.user}/${visit.id}"
+    private fun syncServiceVisit() {
+        if(scene.preview)return
+        if(!state.enabled || store.setting(PlaceVisitTracker.ENABLED)!="true" || !ServiceVisitAnimation.safe(state.motion)) {
+            scene.serviceVisit.cancel();return
+        }
+        val profile=diary.profile()
+        val now=Instant.now()
+        val current=store.visits(profile.id).filter {
+            ServiceVisitAnimation.eligible(it,profile.id,user,now,Item.REFUEL.availableFor(profile.powertrain))
+        }
+        val active=scene.serviceVisit.frame
+        if(active!=null) {
+            if(current.singleOrNull()?.id!=active.visitId)scene.serviceVisit.cancel()
+            return
+        }
+        if(showingCollection || conversation.asking || dialog?.isShowing==true)return
+        // One unambiguous current stop only; old unanswered candidates belong to the inbox.
+        val visit=current.singleOrNull()?:return
+        if(store.setting(serviceVisitKey(visit))=="true")return
+        // Persist before starting so rotation/process recreation cannot replay the same arrival.
+        store.saveSetting(serviceVisitKey(visit),"true")
+        scene.serviceVisit.begin(visit.id,visit.place.kind)
     }
     private fun askedKey(id:String)="companion.asked/${diary.profile().id}/$user/$id"
     fun beginQuestion(candidateId:String):Boolean {
@@ -315,22 +344,26 @@ open class CompanionActivity : Activity() {
         updateStatus()
     }
     private fun showMenu(){
-        val options=if(scene.preview)arrayOf("다음 만남", "급가속", "왼쪽 / 오른쪽", "비 효과", "미리보기 끝내기")
+        val options=if(scene.preview)arrayOf("다음 만남", "급가속", "왼쪽 / 오른쪽", "비 효과", "미리보기 끝내기", "주유소 방문", "정비소 방문")
             else arrayOf("차량 스킨", "일지·차량 관리", "만난 친구들", "미뤄둔 질문 이어가기", "주행 연출 미리보기", "차량·음성 권한", if(store.setting(RecordingStartup.ENABLED)=="false")"자동 기록 켜기" else "자동 기록 종료", if(diary.questionQueue(user).muted())"오늘 질문 다시 받기" else "오늘은 묻지 않기")
         dialog=AlertDialog.Builder(this).setTitle(if(scene.preview)"주행 연출 미리보기"else "차곡").setItems(options){_,index->
             if(!parked)return@setItems
             if(scene.preview){when(index){
-                0->{val next=(Encounters.all.indexOf(scene.director.active?.scene)+1)%Encounters.all.size;scene.begin(Encounters.all[next],true)}
-                1->{scene.previewSpeed=85f;scene.previewAcceleration=3f;handler.postDelayed({scene.previewAcceleration=0f},2500)}
-                2->scene.previewTurn=if(scene.previewTurn<0)1 else -1
+                0->{scene.serviceVisit.cancel();scene.previewSpeed=45f;val next=(Encounters.all.indexOf(scene.director.active?.scene)+1)%Encounters.all.size;scene.begin(Encounters.all[next],true)}
+                1->{scene.serviceVisit.cancel();scene.previewSpeed=85f;scene.previewAcceleration=3f;handler.postDelayed({scene.previewAcceleration=0f},2500)}
+                2->{scene.serviceVisit.cancel();scene.previewSpeed=45f;scene.previewTurn=if(scene.previewTurn<0)1 else -1}
                 3->scene.previewRain=if(scene.previewRain>.1f)0f else 1f
-                4->{scene.preview=false;scene.director.active=null;scene.director.remainingSeconds=180f;scene.director.scenery=Scenery.CITY}
+                4->{scene.serviceVisit.cancel();scene.preview=false;scene.director.active=null;scene.director.remainingSeconds=180f;scene.director.scenery=Scenery.CITY}
+                5,6->{
+                    if(scene.previewService(if(index==5)PlaceKind.FUEL else PlaceKind.REPAIR))hideCollection()
+                    else Toast.makeText(this,"P단 정차 신호를 확인한 뒤 미리 볼 수 있어요",Toast.LENGTH_SHORT).show()
+                }
             }}else when(index){
                 0->showSkins()
                 1->startActivity(Intent(this,MainActivity::class.java))
                 2->showCollection()
                 3->{conversation.clear();val candidate=diary.pendingCandidates().firstOrNull();if(candidate!=null)beginQuestion(candidate.id)else Toast.makeText(this,"미뤄둔 질문이 없어요",Toast.LENGTH_SHORT).show()}
-                4->{speech.cancel();conversation.defer();conversation.clear();syncQuestion();hideCollection();scene.preview=true;scene.previewSpeed=45f;scene.previewAcceleration=0f;scene.begin(Encounters.all.first(),true)}
+                4->{scene.serviceVisit.cancel();speech.cancel();conversation.defer();conversation.clear();syncQuestion();hideCollection();scene.preview=true;scene.previewSpeed=45f;scene.previewAcceleration=0f;scene.begin(Encounters.all.first(),true)}
                 5->requestVehiclePermissions()
                 6->{val enable=store.setting(RecordingStartup.ENABLED)=="false";store.saveSetting(RecordingStartup.ENABLED,enable.toString());monitor.close();if(!enable)stopService(Intent(this,VehicleMonitorService::class.java));monitor.open()}
                 7->{val queue=diary.questionQueue(user);if(queue.muted())queue.unmute() else {queue.muteToday();speech.cancel();conversation.defer();syncQuestion()}}
@@ -348,5 +381,5 @@ open class CompanionActivity : Activity() {
         });super.onSaveInstanceState(outState)
     }
     @Deprecated("Android framework back dispatch")
-    override fun onBackPressed(){when{showingCollection->hideCollection();scene.preview->{scene.preview=false;scene.director.active=null;updateStatus()};else->super.onBackPressed()}}
+    override fun onBackPressed(){when{showingCollection->hideCollection();scene.preview->{scene.serviceVisit.cancel();scene.preview=false;scene.director.active=null;updateStatus()};else->super.onBackPressed()}}
 }
