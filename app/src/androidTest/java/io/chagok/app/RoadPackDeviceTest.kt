@@ -17,6 +17,29 @@ import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 
 class RoadPackDeviceTest {
+    @Test fun v5DiarySurvivesRoadStatisticsUpgrade() {
+        val context=InstrumentationRegistry.getInstrumentation().targetContext
+        check(context.packageName.endsWith(".roadprobe") || context.packageName.endsWith(".smoke"))
+        val name="road-upgrade-${java.util.UUID.randomUUID()}.db"
+        val file=context.getDatabasePath(name)
+        file.parentFile!!.mkdirs()
+        val profile=io.chagok.app.domain.VehicleProfile("existing-car","기존 일지",io.chagok.app.domain.Powertrain.ICE)
+        android.database.sqlite.SQLiteDatabase.openOrCreateDatabase(file,null).use { db ->
+            db.execSQL("CREATE TABLE doc (kind TEXT NOT NULL, id TEXT NOT NULL, owner TEXT, json TEXT NOT NULL, PRIMARY KEY(kind,id))")
+            db.execSQL("CREATE INDEX doc_owner ON doc(kind,owner)")
+            db.execSQL("INSERT INTO doc(kind,id,owner,json) VALUES(?,?,?,?)",arrayOf("profile","current",null,io.chagok.app.data.Codec.profile(profile).toString()))
+            db.version=5
+        }
+        val store=io.chagok.app.data.SqliteStore(context,name)
+        try {
+            assertEquals(profile,store.profile())
+            val at=Instant.parse("2026-11-15T00:00:00Z")
+            RoadUsageRecorder(store).sample(profile.id,at,10f,true,null,null)
+            assertEquals(1,store.roadUsage(profile.id).size)
+            assertEquals(profile,store.profile())
+        } finally { store.close();context.deleteDatabase(name) }
+    }
+
     @Test fun roadStatisticsSurviveSqliteReopenWithoutReplay() {
         val context=InstrumentationRegistry.getInstrumentation().targetContext
         check(context.packageName.endsWith(".roadprobe") || context.packageName.endsWith(".smoke"))
