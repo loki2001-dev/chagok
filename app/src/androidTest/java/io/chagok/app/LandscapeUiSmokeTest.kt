@@ -49,6 +49,8 @@ class LandscapeUiSmokeTest {
                     Item.BRAKE_PAD_CHECK to today.minusMonths(12).minusDays(1),
                     Item.WASHER_REFILL to today.plusDays(10).minusMonths(12),
                     Item.TIRE_ROTATION to today.minusMonths(6),
+                    Item.CABIN_FILTER to today.minusMonths(8),
+                    Item.BATTERY_12V_REPLACE to today.minusMonths(3),
                 )) {
                     store.saveEntry(DiaryEntry("summary-$item", diary.profile().id, item, date,
                         Instant.now(), null, null, status = EntryStatus.CONFIRMED, author = "나"))
@@ -70,7 +72,9 @@ class LandscapeUiSmokeTest {
                         assertEquals(Palette.danger, labels.single { it.text.endsWith("% · 임박") }.currentTextColor)
                         assertTrue(labels.any { it.text.startsWith("보충 예정일 ") })
                         assertTrue(labels.any { it.text.endsWith("% · 예정") && it.currentTextColor == Palette.accent })
-                        assertTrue(labels.any { it.text == "주기 미설정 · 4개" })
+                        assertTrue(labels.any { it.text == "주기 미설정 · 9개" })
+                        assertTrue(labels.any { it.text == Item.BATTERY_12V_REPLACE.label })
+                        assertTrue(labels.any { it.text == Item.DRIVE_BELT.label })
                         val tireLabel = labels.single { it.text == Item.TIRE_REPLACE.label }
                         val tireRow = (tireLabel.parent.parent as View)
                         assertTrue(tireRow.performClick())

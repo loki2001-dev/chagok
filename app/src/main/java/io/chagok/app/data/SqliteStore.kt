@@ -31,7 +31,7 @@ class SqliteStore(context: Context, databaseName: String = "chagok.db") : DiaryS
             db.execSQL("CREATE INDEX doc_owner ON doc(kind, owner)")
         }
 
-        // v2 adds optional JSON fields and a sharing document; existing v1 rows stay readable.
+        // New document types and optional JSON fields need no table migration.
         override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
             check(oldVersion <= newVersion && newVersion <= Codec.VERSION)
         }

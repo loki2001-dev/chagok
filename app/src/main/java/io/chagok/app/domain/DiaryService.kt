@@ -230,7 +230,10 @@ class DiaryService(
     }
 
     /** 모든 편집 필드를 한 번에 검증하고 저장한다. 중간 저장·이력 분할을 피한다. */
-    fun updateEntry(id: String, date: LocalDate, km: Double?, cost: Long?, amount: Double?, memo: String?, wheels: Set<Wheel>): DiaryEntry? {
+    fun updateEntry(
+        id: String, date: LocalDate, km: Double?, cost: Long?, amount: Double?, memo: String?, wheels: Set<Wheel>,
+        engineOil: EngineOilDetails? = null,
+    ): DiaryEntry? {
         require(km == null || (km.isFinite() && km >= 0)) { "주행거리를 올바르게 입력해 주세요." }
         require(cost == null || cost >= 0) { "비용을 올바르게 입력해 주세요." }
         require(amount == null || (amount.isFinite() && amount > 0)) { "주유·충전량은 0보다 커야 해요." }
@@ -241,14 +244,23 @@ class DiaryService(
             if (effectiveKm != e.odometer?.value) e = e.copy(odometer = effectiveKm?.let {
                 FieldEvidence(it, "km", Source.USER, observed = original.odometer?.observed ?: original.detachedObservation)
             }, detachedObservation = original.odometer?.observed ?: original.detachedObservation)
+            val oil = if (e.item == Item.ENGINE_OIL) {
+                (engineOil ?: original.engineOil)?.let { details ->
+                    val manufacturer = details.manufacturer?.trim()?.ifBlank { null }
+                    val liters = details.liters
+                    require(liters == null || (liters.isFinite() && liters > 0)) { "엔진오일 사용량은 0 L보다 커야 해요." }
+                    EngineOilDetails(manufacturer, liters).takeIf { manufacturer != null || liters != null }
+                }
+            } else null
             e.copy(cost = cost, energyAmount = amount.takeIf { e.item.kind == ItemKind.ENERGY }, memo = memo?.trim()?.ifBlank { null },
-                wheels = wheels.takeIf { e.item == Item.TIRE_REPLACE } ?: emptySet())
+                wheels = wheels.takeIf { e.item == Item.TIRE_REPLACE } ?: emptySet(), engineOil = oil)
         }
     }
 
     fun replaceItem(id: String, item: Item): DiaryEntry? = edit(id, "항목 → ${item.label}") {
         require(item.availableFor(profile().powertrain)) { "차량 동력원에 맞지 않는 항목이에요." }
-        it.copy(item = item, candidateId = null, energyAmount = null, wheels = emptySet())
+        it.copy(item = item, candidateId = null, energyAmount = null, wheels = emptySet(),
+            engineOil = it.engineOil.takeIf { item == Item.ENGINE_OIL })
     }
 
     fun setWheels(id: String, wheels: Set<Wheel>) = edit(id, "바퀴 → ${wheels.joinToString { w -> w.label }}") { it.copy(wheels = wheels) }
@@ -278,6 +290,8 @@ class DiaryService(
                 if (current.odometer != updated.odometer) add("주행거리 ${current.odometer?.value ?: "미입력"} → ${updated.odometer?.value ?: "미입력"} km")
                 if (current.cost != updated.cost) add("비용 ${won(current.cost)} → ${won(updated.cost)}")
                 if (current.energyAmount != updated.energyAmount) add("수량 ${current.energyAmount ?: "미입력"} → ${updated.energyAmount ?: "미입력"}")
+                if (current.engineOil?.manufacturer != updated.engineOil?.manufacturer) add("엔진오일 제조사 변경")
+                if (current.engineOil?.liters != updated.engineOil?.liters) add("엔진오일 사용량 변경")
                 if (current.memo != updated.memo) add("메모 ${current.memo ?: "없음"} → ${updated.memo ?: "없음"}")
                 if (current.wheels != updated.wheels) add("바퀴 ${current.wheels.joinToString { it.label }} → ${updated.wheels.joinToString { it.label }}")
                 if (current.candidateId != updated.candidateId) add("후보 연결 변경")
@@ -669,6 +683,8 @@ class DiaryService(
                 e.odometer?.let { append(" · ${km(it.value)}(${it.source.label})") }
                 append(" · ${won(e.cost)}")
                 e.energyAmount?.let { append(" · $it ${if (e.item == Item.CHARGE) "kWh" else "L"}(사용자 입력)") }
+                e.engineOil?.manufacturer?.let { append(" · 제조사 $it") }
+                e.engineOil?.liters?.let { append(" · 사용량 $it L") }
                 if (e.wheels.isNotEmpty()) append(" · ${e.wheels.joinToString { it.label }}")
                 appendLine()
                 if (includeMemos && e.memo != null) appendLine("  메모: ${e.memo}")
