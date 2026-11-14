@@ -1,6 +1,7 @@
 package io.chagok.app.data
 
 import io.chagok.app.domain.*
+import io.chagok.app.roads.*
 import io.chagok.app.domain.CandidateState
 import io.chagok.app.domain.DetectionCandidate
 import io.chagok.app.domain.DiaryEntry
@@ -24,7 +25,7 @@ import java.time.LocalDate
 
 /** 도메인 객체 ↔ JSON. 저장 형식이 바뀌면 [VERSION]을 올린다 */
 object Codec {
-    const val VERSION = 5
+    const val VERSION = 7
 
     fun profile(p: VehicleProfile) = JSONObject()
         .put("id", p.id).put("name", p.name).put("powertrain", p.powertrain.name)
@@ -146,6 +147,20 @@ object Codec {
         evidenceEntryId = o.getString("evidence"),
         needsReview = o.getBoolean("review"),
     )
+
+    fun roadUsage(day: RoadUsageDay) = JSONObject().put("vehicle",day.vehicleId).put("date",day.date.toString())
+        .put("buckets",JSONObject().apply { day.buckets.forEach { (key,value) -> put(key.name,JSONObject().put("km",value.distanceKm).put("millis",value.movingMillis)) } })
+        .put("gapMillis",day.observationGapMillis).put("distanceMissingMillis",day.distanceMissingMillis).put("rejected",day.rejectedDistanceSamples)
+    fun roadUsage(o: JSONObject) = RoadUsageDay(o.getString("vehicle"),LocalDate.parse(o.getString("date")),
+        RoadBucket.entries.mapNotNull { key -> o.getJSONObject("buckets").optJSONObject(key.name)?.let { key to RoadAmount(it.getDouble("km"),it.getLong("millis")) } }.toMap(),
+        o.getLong("gapMillis"),o.getLong("distanceMissingMillis"),o.getLong("rejected"))
+    fun roadCheckpoint(value: RoadUsageCheckpoint) = JSONObject().put("at",value.at.toString()).putOpt("odometer",value.odometer?.let(::observation))
+        .putOpt("odometerSeenAt",value.odometerSeenAt?.toString())
+    fun roadCheckpoint(o: JSONObject): RoadUsageCheckpoint {
+        val odometer=o.optJSONObject("odometer")?.let(::observation)
+        return RoadUsageCheckpoint(Instant.parse(o.getString("at")),odometer,
+            o.optStringOrNull("odometerSeenAt")?.let(Instant::parse) ?: odometer?.receivedAt)
+    }
 
     fun trip(t: DriveTrip) = JSONObject().put("id",t.id).put("vehicle",t.vehicleId).put("user",t.user)
         .put("start",t.startedAt.toString()).put("last",t.lastAt.toString()).putOpt("end",t.endedAt?.toString())

@@ -34,6 +34,10 @@ class VehicleMonitorService : Service() {
     private var lastOdometer = -30000L
     private var generation = 0
     private val location by lazy { io.chagok.app.vehicle.PleosLocation(this) }
+    private lateinit var roadUsage: io.chagok.app.roads.RoadUsageRecorder
+    private val roads by lazy { io.chagok.app.roads.RoadDetector(this) { label ->
+        state=state.copy(roadStatus=label); emit()
+    } }
     private lateinit var visits: PlaceVisitTracker
     private var lastLocation = -5000L
     private var lastCatalogue = -3600000L
@@ -54,6 +58,7 @@ class VehicleMonitorService : Service() {
         startForeground(1042, notification)
         store = SqliteStore(this); diary = DiaryService(store)
         trips=TripRecorder(store); visits=PlaceVisitTracker(store)
+        roadUsage=io.chagok.app.roads.RoadUsageRecorder(store)
         lastRecovery=SystemClock.elapsedRealtime()
         lastHealthy=store.setting("monitor.lastHealthy")?.let { runCatching { Instant.parse(it) }.getOrNull() }
         gapStart=store.setting("monitor.gapStart")?.takeIf { it.isNotBlank() }?.let { runCatching { Instant.parse(it) }.getOrNull() }
@@ -78,8 +83,9 @@ class VehicleMonitorService : Service() {
             if(store.setting(RecordingStartup.ENABLED)!="true") { trips.stop(Instant.now());stopSelf();return }
             val now = SystemClock.elapsedRealtime()
             val visitEnabled = store.setting(PlaceVisitTracker.ENABLED) == "true"
+            val roadEnabled = store.setting(io.chagok.app.roads.RoadDetector.ENABLED) == "true"
             if(now - lastLocation >= 5000) {
-                lastLocation = now; location.poll(visitEnabled)
+                lastLocation = now; location.poll(visitEnabled || roadEnabled)
             }
             if(visitEnabled && now - lastCatalogue >= 3600000) {
                 lastCatalogue = now; io.chagok.app.data.CatalogueDownloads.check(this@VehicleMonitorService)
@@ -117,6 +123,12 @@ class VehicleMonitorService : Service() {
                 lastTripSample=now
                 val at=Instant.now()
                 val healthy=driving.available&&state.motion.speedMps!=null
+                val roadVehicle=diary.profile().id
+                val roadSpeed=state.motion.speedMps
+                val roadKm=(state.odometer as? Reading.Value)?.observation
+                roads.sample(roadEnabled && checkSelfPermission(io.chagok.app.vehicle.PleosLocation.PERMISSION) == android.content.pm.PackageManager.PERMISSION_GRANTED, location.fix, at) { resolvedGrade ->
+                    if(!closed) roadUsage.sample(roadVehicle,at,roadSpeed,healthy,resolvedGrade,roadKm)
+                }
                 val parked=if(healthy)state.motion.parkGear?.let { it&&!driving.restricted&&kotlin.math.abs(state.motion.speedMps!!)<.3f } else null
                 if(parked!=null) {
                     val old=store.setting("monitor.parked")
@@ -156,7 +168,7 @@ class VehicleMonitorService : Service() {
     }
     override fun onDestroy() {
         closed = true; generation++; main.removeCallbacksAndMessages(null); observers.clear()
-        location.close()
+        location.close(); roads.close()
         if(::telemetry.isInitialized)telemetry.close()
         if(::vehicle.isInitialized)vehicle.stop()
         if(::driving.isInitialized)driving.release()

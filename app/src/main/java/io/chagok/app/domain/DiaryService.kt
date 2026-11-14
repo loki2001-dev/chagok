@@ -488,6 +488,10 @@ class DiaryService(
             .filter { it.status != EntryStatus.DRAFT }
             .sortedWith(compareByDescending<DiaryEntry> { it.performedOn }.thenByDescending { it.createdAt })
 
+    /** Current vehicle only; the caller supplies a date range, never a vehicle selector. */
+    fun roadUsage(from: java.time.LocalDate, through: java.time.LocalDate) =
+        io.chagok.app.roads.RoadUsageQuery.summary(store,from,through)
+
     fun ledger(month: java.time.YearMonth) = Ledger.month(visibleEntries(), month)
 
     // ---------------------------------------------------------------- 관리 일정
