@@ -52,6 +52,36 @@ class RoadUsageTest {
         assertEquals(0.0,summary().totalDistanceKm,0.0)
         assertEquals(.01,summary("other").totalDistanceKm,1e-9)
     }
+    @Test fun reverseGlitchRecoveryCountsOnlyTheActualDistance() {
+        sample(0,km=100.0); sample(1,km=100.01)
+        sample(2,km=99.50); sample(3,km=100.02)
+        assertEquals(.02,summary().totalDistanceKm,1e-9)
+        assertEquals(.02,summary().buckets.getValue(RoadBucket.UNKNOWN).distanceKm,1e-9)
+        assertEquals(1L,summary().rejectedDistanceSamples)
+        assertEquals(100.02,store.roadUsageCheckpoint("car")!!.odometer!!.value,0.0)
+    }
+    @Test fun cachedRejectedObservationIsCountedOnceEvenAfterRestart() {
+        sample(0,km=100.0); sample(1,km=100.01); sample(2,km=99.50)
+        val saved=Codec.roadCheckpoint(Codec.roadCheckpoint(store.roadUsageCheckpoint("car")!!))
+        store.saveRoadUsageCheckpoint("car",saved)
+        recorder=RoadUsageRecorder(store)
+        recorder.sample("car",start.plusSeconds(3),10f,true,RoadGrade.MOTORWAY,Observation(99.50,start.plusSeconds(2)))
+        sample(4,km=100.02)
+        assertEquals(.02,summary().totalDistanceKm,1e-9)
+        assertEquals(1L,summary().rejectedDistanceSamples)
+    }
+    @Test fun positiveSpikeDoesNotBecomeAnAnchorAndNormalDrivingResumes() {
+        sample(0,km=100.0); sample(1,km=100.01); sample(2,km=9999.0)
+        sample(3,km=100.02); sample(4,km=100.03)
+        assertEquals(.03,summary().totalDistanceKm,1e-9)
+        assertEquals(1L,summary().rejectedDistanceSamples)
+        assertEquals(.01,summary().buckets.getValue(RoadBucket.MOTORWAY).distanceKm,1e-9)
+    }
+    @Test fun v6CheckpointUsesAcceptedObservationAsSeenTimestamp() {
+        val old=org.json.JSONObject().put("at",start.toString())
+            .put("odometer",Codec.observation(Observation(100.0,start)))
+        assertEquals(start,Codec.roadCheckpoint(old).odometerSeenAt)
+    }
     @Test fun disabledRoadDetectionRetainsUnknownDistance() {
         sample(0,null,100.0);sample(1,null,100.01);sample(2,null,100.02)
         assertEquals(.02,summary().buckets.getValue(RoadBucket.UNKNOWN).distanceKm,1e-9)

@@ -25,7 +25,7 @@ import java.time.LocalDate
 
 /** 도메인 객체 ↔ JSON. 저장 형식이 바뀌면 [VERSION]을 올린다 */
 object Codec {
-    const val VERSION = 6
+    const val VERSION = 7
 
     fun profile(p: VehicleProfile) = JSONObject()
         .put("id", p.id).put("name", p.name).put("powertrain", p.powertrain.name)
@@ -153,7 +153,12 @@ object Codec {
         RoadBucket.entries.mapNotNull { key -> o.getJSONObject("buckets").optJSONObject(key.name)?.let { key to RoadAmount(it.getDouble("km"),it.getLong("millis")) } }.toMap(),
         o.getLong("gapMillis"),o.getLong("distanceMissingMillis"),o.getLong("rejected"))
     fun roadCheckpoint(value: RoadUsageCheckpoint) = JSONObject().put("at",value.at.toString()).putOpt("odometer",value.odometer?.let(::observation))
-    fun roadCheckpoint(o: JSONObject) = RoadUsageCheckpoint(Instant.parse(o.getString("at")),o.optJSONObject("odometer")?.let(::observation))
+        .putOpt("odometerSeenAt",value.odometerSeenAt?.toString())
+    fun roadCheckpoint(o: JSONObject): RoadUsageCheckpoint {
+        val odometer=o.optJSONObject("odometer")?.let(::observation)
+        return RoadUsageCheckpoint(Instant.parse(o.getString("at")),odometer,
+            o.optStringOrNull("odometerSeenAt")?.let(Instant::parse) ?: odometer?.receivedAt)
+    }
 
     fun trip(t: DriveTrip) = JSONObject().put("id",t.id).put("vehicle",t.vehicleId).put("user",t.user)
         .put("start",t.startedAt.toString()).put("last",t.lastAt.toString()).putOpt("end",t.endedAt?.toString())

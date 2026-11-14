@@ -17,7 +17,8 @@ data class RoadUsageDay(val vehicleId: String, val date: LocalDate,
     val buckets: Map<RoadBucket, RoadAmount> = emptyMap(),
     val observationGapMillis: Long = 0, val distanceMissingMillis: Long = 0,
     val rejectedDistanceSamples: Long = 0)
-data class RoadUsageCheckpoint(val at: Instant, val odometer: Observation?)
+data class RoadUsageCheckpoint(val at: Instant, val odometer: Observation?,
+    val odometerSeenAt: Instant? = odometer?.receivedAt)
 data class RoadUsageSummary(val from: LocalDate, val through: LocalDate,
     val buckets: Map<RoadBucket, RoadAmount>, val observationGapMillis: Long,
     val distanceMissingMillis: Long, val rejectedDistanceSamples: Long) {
@@ -84,18 +85,22 @@ class RoadUsageRecorder(private val store: DiaryStore) {
         }
         if(old != null && (!started || elapsed > 5000 || !validMotion || !previousHealthy)) current=current.copy(observationGapMillis=current.observationGapMillis+elapsed)
         var odometer=old?.odometer
-        if(fresh != null && (odometer == null || fresh.receivedAt > odometer.receivedAt)) {
-            if(odometer != null) {
-                val delta=fresh.value-odometer.value
-                val seconds=Duration.between(odometer.receivedAt,fresh.receivedAt).toMillis()/1000.0
-                if(delta >= 0 && delta <= seconds*.08+1.0) {
-                    add(if(intervalContinuous && sameDay) intervalBucket else RoadBucket.UNKNOWN,distance=delta)
-                } else current=current.copy(rejectedDistanceSamples=current.rejectedDistanceSamples+1)
+        var seenAt=old?.odometerSeenAt
+        if(fresh != null && (seenAt == null || fresh.receivedAt > seenAt)) {
+            seenAt=fresh.receivedAt
+            val anchor=odometer
+            val delta=anchor?.let { fresh.value-it.value } ?: 0.0
+            val seconds=anchor?.let { Duration.between(it.receivedAt,fresh.receivedAt).toMillis()/1000.0 } ?: 0.0
+            if(anchor == null || (delta >= 0 && delta <= seconds*.08+1.0)) {
+                if(anchor != null) add(if(intervalContinuous && sameDay) intervalBucket else RoadBucket.UNKNOWN,distance=delta)
+                odometer=fresh; intervalBucket=bucket; intervalContinuous=continuous
+            } else {
+                current=current.copy(rejectedDistanceSamples=current.rejectedDistanceSamples+1)
+                // Retain the last accepted anchor across errors and restarts. Recovery distance is unknown.
+                intervalContinuous=false
             }
-            // A fresh anchor prevents an invalid reset from poisoning all subsequent observations.
-            odometer=fresh; intervalBucket=bucket; intervalContinuous=continuous
         }
-        val next=RoadUsageCheckpoint(at,odometer)
+        val next=RoadUsageCheckpoint(at,odometer,seenAt)
         store.transaction { store.saveRoadUsage(current); store.saveRoadUsageCheckpoint(vehicleId,next) }
         checkpoint=next; day=current; started=true; previousHealthy=validMotion; previousMoving=moving; previousBucket=bucket
     }
