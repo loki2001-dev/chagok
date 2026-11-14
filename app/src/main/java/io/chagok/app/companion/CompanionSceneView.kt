@@ -5,12 +5,16 @@ import android.graphics.*
 import android.os.SystemClock
 import android.view.View
 import io.chagok.app.R
+import io.chagok.app.domain.PlaceKind
 import kotlin.math.*
 
 /** Native portrait and horizontal 2.5D scenes, selected from the actual scene bounds. */
 class CompanionSceneView(context: Context) : View(context) {
     val director = EncounterDirector()
+    val serviceVisit = ServiceVisitAnimation()
+    private val serviceRenderer = ServiceVisitRenderer()
     var motion = MotionSnapshot()
+        set(value) { field = value; serviceVisit.advance(0f, value); invalidate() }
     var skin = CarSkin.RACER
     var preview = false
     var previewSpeed = 45f
@@ -70,6 +74,13 @@ class CompanionSceneView(context: Context) : View(context) {
         }
     }
     fun artwork(id: String) = bitmaps.getValue(id)
+    fun previewService(kind: PlaceKind): Boolean {
+        if (!preview || !ServiceVisitAnimation.safe(motion)) return false
+        serviceVisit.cancel()
+        previewSpeed = 0f; previewTurn = 0; previewAcceleration = 0f
+        steer = 0f; pose = 0f; boost = 0f
+        return serviceVisit.begin("preview/${kind.name}", kind)
+    }
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         val old=director.viewportHeight
@@ -97,6 +108,7 @@ class CompanionSceneView(context: Context) : View(context) {
         }
     }
     fun advance(dt: Float) {
+        serviceVisit.advance(dt, motion)
         val allowed = motion.animationAllowed && (!preview || !motion.restricted)
         val speed = if (preview) previewSpeed / 3.6f else motion.speedMps ?: 0f
         if (allowed) {
@@ -112,7 +124,7 @@ class CompanionSceneView(context: Context) : View(context) {
             sideTravel += pixels
             val previous = director.active
             val scenery = director.scenery
-            director.step(dt, pixels, speed > .3f, true, question.isNotEmpty(), seen) { event ->
+            director.step(dt, pixels, speed > .3f, true, question.isNotEmpty() || serviceVisit.frame != null, seen) { event ->
                 if (preview) true else collect(event).also { if (it) onEncounter(event.scene) }
             }
             if (previous == null && director.active != null) {
@@ -137,6 +149,7 @@ class CompanionSceneView(context: Context) : View(context) {
             val car=landscapeRenderer.draw(canvas,layout,skin,steer,if(preview)previewTurn else motion.turn?:0,pose,
                 if(preview)previewSpeed/3.6f else motion.speedMps?:0f,rain,flame,clock,sideTravel,director.scenery,previousScenery,blend,
                 director.active,allowed,bitmaps.getValue("booster"))
+            serviceVisit.frame?.let { serviceRenderer.draw(canvas, layout, car.x, car.y, car.width, car.height, car.groundY, it) }
             if(question.isNotEmpty())drawBubble(canvas,layout.speechBubble(car.x,car.y,car.width,car.height))
             canvas.restore()
             renderState=RenderState(car.x,0f,car.width,car.blink,rain,flame,travel,if(allowed)director.active?.scene?.id else null,
@@ -196,6 +209,7 @@ class CompanionSceneView(context: Context) : View(context) {
                 canvas.drawLine(dx,dy,dx+2.3f*depth,dy+(9+speed*.19f)*depth,paint)
             }
         }
+        serviceVisit.frame?.let { serviceRenderer.draw(canvas, layout, centerX, centerY, w, h, centerY+h/2, it) }
         if(question.isNotEmpty()) drawBubble(canvas,layout.speechBubble(centerX,centerY,w,h))
         paint.alpha=255;canvas.restore()
         renderState=RenderState(centerX,0f,w,blink,rain,flame,travel,if(allowed)director.active?.scene?.id else null,director.scenery,renderState.frames+1,centerY,h)
@@ -203,7 +217,8 @@ class CompanionSceneView(context: Context) : View(context) {
     }
     private fun describe(allowed:Boolean) {
         val description = (if(preview)"미리보기. " else "")+(if(allowed) "${if(skin==CarSkin.RACER)"네온 레이서" else "현대 세단"}. ${director.active?.scene?.name.orEmpty()}" else "자동 차량일지 기록 중. 주행 제한에 맞춰 연출을 쉬고 있어요.")+
-            if(question.isNotEmpty()) ". ${question.replace('\n',' ')} $questionHint" else ""
+            (if(question.isNotEmpty()) ". ${question.replace('\n',' ')} $questionHint" else "") +
+            (serviceVisit.frame?.let { ". ${it.caption}. 방문 기념 연출" } ?: "")
         if(contentDescription!=description)contentDescription=description
     }
     /** Slice at the empty asphalt, so people, kerbs and buildings never stretch with window width. */
