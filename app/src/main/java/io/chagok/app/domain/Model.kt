@@ -115,7 +115,16 @@ data class DiaryEntry(
     /** 인식 텍스트. 원음은 저장하지 않는다 */
     val spokenText: String? = null,
     val memo: String? = null,
+    /** 마지막 확정/수정 시각. 초안 생성 시각과 구분한다. */
+    val updatedAt: Instant = createdAt,
+    /** 사용자가 직접 입력한 주유량(L) 또는 충전량(kWh). */
+    val energyAmount: Double? = null,
+    /** 날짜를 바꾸어 자동 첨부를 해제한 경우에도 원래 관측을 보존한다. */
+    val detachedObservation: Observation? = null,
 )
+
+/** 같은 차량의 로컬 프로필 간 열람 범위. null은 공용, 빈 집합은 나만 보기. */
+data class SharingPolicy(val author: String, val readers: Set<String>? = null)
 
 /** 정비 계획 (기획서 9장 MaintenancePlan). 주기는 사용자가 매뉴얼 등을 보고 정한다 */
 data class MaintenancePlan(
@@ -156,6 +165,7 @@ data class DetectionCandidate(
     /** 두 관측 사이에 수신 공백이 길었는지. 길면 '마지막 관측 이후 잔량 증가'로만 설명한다 */
     val gapLong: Boolean,
     val linkedEntryId: String? = null,
+    val collecting: Boolean = false,
 ) {
     val rise: Double get() = after.value - before.value
 }

@@ -1,5 +1,6 @@
 package io.chagok.app.data
 
+import io.chagok.app.domain.*
 import io.chagok.app.domain.CandidateState
 import io.chagok.app.domain.DetectionCandidate
 import io.chagok.app.domain.DiaryEntry
@@ -23,7 +24,7 @@ import java.time.LocalDate
 
 /** 도메인 객체 ↔ JSON. 저장 형식이 바뀌면 [VERSION]을 올린다 */
 object Codec {
-    const val VERSION = 1
+    const val VERSION = 3
 
     fun profile(p: VehicleProfile) = JSONObject()
         .put("id", p.id).put("name", p.name).put("powertrain", p.powertrain.name)
@@ -62,6 +63,8 @@ object Codec {
         .put("history", JSONArray(e.history.map { JSONObject().put("v", it.version).put("at", it.changedAt.toString()).put("s", it.summary) }))
         .put("wheels", JSONArray(e.wheels.map { it.name }))
         .putOpt("candidateId", e.candidateId).putOpt("spokenText", e.spokenText).putOpt("memo", e.memo)
+        .put("updatedAt", e.updatedAt.toString()).putOpt("energyAmount", e.energyAmount)
+        .putOpt("detachedObservation", e.detachedObservation?.let(::observation))
 
     fun entry(o: JSONObject) = DiaryEntry(
         id = o.getString("id"),
@@ -80,6 +83,11 @@ object Codec {
         candidateId = o.optStringOrNull("candidateId"),
         spokenText = o.optStringOrNull("spokenText"),
         memo = o.optStringOrNull("memo"),
+        updatedAt = o.optStringOrNull("updatedAt")?.let(Instant::parse)
+            ?: o.getJSONArray("history").objects().lastOrNull()?.getString("at")?.let(Instant::parse)
+            ?: Instant.parse(o.getString("createdAt")),
+        energyAmount = if (o.has("energyAmount")) o.getDouble("energyAmount") else null,
+        detachedObservation = o.optJSONObject("detachedObservation")?.let(::observation),
     )
 
     fun plan(p: MaintenancePlan) = JSONObject()
@@ -102,7 +110,7 @@ object Codec {
     fun candidate(c: DetectionCandidate) = JSONObject()
         .put("id", c.id).put("vehicleId", c.vehicleId).put("kind", c.kind.name)
         .put("before", observation(c.before)).put("after", observation(c.after))
-        .put("state", c.state.name).put("gapLong", c.gapLong).putOpt("linked", c.linkedEntryId)
+        .put("collecting",c.collecting).put("state", c.state.name).put("gapLong", c.gapLong).putOpt("linked", c.linkedEntryId)
 
     fun candidate(o: JSONObject) = DetectionCandidate(
         id = o.getString("id"),
@@ -113,6 +121,7 @@ object Codec {
         state = CandidateState.valueOf(o.getString("state")),
         gapLong = o.getBoolean("gapLong"),
         linkedEntryId = o.optStringOrNull("linked"),
+        collecting = o.optBoolean("collecting",false),
     )
 
     fun progress(p: LearningProgress) = JSONObject()
@@ -127,6 +136,21 @@ object Codec {
         evidenceEntryId = o.getString("evidence"),
         needsReview = o.getBoolean("review"),
     )
+
+    fun trip(t: DriveTrip) = JSONObject().put("id",t.id).put("vehicle",t.vehicleId).put("user",t.user)
+        .put("start",t.startedAt.toString()).put("last",t.lastAt.toString()).putOpt("end",t.endedAt?.toString())
+        .putOpt("startKm",t.startKm).putOpt("endKm",t.endKm).put("moving",t.movingSeconds).put("gap",t.hasGap)
+        .putOpt("parked",t.parkedSince?.toString()).put("lastMoving",t.lastMoving).put("friends",JSONArray(t.friends.toList())).putOpt("odometerAt",t.odometerAt?.toString())
+    fun trip(o: JSONObject) = DriveTrip(o.getString("id"),o.getString("vehicle"),o.getString("user"),
+        Instant.parse(o.getString("start")),Instant.parse(o.getString("last")),o.optStringOrNull("end")?.let(Instant::parse),
+        if(o.has("startKm"))o.getDouble("startKm")else null,if(o.has("endKm"))o.getDouble("endKm")else null,
+        o.getLong("moving"),o.getBoolean("gap"),o.optStringOrNull("parked")?.let(Instant::parse),o.getBoolean("lastMoving"),o.getJSONArray("friends").strings().toSet(),o.optStringOrNull("odometerAt")?.let(Instant::parse))
+    fun energyCheckpoint(v: EnergyCheckpoint) = JSONObject().putOpt("baseline",v.baseline?.let(::observation))
+        .putOpt("anchor",v.anchor?.let(::observation)).putOpt("increase",v.lastIncrease?.toString())
+        .putOpt("raw",v.lastRawAt?.toString()).put("gap",v.gapLong)
+    fun energyCheckpoint(o: JSONObject) = EnergyCheckpoint(o.optJSONObject("baseline")?.let(::observation),
+        o.optJSONObject("anchor")?.let(::observation),o.optStringOrNull("increase")?.let(Instant::parse),
+        o.optStringOrNull("raw")?.let(Instant::parse),o.optBoolean("gap"))
 
     private fun JSONObject.optStringOrNull(key: String): String? = if (has(key) && !isNull(key)) getString(key) else null
     private fun JSONArray.objects() = (0 until length()).map { getJSONObject(it) }

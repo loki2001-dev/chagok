@@ -4,6 +4,15 @@ import java.time.Instant
 
 /** 일지 저장소. 앱은 SQLite, 단위 시험은 [MemoryStore]를 쓴다 */
 interface DiaryStore {
+    fun <T> transaction(block: () -> T): T
+    fun setting(key: String): String?
+    fun saveSetting(key: String, value: String)
+    fun trips(vehicleId: String): List<DriveTrip>
+    fun saveTrip(trip: DriveTrip)
+    fun gaps(vehicleId: String): List<RecordingGap>
+    fun saveGap(gap: RecordingGap)
+    fun energyCheckpoint(vehicleId: String, kind: EnergyKind): EnergyCheckpoint?
+    fun saveEnergyCheckpoint(vehicleId: String, kind: EnergyKind, value: EnergyCheckpoint)
     fun profile(): VehicleProfile?
     fun saveProfile(profile: VehicleProfile)
 
@@ -20,6 +29,9 @@ interface DiaryStore {
 
     fun progress(user: String): List<LearningProgress>
     fun saveProgress(progress: LearningProgress)
+    fun allProgress(): List<LearningProgress>
+    fun sharing(author: String): SharingPolicy
+    fun saveSharing(policy: SharingPolicy)
 
     fun energyBaseline(vehicleId: String, kind: EnergyKind): Observation?
     fun saveEnergyBaseline(vehicleId: String, kind: EnergyKind, observation: Observation)
@@ -30,6 +42,7 @@ interface DiaryStore {
 }
 
 class MemoryStore : DiaryStore {
+    override fun <T> transaction(block: () -> T): T = block()
     private var profile: VehicleProfile? = null
     private val entries = linkedMapOf<String, DiaryEntry>()
     private val plans = linkedMapOf<Pair<String, Item>, MaintenancePlan>()
@@ -37,6 +50,20 @@ class MemoryStore : DiaryStore {
     private val progress = linkedMapOf<Pair<String, Topic>, LearningProgress>()
     private val baselines = mutableMapOf<Pair<String, EnergyKind>, Observation>()
     private val seen = mutableMapOf<String, Instant>()
+    private val sharing = mutableMapOf<String, SharingPolicy>()
+
+    private val settings = mutableMapOf<String,String>()
+    private val trips = linkedMapOf<String,DriveTrip>()
+    private val gaps = linkedMapOf<String,RecordingGap>()
+    private val checkpoints = mutableMapOf<Pair<String,EnergyKind>,EnergyCheckpoint>()
+    override fun setting(key: String) = settings[key]
+    override fun saveSetting(key: String, value: String) { settings[key]=value }
+    override fun trips(vehicleId: String) = trips.values.filter { it.vehicleId==vehicleId }
+    override fun saveTrip(trip: DriveTrip) { trips[trip.id]=trip }
+    override fun gaps(vehicleId: String) = gaps.values.filter { it.vehicleId==vehicleId }
+    override fun saveGap(gap: RecordingGap) { gaps[gap.id]=gap }
+    override fun energyCheckpoint(vehicleId: String, kind: EnergyKind) = checkpoints[vehicleId to kind]
+    override fun saveEnergyCheckpoint(vehicleId: String, kind: EnergyKind, value: EnergyCheckpoint) { checkpoints[vehicleId to kind]=value }
 
     override fun profile() = profile
     override fun saveProfile(profile: VehicleProfile) {
@@ -64,6 +91,9 @@ class MemoryStore : DiaryStore {
     }
 
     override fun progress(user: String) = progress.values.filter { it.user == user }
+    override fun allProgress() = progress.values.toList()
+    override fun sharing(author: String) = sharing[author] ?: SharingPolicy(author)
+    override fun saveSharing(policy: SharingPolicy) { sharing[policy.author] = policy }
     override fun saveProgress(progress: LearningProgress) {
         this.progress[progress.user to progress.topic] = progress
     }

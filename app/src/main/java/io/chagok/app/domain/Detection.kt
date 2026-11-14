@@ -3,15 +3,10 @@ package io.chagok.app.domain
 import java.time.Duration
 import java.time.Instant
 
-/**
- * 연료 잔량·SoC 관측을 받아 주유·충전 후보를 만든다 (기획서 5장 '주유 후보', '충전 후보').
- *
- * - 정차 중에 값이 안정된 경우에만 비교한다. 같은 값이 [stableFor] 이상 유지되면 안정으로 본다.
- * - 직전 안정 관측보다 [risePoints]%p 이상 오르면 후보를 만든다. 감지 기준은 실측 후 조정한다.
- * - 관측 사이 공백이 [gapLimit]보다 길면 '마지막 관측 이후 잔량 증가'로만 설명한다.
- * - 후보는 사용자가 확인하기 전까지 일지·비용·정비 완료에 들어가지 않는다.
- * - L·kWh·금액·장소를 %에서 추정하지 않는다.
- */
+/** Persist the session anchor separately from the most recent stable observation. */
+data class EnergyCheckpoint(val baseline: Observation?, val anchor: Observation?, val lastIncrease: Instant?,
+    val lastRawAt: Instant?, val gapLong: Boolean)
+
 class EnergyTracker(
     val kind: EnergyKind,
     private val risePoints: Double = 5.0,
@@ -19,61 +14,55 @@ class EnergyTracker(
     private val stableTolerance: Double = 1.0,
     private val gapLimit: Duration = Duration.ofMinutes(2),
 ) {
-    /** 마지막으로 안정된 관측. 비교의 기준선이며 앱 재시작에도 유지해야 한다 */
-    var baseline: Observation? = null
-        private set
-
+    var baseline: Observation? = null; private set
+    private var anchor: Observation? = null
+    private var lastIncrease: Instant? = null
     private var settling: Observation? = null
     private var lastRawAt: Instant? = null
-    private var gapSinceBaseline = false
-
-    fun restore(baseline: Observation?) {
-        this.baseline = baseline
-        // 저장된 기준선 이후는 관측하지 못한 구간이다
-        gapSinceBaseline = baseline != null
+    private var gapLong=false
+    fun restore(value: Observation?) { baseline=value;anchor=value;gapLong=value!=null }
+    fun restoreCheckpoint(value: EnergyCheckpoint) {
+        baseline=value.baseline;anchor=value.anchor;lastIncrease=value.lastIncrease;lastRawAt=value.lastRawAt;gapLong=value.gapLong
     }
-
+    fun checkpoint()=EnergyCheckpoint(baseline,anchor,lastIncrease,lastRawAt,gapLong)
     sealed interface Result {
         data object None : Result
-
-        /** 기준선이 바뀌었다. 저장소에 남겨야 한다 */
         data class BaselineMoved(val baseline: Observation) : Result
-
-        data class Rise(val before: Observation, val after: Observation, val gapLong: Boolean) : Result
+        data class Rise(val before: Observation,val after: Observation,val gapLong: Boolean,val finished: Boolean=false) : Result
     }
-
-    /**
-     * @param value null이면 미수신. 0으로 채우지 않는다.
-     * @param parked 정차 여부. 주행 중 값은 안정 판정에 쓰지 않는다.
-     */
+    private fun finish(): Result {
+        val a=anchor;val b=baseline;val gap=gapLong
+        anchor=null;lastIncrease=null;gapLong=false
+        return if(a!=null&&b!=null&&b.value-a.value>=risePoints)Result.Rise(a,b,gap,true)else Result.None
+    }
     fun feed(value: Double?, at: Instant, parked: Boolean): Result {
-        val previousRawAt = lastRawAt
-        if (value == null) return Result.None
-        lastRawAt = at
-        if (previousRawAt == null || Duration.between(previousRawAt, at) > gapLimit) gapSinceBaseline = true
-
-        if (!parked) {
-            settling = null
-            return Result.None
+        if(value==null||!value.isFinite()||value !in 0.0..100.0) { settling=null;gapLong=true;return Result.None }
+        if(lastRawAt==null||Duration.between(lastRawAt,at)>gapLimit||at<lastRawAt)gapLong=true
+        lastRawAt=at
+        if(!parked) { settling=null;return finish() }
+        val s=settling
+        if(s==null||kotlin.math.abs(s.value-value)>stableTolerance) { settling=Observation(value,at);return Result.None }
+        if(Duration.between(s.receivedAt,at)<stableFor)return Result.None
+        settling=null
+        val stable=Observation(value,at)
+        val before=baseline
+        if(before==null) { baseline=stable;anchor=stable;gapLong=false;return Result.BaselineMoved(stable) }
+        if(anchor==null)anchor=before
+        if(stable.value<before.value-stableTolerance) {
+            val finished=finish();baseline=stable;anchor=stable
+            return if(finished is Result.Rise)finished else Result.BaselineMoved(stable)
         }
-        val s = settling
-        if (s == null || kotlin.math.abs(s.value - value) > stableTolerance) {
-            settling = Observation(value, at)
-            return Result.None
+        if(stable.value>before.value+0.05)lastIncrease=at
+        baseline=stable
+        val a=anchor!!
+        if(stable.value<a.value) { anchor=stable;return Result.BaselineMoved(stable) }
+        if(stable.value-a.value>=risePoints) {
+            // A stopped rise is provisional: no amount, kWh or actual charging signal is inferred.
+            val quietSeconds=if(kind==EnergyKind.SOC)1800L else 60L
+            if(lastIncrease!=null&&Duration.between(lastIncrease,at).seconds>=quietSeconds)return finish()
+            return Result.Rise(a,stable,gapLong)
         }
-        if (Duration.between(s.receivedAt, at) < stableFor) return Result.None
-
-        val stable = Observation(value, at)
-        settling = null
-        val before = baseline
-        baseline = stable
-        val gap = gapSinceBaseline
-        gapSinceBaseline = false
-        return if (before != null && stable.value - before.value >= risePoints) {
-            Result.Rise(before, stable, gap)
-        } else {
-            Result.BaselineMoved(stable)
-        }
+        return Result.BaselineMoved(stable)
     }
 }
 
