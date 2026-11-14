@@ -13,6 +13,18 @@ class UtteranceParserTest {
 
     private fun record(text: String) = parser.parse(text) as SpokenIntent.Record
 
+    @Test fun recognizesNewMaintenanceRecords() {
+        mapOf(
+            "드라이브 벨트 교체했어" to Item.DRIVE_BELT,
+            "변속기 오일 갈았어" to Item.TRANSMISSION_OIL,
+            "브레이크 오일 교환했어" to Item.BRAKE_FLUID,
+            "점화플러그 교체했어" to Item.SPARK_PLUG,
+            "점화코일 교체했어" to Item.IGNITION_COIL,
+            "에어컨 필터 교체했어" to Item.CABIN_FILTER,
+            "12V 배터리 교체했어" to Item.BATTERY_12V_REPLACE,
+        ).forEach { (text, item) -> assertEquals(text, item, record(text).item) }
+    }
+
     @Test
     fun `오늘 엔진오일 갈았어 8만 원`() {
         val r = record("오늘 엔진오일 갈았어. 8만 원")

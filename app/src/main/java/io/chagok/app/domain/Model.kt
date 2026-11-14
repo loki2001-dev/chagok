@@ -60,10 +60,17 @@ enum class ItemKind {
 /** 정비·기록 항목. [powertrains]에 없는 동력원 프로필에는 보이지 않는다 */
 enum class Item(val label: String, val kind: ItemKind, val powertrains: Set<Powertrain>) {
     ENGINE_OIL("엔진오일 교환", ItemKind.REPLACE, setOf(Powertrain.ICE, Powertrain.HYBRID)),
+    DRIVE_BELT("드라이브 벨트 교체", ItemKind.REPLACE, setOf(Powertrain.ICE, Powertrain.HYBRID)),
+    TRANSMISSION_OIL("변속기 오일 교환", ItemKind.REPLACE, setOf(Powertrain.ICE, Powertrain.HYBRID)),
+    BRAKE_FLUID("브레이크 오일 교환", ItemKind.REPLACE, Powertrain.entries.toSet()),
+    SPARK_PLUG("점화플러그 교체", ItemKind.REPLACE, setOf(Powertrain.ICE, Powertrain.HYBRID)),
+    IGNITION_COIL("점화코일 교체", ItemKind.REPLACE, setOf(Powertrain.ICE, Powertrain.HYBRID)),
+    CABIN_FILTER("에어컨 필터 교체", ItemKind.REPLACE, Powertrain.entries.toSet()),
     TIRE_ROTATION("타이어 위치 교환", ItemKind.REPLACE, Powertrain.entries.toSet()),
     TIRE_REPLACE("타이어 교체", ItemKind.OTHER, Powertrain.entries.toSet()),
     BRAKE_PAD_CHECK("브레이크 패드 점검", ItemKind.INSPECT, Powertrain.entries.toSet()),
     BATTERY_12V_CHECK("12V 배터리 점검", ItemKind.INSPECT, Powertrain.entries.toSet()),
+    BATTERY_12V_REPLACE("12V 배터리 교체", ItemKind.REPLACE, Powertrain.entries.toSet()),
     WIPER_CHECK("와이퍼 점검", ItemKind.INSPECT, Powertrain.entries.toSet()),
     WASHER_REFILL("워셔액 보충", ItemKind.REFILL, Powertrain.entries.toSet()),
     REFUEL("주유", ItemKind.ENERGY, setOf(Powertrain.ICE, Powertrain.HYBRID)),
@@ -91,6 +98,8 @@ enum class EntryStatus(val label: String) {
 
 /** 확정 후 수정 시 이전 값을 남기는 변경 이력 */
 data class Revision(val version: Int, val changedAt: Instant, val summary: String)
+
+data class EngineOilDetails(val manufacturer: String?, val liters: Double?)
 
 /** 일지 한 건 (기획서 9장 DiaryEntry) */
 data class DiaryEntry(
@@ -121,6 +130,9 @@ data class DiaryEntry(
     val energyAmount: Double? = null,
     /** 날짜를 바꾸어 자동 첨부를 해제한 경우에도 원래 관측을 보존한다. */
     val detachedObservation: Observation? = null,
+    val visitId: String? = null,
+    val placeName: String? = null,
+    val engineOil: EngineOilDetails? = null,
 )
 
 /** 같은 차량의 로컬 프로필 간 열람 범위. null은 공용, 빈 집합은 나만 보기. */

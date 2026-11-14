@@ -61,6 +61,7 @@ open class CompanionActivity : Activity() {
     private var toastUntil = 0L
     private var toastText = ""
     private var dialog: AlertDialog? = null
+    private var visitDialog = false
     val showingCollection get() = collection?.visibility == View.VISIBLE
     val monitorState get() = state
     private val parked get() = !state.motion.restricted && (state.motion.speedMps == null || state.motion.speedMps!! < .1f)
@@ -188,6 +189,7 @@ open class CompanionActivity : Activity() {
     }
     protected fun applyMonitorState(value:MonitorState) {
         state=value;scene.motion=value.motion
+        if(visitDialog && (state.motion.restricted || state.motion.parkGear != true || state.motion.speedMps?.let { kotlin.math.abs(it) < .3f } != true)) dialog?.dismiss()
         if(!parked){
             if(conversation.asking && deferQuestionsWhileMoving) { speech.cancel();listening=false;conversation.defer();questionAt=SystemClock.elapsedRealtime();syncQuestion() }
             dialog?.dismiss()
@@ -218,8 +220,20 @@ open class CompanionActivity : Activity() {
                 val candidates=diary.pendingCandidates();pendingCount=candidates.size
                 if(automaticQuestions&&state.enabled&&!scene.preview&&!showingCollection&&!conversation.asking&&conversation.stage==EnergyConversation.Stage.IDLE){
                     val audio=getSystemService(android.media.AudioManager::class.java)
-                    if(speech.isAvailable()&&audio.mode==android.media.AudioManager.MODE_NORMAL)
-                        diary.questionQueue(user).next(candidates,parked&&state.motion.parkGear==true)?.let { beginQuestion(it.id) }
+                    val safe = parked && state.motion.parkGear == true && state.motion.speedMps?.let { kotlin.math.abs(it) < .3f } == true
+                    val queue = diary.questionQueue(user)
+                    val visit = if(store.setting(PlaceVisitTracker.ENABLED) == "true") diary.pendingVisits(user).firstOrNull() else null
+                    if(dialog?.isShowing != true && audio.mode==android.media.AudioManager.MODE_NORMAL) {
+                        if(visit != null && queue.canOffer(safe)) {
+                            queue.offered("visit/${visit.id}"); visitDialog = true
+                            dialog = AlertDialog.Builder(this@CompanionActivity)
+                                .setTitle("${visit.place.name}에 들르셨나요?")
+                                .setMessage("${visit.place.kind.label} 근처 정차가 감지됐어요. 실제 이용 여부를 확인하고 일지를 남겨 주세요.")
+                                .setPositiveButton("확인하기") { _, _ -> startActivity(Intent(this@CompanionActivity, io.chagok.app.ui.PlacesActivity::class.java)) }
+                                .setNegativeButton("아니요") { _, _ -> diary.rejectVisit(visit.id, user) }
+                                .setNeutralButton("나중에", null).create().also { it.setOnDismissListener { visitDialog = false }; it.show() }
+                        } else if(speech.isAvailable()) queue.next(candidates,safe)?.let { beginQuestion(it.id) }
+                    }
                 }
             }
             if(conversation.asking&&now-questionAt>=20_000){speech.cancel();listening=false;conversation.defer();questionAt=now;syncQuestion()}

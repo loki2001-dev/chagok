@@ -31,7 +31,7 @@ class SqliteStore(context: Context, databaseName: String = "chagok.db") : DiaryS
             db.execSQL("CREATE INDEX doc_owner ON doc(kind, owner)")
         }
 
-        // v2 adds optional JSON fields and a sharing document; existing v1 rows stay readable.
+        // New document types and optional JSON fields need no table migration.
         override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
             check(oldVersion <= newVersion && newVersion <= Codec.VERSION)
         }
@@ -42,6 +42,21 @@ class SqliteStore(context: Context, databaseName: String = "chagok.db") : DiaryS
         db.beginTransaction()
         return try { block().also { db.setTransactionSuccessful() } } finally { db.endTransaction() }
     }
+
+    private var cachedPlaces: Pair<String?, List<ServicePlace>>? = null
+    override fun places(): List<ServicePlace> {
+        val revision = setting("places.revision")
+        cachedPlaces?.takeIf { it.first == revision }?.let { return it.second }
+        return all("place", "catalogue").map(Codec::place).also { cachedPlaces = revision to it }
+    }
+    override fun replacePlaces(places: List<ServicePlace>) = transaction {
+        helper.writableDatabase.delete("doc", "kind=?", arrayOf("place"))
+        places.forEach { put("place", it.id, "catalogue", Codec.place(it)) }
+        saveSetting("places.revision", java.util.UUID.randomUUID().toString())
+        cachedPlaces = null
+    }
+    override fun visits(vehicleId: String) = all("visit", vehicleId).map(Codec::visit)
+    override fun saveVisit(visit: PlaceVisit) = put("visit", visit.id, visit.vehicleId, Codec.visit(visit))
 
     fun close() = helper.close()
 

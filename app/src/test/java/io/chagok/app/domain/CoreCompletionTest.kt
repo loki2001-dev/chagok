@@ -52,6 +52,26 @@ class CoreCompletionTest {
         json.remove("updatedAt"); json.remove("energyAmount"); json.remove("detachedObservation")
         val e = Codec.entry(json)
         assertEquals(e.createdAt, e.updatedAt); assertNull(e.energyAmount)
+        assertNull(e.engineOil)
+    }
+
+    @Test fun engineOilDetailsPersistAndCanBeEditedOrCleared() {
+        val d = draft()
+        fun update(details: EngineOilDetails?) =
+            service.updateEntry(d.id, d.performedOn, 47200.0, d.cost, null, null, emptySet(), details)
+
+        update(EngineOilDetails(" 테스트 제조사 ", 4.2))
+        assertTrue(service.confirm(d.id) is DiaryService.ConfirmResult.Saved)
+        val saved = Codec.entry(Codec.entry(service.entry(d.id)!!))
+        assertEquals(EngineOilDetails("테스트 제조사", 4.2), saved.engineOil)
+        assertNull(saved.energyAmount)
+        assertThrows(IllegalArgumentException::class.java) { update(EngineOilDetails("제조사", 0.0)) }
+        assertEquals(saved, service.entry(d.id))
+
+        val edited = update(EngineOilDetails("다른 제조사", 4.5))!!
+        assertEquals(EngineOilDetails("다른 제조사", 4.5), edited.engineOil)
+        assertTrue(edited.history.last().summary.contains("엔진오일 사용량 변경"))
+        assertNull(update(EngineOilDetails("", null))!!.engineOil)
     }
 
     @Test fun sharingFiltersTimelineLedgerScheduleReportAndMutation() {

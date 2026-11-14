@@ -83,6 +83,7 @@ class QuestionQueue(private val store: DiaryStore, private val vehicle: String, 
         store.saveSetting(prefix+id,"${parking()}|${clock.instant()}")
         store.saveSetting(prefix+"lastParking",parking().toString())
     }
+    fun canOffer(parked: Boolean) = parked && !muted() && store.setting(prefix+"lastParking") != parking().toString()
     fun next(candidates: List<DetectionCandidate>, parked: Boolean): DetectionCandidate? {
         if(!parked||muted()||store.setting(prefix+"lastParking")==parking().toString())return null
         return candidates.filter { it.state==CandidateState.PENDING&&!it.collecting }.sortedBy { it.after.receivedAt }.firstOrNull { c ->

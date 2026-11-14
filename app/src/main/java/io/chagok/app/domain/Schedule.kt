@@ -42,6 +42,19 @@ data class ScheduleStatus(
             kmState == ConditionState.SOON || dateState == ConditionState.SOON -> ScheduleState.SOON
             else -> ScheduleState.UPCOMING
         }
+
+    /** 사용한 주기 비율. 거리와 날짜 중 진행이 빠른 쪽을 표시한다. */
+    val progressPercent: Int?
+        get() {
+            val distance = plan.intervalKm?.takeIf { it > 0 }?.let { interval ->
+                remainingKm?.let { (interval - it) * 100 / interval }
+            }
+            val date = if (basis != null && nextDate != null && remainingDays != null) {
+                val interval = ChronoUnit.DAYS.between(basis.performedOn, nextDate)
+                if (interval > 0) (interval - remainingDays) * 100.0 / interval else null
+            } else null
+            return listOfNotNull(distance, date).maxOrNull()?.toInt()?.coerceIn(0, 100)
+        }
 }
 
 /**

@@ -45,6 +45,7 @@ dependencies {
     implementation("androidx.core:core:1.13.1")
     // 기획서 8장: 누적 주행거리(CAR_DRIVE), 연료·SoC(CAR_ENERGY)
     implementation("ai.pleos.playground:Vehicle:2.3.2")
+    implementation("ai.pleos.playground:FusedLocation:1.1.3")
     // 기획서 7장: 음성 입력. ON_DEVICE 모드만 사용
     implementation("ai.pleos.playground:SpeechToText:3.3.1")
     // SDK feasibility probe only; production does not yet consume navigation data.
