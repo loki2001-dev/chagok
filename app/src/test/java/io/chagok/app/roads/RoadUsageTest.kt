@@ -77,6 +77,30 @@ class RoadUsageTest {
         assertEquals(1L,summary().rejectedDistanceSamples)
         assertEquals(.01,summary().buckets.getValue(RoadBucket.MOTORWAY).distanceKm,1e-9)
     }
+    @Test fun badFirstZeroAnchorIsReplacedWithoutCountingTheJump() {
+        // SDK not ready: the very first reading is 0. Real readings must not wait days and then add 100,000 km.
+        sample(0,km=0.0)
+        sample(1,km=100_000.0); sample(2,km=100_000.01); sample(3,km=100_000.02)
+        assertEquals(100_000.02,store.roadUsageCheckpoint("car")!!.odometer!!.value,0.0)
+        assertEquals(0.0,summary().totalDistanceKm,0.0)
+        sample(4,km=100_000.03)
+        assertEquals(.01,summary().totalDistanceKm,1e-9)
+        assertEquals(3L,summary().rejectedDistanceSamples)
+    }
+    @Test fun spikeAsFirstAnchorDoesNotBlockDistanceForever() {
+        sample(0,km=9999.0)
+        for(second in 1L..4L) sample(second,km=100.0+(second-1)*.01)
+        assertEquals(.01,summary().totalDistanceKm,1e-9)
+        assertEquals(100.03,store.roadUsageCheckpoint("car")!!.odometer!!.value,1e-9)
+    }
+    @Test fun inconsistentGlitchesNeverOutvoteAGoodAnchor() {
+        sample(0,km=100.0)
+        sample(1,km=2.0); sample(2,km=9999.0); sample(3,km=2.0); sample(4,km=9999.0)
+        assertEquals(100.0,store.roadUsageCheckpoint("car")!!.odometer!!.value,0.0)
+        sample(5,km=100.05)
+        assertEquals(.05,summary().totalDistanceKm,1e-9)
+        assertEquals(4L,summary().rejectedDistanceSamples)
+    }
     @Test fun v6CheckpointUsesAcceptedObservationAsSeenTimestamp() {
         val old=org.json.JSONObject().put("at",start.toString())
             .put("odometer",Codec.observation(Observation(100.0,start)))

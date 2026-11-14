@@ -44,6 +44,8 @@ class WorkshopVisitIntegrationTest {
             diary.setPlan(Item.DRIVE_BELT, null, 12, "시연 정비 주기")
             store.replacePlaces(listOf(shop))
             store.saveSetting(PlaceVisitTracker.ENABLED, "true")
+            // This scenario is about the workshop question; keep the one-time mileage question out of it.
+            diary.offerServiceMileage()
             val car = diary.profile().id
             ActivityScenario.launch(CompanionActivity::class.java).use { app ->
                 signal("DRIVE")
@@ -75,8 +77,12 @@ class WorkshopVisitIntegrationTest {
                 app.onActivity { assertEquals("", it.scene.question) }
                 signal("WORKSHOP_EXIT")
                 await("정비소 출차 미감지") { store.visits(car).single().exited }
+                // Questions are parked-only: nothing is asked while driving away from the workshop.
+                Thread.sleep(2200)
+                app.onActivity { assertEquals("", it.scene.question) }
+                signal("PARK")
                 signal("WORKSHOP_QUESTION")
-                await("출차 후 말풍선 미표시") {
+                await("출차 후 다음 정차에서 말풍선 미표시") {
                     var asking = false
                     app.onActivity { asking = it.scene.question == "방금 정비하셨나요?" }
                     asking
@@ -85,8 +91,14 @@ class WorkshopVisitIntegrationTest {
                 // Pass final Korean transcripts to the same callback as the on-device speech recognizer.
                 app.onActivity { it.receiveAnswer("네"); assertEquals("무엇을 정비하셨나요?", it.scene.question) }
                 Thread.sleep(2200)
+                app.onActivity {
+                    it.receiveAnswer("드라이브 벨트 교체 9만 5천 원")
+                    assertEquals("드라이브 벨트 교체 · 95,000원\n이대로 기록할까요?", it.scene.question)
+                }
+                assertTrue(diary.confirmedEntries().isEmpty())
+                Thread.sleep(2200)
                 signal("WORKSHOP_SAVE")
-                app.onActivity { it.receiveAnswer("드라이브 벨트 교체 9만 5천 원") }
+                app.onActivity { it.receiveAnswer("네") }
                 val entry = diary.confirmedEntries().single()
                 assertEquals(visit.id, entry.visitId)
                 assertEquals(Item.DRIVE_BELT, entry.item)
@@ -105,9 +117,8 @@ class WorkshopVisitIntegrationTest {
                     }
                     return visible
                 }
-                assertFalse(receiptShown())
-                signal("PARK")
-                await("정차 후 저장된 정비 연출 미표시") { receiptShown() }
+                // Saved while parked, so the receipt animation plays right away.
+                await("정차 중 저장된 정비 연출 미표시") { receiptShown() }
                 await("정비 연출이 끝나지 않음") { !receiptShown() }
                 onView(withContentDescription("차량 일지와 관리 열기")).perform(click())
                 onView(withContentDescription("차량 요약 탭")).perform(click())

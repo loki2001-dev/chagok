@@ -55,10 +55,19 @@ class ParkedDiarySmokeTest {
     }.getOrDefault(false) }
     private fun signal(value: String) = instrument.sendStatus(2, android.os.Bundle().apply { putString("chagok_signal", value) })
 
+    /** The question is asked at the first parking after a recorded drive, never while moving. */
     private fun driveUntilMileageQuestion(scenario: ActivityScenario<CompanionActivity>) {
         scenario.onActivity { assertTrue(it.scene.question.isEmpty()) }
         signal("DRIVE")
-        await("첫 주행 정비 거리 질문") {
+        await("주행 신호") {
+            var moving = false
+            scenario.onActivity { moving = (it.monitorState.motion.speedMps ?: 0f) > .3f }
+            moving
+        }
+        Thread.sleep(2500)
+        scenario.onActivity { assertTrue(it.scene.question.isEmpty()) }
+        signal("PARK")
+        await("첫 주행 뒤 정차 시 정비 거리 질문") {
             var shown = false
             scenario.onActivity { shown = it.scene.question.replace('\n', ' ') == "마지막으로 정비한 주행거리가 몇 km였나요?" }
             shown
@@ -252,15 +261,22 @@ class ParkedDiarySmokeTest {
                 assertNull(oil.nextDate)
                 assertTrue(diary.timeline().isEmpty())
             }
+            // Answered once: neither a recreated screen nor the next drive-and-park asks again.
             scenario.recreate()
+            signal("DRIVE")
             await("주행 신호 복구") {
                 var moving = false
                 scenario.onActivity { moving = (it.monitorState.motion.speedMps ?: 0f) > .3f }
                 moving
             }
-            Thread.sleep(1500)
-            scenario.onActivity { assertTrue(it.scene.question.isEmpty()) }
             signal("PARK")
+            await("정차 신호 복구") {
+                var stopped = false
+                scenario.onActivity { stopped = (it.monitorState.motion.speedMps ?: 1f) < .3f }
+                stopped
+            }
+            Thread.sleep(2500)
+            scenario.onActivity { assertTrue(it.scene.question.isEmpty()) }
         }
         ActivityScenario.launch(MainActivity::class.java).use {
             parked()

@@ -517,6 +517,22 @@ class DiaryService(
         }
     }
 
+    /** Cheap pre-check for the per-second scheduler: the question was neither answered nor declined. */
+    fun serviceMileagePending(): Boolean =
+        store.setting("$mileageKey/asked") != "true" && reportedServiceKm() == null
+
+    /**
+     * The claimed question ended without an answer (driving resumed, timeout, recognition failure).
+     * Release it for a later parking, at most [MILEAGE_ATTEMPTS] times. Returns whether it will be asked again.
+     */
+    fun releaseServiceMileage(): Boolean = store.transaction {
+        val attempts = (store.setting("$mileageKey/attempts")?.toIntOrNull() ?: 0) + 1
+        store.saveSetting("$mileageKey/attempts", attempts.toString())
+        val again = attempts < MILEAGE_ATTEMPTS && reportedServiceKm() == null
+        if (again) store.saveSetting("$mileageKey/asked", "")
+        again
+    }
+
     fun setPlan(item: Item, intervalKm: Int?, intervalMonths: Int?, source: String,
                 initialKm: Int? = null) {
         require(intervalKm == null || intervalKm > 0) { "주기 거리는 0보다 커야 해요" }
@@ -759,6 +775,8 @@ class DiaryService(
     companion object {
         /** 이보다 오래된 차량 값은 자동으로 붙이지 않는다 */
         val FRESH_LIMIT: Duration = Duration.ofMinutes(10)
+        /** 답 없이 끝난 첫 정비 주행거리 질문을 다시 묻는 최대 횟수 */
+        const val MILEAGE_ATTEMPTS = 3
         private val TIME = DateTimeFormatter.ofPattern("HH:mm")
 
         fun km(v: Double) = "%,.0fkm".format(v)
