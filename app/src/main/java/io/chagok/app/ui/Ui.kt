@@ -117,13 +117,15 @@ class Ui(private val ctx: Context) {
         children.forEach { addView(it) }
     }
 
+    // This compile-time constant is inlined; TextView.breakStrategy itself is available since API 23.
+    @android.annotation.SuppressLint("InlinedApi")
     fun text(s: CharSequence, size: Float = 22f, color: Int = Palette.text, bold: Boolean = false) = TextView(ctx).apply {
         text = s
         setTextSize(TypedValue.COMPLEX_UNIT_SP, size)
         setTextColor(color)
         typeface = typeface(if (bold) 650 else 500)
         setLineSpacing(0f, 1.12f)
-        breakStrategy=android.text.Layout.BREAK_STRATEGY_HIGH_QUALITY
+        breakStrategy=android.graphics.text.LineBreaker.BREAK_STRATEGY_HIGH_QUALITY
     }
 
     fun title(s: String) = text(s, 36f, bold = true)
