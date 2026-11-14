@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Read-only SDK audit in the isolated .smoke application. -->
+    <uses-permission android:name="android.car.permission.CAR_SPEED" />
+    <uses-permission android:name="pleos.car.permission.CAR_LIGHTS" />
+    <uses-permission android:name="pleos.car.permission.CAR_WINDOWS" />
+    <uses-permission android:name="pleos.car.permission.NAVI_ROUTE" />
+    <application>
+        <activity android:name=".companion.CompanionDrivingProbeActivity" android:exported="true"
+            android:label="차곡 주행 연출 시험" android:resizeableActivity="true"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|uiMode|density|fontScale">
+            <meta-data android:name="distractionOptimized" android:value="true" />
+        </activity>
+        <activity android:name=".companion.CompanionHarnessActivity" android:exported="false"
+            android:resizeableActivity="true" android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|uiMode|density|fontScale">
+            <meta-data android:name="distractionOptimized" android:value="true" />
+        </activity>
+        <activity android:name=".companion.CompanionPauseTargetActivity" android:exported="false" />
+    </application>
+</manifest>
