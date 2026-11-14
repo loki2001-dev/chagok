@@ -14,6 +14,13 @@ class CatalogueTest(unittest.TestCase):
             old=rows[0]['id']
             path.write_text(path.read_text().replace('37.5','37.6'))
             self.assertEqual(convert(path,'REPAIR')[0][0]['id'],old)
+    def test_zero_padded_operating_status_is_retained(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'repair.csv'
+            path.write_text('자동차정비업체명,소재지도로명주소,위도,경도,영업상태\n정비소,서울,37.5,127,01\n폐업,서울,37,127,03\n')
+            rows, skipped=convert(path,'REPAIR')
+            self.assertEqual(len(rows),1)
+            self.assertEqual(skipped,1)
     def test_invalid_coordinates_fail_before_output(self):
         with tempfile.TemporaryDirectory() as directory:
             path=Path(directory)/'fuel.csv'
