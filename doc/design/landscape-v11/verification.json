@@ -1,0 +1,91 @@
+{
+  "verifiedAtUtc": "2026-11-14T09:04:35.516793+00:00",
+  "device": "PLEOS 2.1.0 Android 14 API34 emulator-5554, user 10",
+  "unit": {
+    "tests": 93,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "instrumentation": {
+    "uniqueTestsFinalPassed": 17,
+    "classes": {
+      "CompanionSmokeTest": 6,
+      "ParkedDiarySmokeTest": 4,
+      "UiReviewSmokeTest": 3,
+      "LandscapeUiSmokeTest": 4
+    },
+    "runs": [
+      {
+        "log": "regression-initial.log",
+        "passed": 12,
+        "failed": 1,
+        "note": "Pixel-reference setup resized an active encounter; fixed setup size before placement."
+      },
+      {
+        "log": "regression-fixed-and-landscape.log",
+        "passed": 5,
+        "failed": 0
+      },
+      {
+        "log": "bubble-position-smoke.log",
+        "passed": 5,
+        "failed": 0
+      },
+      {
+        "log": "bubble-final-smoke.log",
+        "passed": 2,
+        "failed": 0,
+        "note": "Final short-tail rendering, both skins and projections."
+      }
+    ]
+  },
+  "nativeWindow": {
+    "task": 1000671,
+    "left": 0,
+    "top": 0,
+    "right": 1682,
+    "bottom": 1210,
+    "visible": true
+  },
+  "preview": "native-landscape-preview.mp4; labelled parked preview in isolated smoke app",
+  "performanceDuringEmulatorRecording": {
+    "frames": 432,
+    "jankyPercent": 85.42,
+    "p50Ms": 85,
+    "note": "Observed frame delays; not a real-vehicle frame-rate certification."
+  },
+  "installedDebugApk": {
+    "path": "app/build/outputs/apk/debug/app-debug.apk",
+    "sha256": "78e68cd780393d099e1e0957a28c9aa9a3b016b2e8a8889ea46bea2622b00f6d",
+    "deviceSha256Matches": true,
+    "bytes": 46191083
+  },
+  "assets": [
+    {
+      "file": "racer-side.png",
+      "sha256": "86214c5c536b18de9f63dae53f13715d5682dc5e365056d3e865beedef61e3d8"
+    },
+    {
+      "file": "hyundai-side.png",
+      "sha256": "5077dba06cc2cb8206c287d5133526ad6b64c0dd7df5d35c3787f7d52fa58fd4"
+    },
+    {
+      "file": "city-side.png",
+      "sha256": "e4796cfa5675c52c9c8f23ac5c3af4ddb14ae75b18a39de8cc54d06e853f7ae3"
+    },
+    {
+      "file": "country-side.png",
+      "sha256": "d1260590989868a3aeffc18ce6413a4468c6f9c3df1153d425fb7328019097ca"
+    },
+    {
+      "file": "encounters-side.png",
+      "sha256": "832629f0148e1979fe347753cdc0f4a03bf5b8371cd8f09f27354da5f75da17a"
+    }
+  ],
+  "data": "Normal app updated using install -r; no normal database reset or seeded demo records.",
+  "limitations": [
+    "Production NO_VIDEO policy unchanged.",
+    "SDK real driving visibility and real-car performance were not re-certified by this UI update."
+  ]
+}
