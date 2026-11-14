@@ -1,0 +1,31 @@
+{
+  "format": 1,
+  "simplificationMeters": 1.0,
+  "tileScale": 50,
+  "recordBytes": 25,
+  "source": "https://download.geofabrik.de/asia/south-korea.html",
+  "sourceTimestamp": "2026-11-13T21:22:20Z",
+  "sourceSha256": "96170d83fe23c6479a86e0ddcdb20cf1c3efb1f76fc3dfdd4c745af8a7764ca0",
+  "attribution": "© OpenStreetMap contributors",
+  "license": "https://opendatacommons.org/licenses/odbl/1-0/",
+  "tiles": 26201,
+  "segments": 9601037,
+  "classes": {
+    "living_street": 104913,
+    "motorway": 70243,
+    "motorway_link": 68456,
+    "primary": 195815,
+    "primary_link": 47700,
+    "residential": 1861904,
+    "secondary": 387849,
+    "secondary_link": 38614,
+    "service": 2051664,
+    "tertiary": 674296,
+    "tertiary_link": 31320,
+    "track": 2949062,
+    "trunk": 95622,
+    "trunk_link": 75197,
+    "unclassified": 948382
+  },
+  "excluded": {}
+}
