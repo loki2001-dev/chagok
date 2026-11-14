@@ -183,7 +183,12 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
             row.addView(ui.icon(Icon.CHEVRON,22,Palette.sub),LinearLayout.LayoutParams(ui.dp(22),ui.dp(22)).apply { marginStart=ui.dp(12) })
             addView(row)
             if(narrow)addView(ui.text(won(entry.cost),28f,tone,true))
-            addView(ui.text(listOfNotNull(entry.odometer?.let { km(it.value) },if(entry.candidateId!=null)"자동 감지 후 확인" else "직접 기록",
+            val origin = when {
+                entry.visitId != null -> listOfNotNull("방문 확인", entry.placeName).joinToString(" · ")
+                entry.candidateId != null -> "자동 감지 후 확인"
+                else -> "직접 기록"
+            }
+            addView(ui.text(listOfNotNull(entry.odometer?.let { km(it.value) },origin,
                 if(entry.version>1)"수정 ${entry.version-1}회" else null).joinToString(" · "),20f,Palette.sub))
             background=ui.touch()
         },"${entry.performedOn} ${entry.item.label} 기록 상세",open)

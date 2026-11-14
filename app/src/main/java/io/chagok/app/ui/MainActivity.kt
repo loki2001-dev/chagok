@@ -53,6 +53,9 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import io.chagok.app.companion.WorkshopView
+import io.chagok.app.companion.BayJob
+import io.chagok.app.companion.CarSkin
 import io.chagok.app.companion.MonitorState
 import io.chagok.app.companion.RecordingStartup
 import io.chagok.app.companion.VehicleMonitorService
@@ -64,6 +67,30 @@ import io.chagok.app.companion.CompanionActivity
  * 상태가 바뀔 때마다 현재 화면을 다시 그린다 (데이터가 작고 화면이 단순하다).
  */
 class MainActivity : Activity() {
+    private var workshop: WorkshopView? = null
+
+    private fun closeWorkshop() {
+        workshop?.let { (it.parent as? FrameLayout)?.removeView(it) }
+        workshop = null
+    }
+
+    private fun showWorkshop(entry: DiaryEntry) {
+        val job = BayJob.forItem(entry.item) ?: return
+        showWorkshop(job, entry.wheels, entry.engineOil?.manufacturer, entry.engineOil?.liters, entry.item.label)
+    }
+
+    /** Call after a successful maintenance save, with fields from that saved record. */
+    internal fun showWorkshop(job: BayJob, wheels: Set<Wheel> = emptySet(),
+                              oilBrand: String? = null, oilLitres: Double? = null, itemLabel: String = job.label) {
+        if (restricted || !resumed || !driving.animationAllowed) return
+        closeWorkshop()
+        val root = overlay.parent as FrameLayout
+        val skin = CarSkin.entries.firstOrNull { it.name == store.setting("companion.skin/$user") } ?: CarSkin.RACER
+        workshop = WorkshopView(this,job,skin,wheels,oilBrand,oilLitres,itemLabel,finished = ::closeWorkshop).also {
+            root.addView(it,root.indexOfChild(overlay),FrameLayout.LayoutParams(MATCH_PARENT,MATCH_PARENT))
+        }
+    }
+
     private enum class Screen(val label: String) {
         HOME("차량 요약"),
         DRIVES("운행 기록"),
@@ -165,6 +192,7 @@ class MainActivity : Activity() {
             val wasRestricted = restricted
             restricted = r
             overlay.visibility = if (restricted) View.VISIBLE else View.GONE
+            if (!driving.animationAllowed || restricted) closeWorkshop()
             if (restricted) {
                 requestGeneration++
                 dialogs.toList().forEach { it.dismiss() }
@@ -187,6 +215,7 @@ class MainActivity : Activity() {
 
     override fun onPause() {
         resumed = false
+        closeWorkshop()
         requestGeneration++
         speech.cancel()
         monitor.close()
@@ -627,6 +656,7 @@ class MainActivity : Activity() {
         if (updated.isFailure) { message = updated.exceptionOrNull()?.message; render(); return }
         when (val r = service.confirm(d.id, allowDuplicate)) {
             is DiaryService.ConfirmResult.Saved -> {
+                showWorkshop(r.entry)
                 activeDraftId = null
                 checks = emptyList()
                 partial = ""
@@ -772,7 +802,11 @@ class MainActivity : Activity() {
             ui.text(e.odometer?.let { km(it.value) } ?: "미입력",32f,bold=true),
             ui.label(e.odometer?.source?.label ?: "거리 기준 일정은 계산을 미뤄요"),
             ui.divider(),
-            ui.text(if (e.candidateId != null) "자동 감지한 후보를 확인한 기록이에요." else "직접 남긴 기록이에요.", 22f, Palette.sub))
+            ui.text(when {
+                e.visitId != null -> listOfNotNull("방문 확인", e.placeName).joinToString(" · ")
+                e.candidateId != null -> "자동 감지한 후보를 확인한 기록이에요."
+                else -> "직접 남긴 기록이에요."
+            }, 22f, Palette.sub))
         e.energyAmount?.let { details.addView(ui.text("${if (e.item == Item.CHARGE) "충전량" else "주유량"} $it ${if (e.item == Item.CHARGE) "kWh" else "L"}", 24f)) }
         if (e.item == Item.ENGINE_OIL) {
             details.addView(ui.text("엔진오일 제조사 · ${e.engineOil?.manufacturer ?: "미입력"}", 22f))
