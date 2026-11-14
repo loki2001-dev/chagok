@@ -70,7 +70,7 @@ internal class LandscapeSceneRenderer(private val context:Context) {
     data class Pose(val x:Float,val y:Float,val width:Float,val height:Float,val groundY:Float,val blink:Boolean)
     fun draw(c:Canvas,l:SceneLayout,skin:CarSkin,steer:Float,signal:Int,acceleration:Float,speed:Float,rain:Float,boost:Float,
              clock:Float,travel:Double,scenery:Scenery,previous:Scenery,blend:Float,event:EncounterPass?,allowed:Boolean,
-             booster:Bitmap):Pose {
+             booster:Bitmap, bay:ServiceBayRenderer?, progress:Float, departing:Boolean):Pose {
         if(allowed&&blend<1f) { backdrop(c,l,previous,travel,1f);backdrop(c,l,scenery,travel,blend) }
         else backdrop(c,l,scenery,if(allowed)travel else 0.0,1f)
         if(rain>0) { paint.color=Color.argb((rain*35).toInt(),20,43,60);c.drawRect(0f,0f,l.width,l.height,paint) }
@@ -82,9 +82,9 @@ internal class LandscapeSceneRenderer(private val context:Context) {
         val bounce=if(allowed&&speed>.3f)sin(clock*8)*.45f else 0f
         val ground=position.groundY+bounce
         val y=ground-h
-        paint.color=Color.argb(72,7,14,18);c.drawOval(x+w*.08f,ground-h*.1f,x+w*.94f,ground+h*.04f,paint)
+        paint.color=Color.argb(72,7,14,18);if (bay == null) c.drawOval(x+w*.08f,ground-h*.1f,x+w*.94f,ground+h*.04f,paint)
         paint.alpha=255
-        if(boost>.015f&&allowed&&skin==CarSkin.RACER) {
+        if(bay==null&&boost>.015f&&allowed&&skin==CarSkin.RACER) {
             // The existing exhaust sprite points downward; rotate its flame to the rear (left).
             for(level in listOf(.39f,.52f)) {
                 val length=(28+boost*65)*(1+sin(clock*29)*.04f)
@@ -92,8 +92,11 @@ internal class LandscapeSceneRenderer(private val context:Context) {
                 rect.set(-7f,0f,7f,length);paint.alpha=(min(1f,boost*1.35f)*255).toInt();c.drawBitmap(booster,null,rect,paint);c.restore()
             }
         }
-        paint.alpha=255;rect.set(x,y,x+w,y+h);c.drawBitmap(car,null,rect,paint)
-        val blink=allowed&&signal!=0&&clock%.84f<.44f
+        val bayCar = bay?.drawFuel(c,l.width,l.height,true,car,skin,clock,progress,position.x,y+h/2,w,departing=departing)
+        if (bayCar == null) {
+            paint.alpha=255;rect.set(x,y,x+w,y+h);c.drawBitmap(car,null,rect,paint)
+        }
+        val blink=bayCar==null&&allowed&&signal!=0&&clock%.84f<.44f
         if(blink) {
             val far=signal<0
             val frontX=x+w*(if(far).91f else .95f);val rearX=x+w*(if(far).10f else .055f)
@@ -103,7 +106,7 @@ internal class LandscapeSceneRenderer(private val context:Context) {
             paint.color=Color.rgb(255,192,61);paint.strokeWidth=2.3f;paint.strokeCap=Paint.Cap.ROUND
             c.drawLine(frontX-4,frontY+1,frontX+4,frontY-1,paint);c.drawLine(rearX-3,rearY,rearX+3,rearY,paint)
         }
-        if(allowed&&event!=null)encounter(c,l,event,true)
+        if(bayCar==null&&allowed&&event!=null)encounter(c,l,event,true)
         if(rain>.01f) {
             for(i in 0 until ((18+rain*95)*l.width*l.height/(800*400)).toInt()) {
                 val depth=if(i%3==0)1f else .63f
@@ -114,6 +117,7 @@ internal class LandscapeSceneRenderer(private val context:Context) {
             }
         }
         paint.alpha=255
+        if (bayCar != null) return Pose(bayCar.centerX(),bayCar.centerY(),bayCar.width(),bayCar.height(),bayCar.bottom,false)
         return Pose(position.x,y+h/2,w,h,ground,blink)
     }
 }

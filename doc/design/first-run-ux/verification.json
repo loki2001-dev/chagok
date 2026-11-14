@@ -1,0 +1,100 @@
+{
+  "date": "2026-11-15",
+  "branch": "feature/first-run-diary-pr",
+  "scope": [
+    "first-screen recording value",
+    "first-run setup and contextual microphone permission",
+    "review follow-up: recording-off restrictions, vehicle permission recovery, pending microphone request"
+  ],
+  "build": [
+    ":app:assembleDebug",
+    ":app:assembleSmoke",
+    ":app:assembleSmokeAndroidTest"
+  ],
+  "jvm": {
+    "task": ":app:testSmokeUnitTest",
+    "tests": 139,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "device": {
+    "package": "io.chagok.app.smoke",
+    "platform": "Pleos Android emulator",
+    "regressionRun": {
+      "reportedTests": 20,
+      "result": "OK",
+      "log": "regression.txt"
+    },
+    "finalRun": {
+      "class": "io.chagok.app.FirstRunExperienceTest",
+      "reportedTests": 5,
+      "result": "OK",
+      "log": "first-run.txt"
+    },
+    "note": "The three original FirstRunExperienceTest cases overlap between runs. The Virtual Console driving/restart scenario in AutoDiarySmokeTest is skipped without virtualConsole=true. Real launcher setup, recording off/on, and review routing passed in the final run.",
+    "reviewFollowup": {
+      "classes": [
+        "io.chagok.app.PermissionReviewTest",
+        "io.chagok.app.FirstRunExperienceTest"
+      ],
+      "reportedTests": 11,
+      "result": "OK",
+      "log": "review-followup.txt"
+    },
+    "interruptedRun": "An earlier combined run was aborted by an Android system crash during CompanionSmokeTest; it is not counted as a passed run. The focused 11 tests were rerun successfully. Later real-permission attempts encountered UI automation failures, unavailable car signals, and a mismatched installed APK. The final permission test injected Park and passed after reinstalling and verifying the local APK hash.",
+    "microphonePermission": {
+      "class": "io.chagok.app.PermissionDialogDeviceTest",
+      "reportedTests": 1,
+      "result": "OK",
+      "log": "microphone-permission.txt",
+      "scope": "Real Android permission dialog and lifecycle; foreground-only allow was tapped from the observed emulator screen. Park state injected. Automatic questions muted. Exactly one draft created. No audio recognition exercised.",
+      "smokeApkSha256": "b79819b0c7ee94517314ada35468861f9008a238e4302001b8494aefb4e2ab22"
+    },
+    "companionFollowup": {
+      "class": "io.chagok.app.CompanionSmokeTest",
+      "methods": [
+        "nativeQuestionRequiresConfirmationAndDefersOnBackground",
+        "menusPersistSkinAndLayoutFillsSmallPortraitAndWideWindows"
+      ],
+      "reportedTests": 2,
+      "result": "OK",
+      "log": "companion-followup.txt"
+    }
+  },
+  "captures": {
+    "nativeAndroidViews": true,
+    "fixtureData": true,
+    "viewportsDp": [
+      "320x800",
+      "841x1210",
+      "1400x430"
+    ],
+    "note": "Welcome uses deterministic Park state. Home uses a seeded 38.2 km trip and one unconfirmed charge candidate, not live driving or microphone recognition.",
+    "permissionRecovery": "ux-permission-recovery-320x800.png; native Android View rendered with deterministic missing CAR_SPEED permission and parked state"
+  },
+  "limitations": [
+    "No physical vehicle test",
+    "No microphone recognition test",
+    "No Virtual Console drive injection in this run"
+  ],
+  "codeReview": {
+    "reviewer": "review_behavior subagent",
+    "mode": "read-only comparison against pre-fix snapshot",
+    "result": "No new concrete regression found; device execution performed separately by primary agent."
+  },
+  "originalWorkingBranch": "feature/first-run-diary-experience",
+  "prValidation": {
+    "base": "3343e50204e9162d4321d878f3bf6eda25c1f93d",
+    "build": "passed",
+    "appUnitTests": 145,
+    "coreUnitTests": 78,
+    "note": "UX-only changes ported onto latest main in a separate worktree; earlier runs below were performed in the original mixed working tree.",
+    "deviceTests": 13,
+    "deviceLog": "pr-device.txt",
+    "smokeApkSha256": "04b5ae8c4fa59466b282c6658fa4c60e86bec69663b9cf4719e57617f3edb18e",
+    "realMicrophonePermissionTests": 1,
+    "realMicrophonePermissionLog": "pr-microphone-permission.txt",
+    "realMicrophonePermissionScope": "Real Android foreground-only microphone grant and resumed question; Park injected, automatic questions muted, exactly one draft. No audio recognition."
+  }
+}

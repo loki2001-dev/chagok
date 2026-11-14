@@ -63,6 +63,7 @@ enum class Item(val label: String, val kind: ItemKind, val powertrains: Set<Powe
     DRIVE_BELT("드라이브 벨트 교체", ItemKind.REPLACE, setOf(Powertrain.ICE, Powertrain.HYBRID)),
     TRANSMISSION_OIL("변속기 오일 교환", ItemKind.REPLACE, setOf(Powertrain.ICE, Powertrain.HYBRID)),
     BRAKE_FLUID("브레이크 오일 교환", ItemKind.REPLACE, Powertrain.entries.toSet()),
+    COOLANT("냉각수 교환", ItemKind.REPLACE, setOf(Powertrain.ICE, Powertrain.HYBRID)),
     SPARK_PLUG("점화플러그 교체", ItemKind.REPLACE, setOf(Powertrain.ICE, Powertrain.HYBRID)),
     IGNITION_COIL("점화코일 교체", ItemKind.REPLACE, setOf(Powertrain.ICE, Powertrain.HYBRID)),
     CABIN_FILTER("에어컨 필터 교체", ItemKind.REPLACE, Powertrain.entries.toSet()),
@@ -153,6 +154,7 @@ data class MaintenancePlan(
     val notificationsOn: Boolean = true,
     /** 사용자가 미룬 날짜. 이 날까지 브리핑에서 접어 둔다 */
     val snoozedUntil: LocalDate? = null,
+    val initialKm: Int? = null,
 )
 
 enum class EnergyKind(val label: String, val unit: String) {

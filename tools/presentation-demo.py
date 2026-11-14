@@ -24,9 +24,10 @@ def main():
     parser.add_argument("--prepare", action="store_true", help="Reset only .smoke and leave the start screen ready")
     parser.add_argument("--rehearse", action="store_true", help="Run/verify all stages, then restore an empty ready screen")
     parser.add_argument("--landscape-rain", action="store_true", help="Wide Hyundai sedan, sustained high front wiper")
+    parser.add_argument("--output-dir", type=pathlib.Path, help="Write this run to a separate evidence directory")
     args = parser.parse_args()
     rainy = args.landscape_rain
-    output = OUT / "landscape-rain" if rainy else OUT
+    output = args.output_dir or (OUT / "landscape-rain" if rainy else OUT)
     if split.adb("shell", "getprop", "ro.kernel.qemu") != "1":
         raise RuntimeError("Presentation is restricted to the Android emulator")
     output.mkdir(parents=True, exist_ok=True)
@@ -221,9 +222,12 @@ def main():
         wait_for("parked SDK", lambda s: s.get("parked") and abs(s["speedKmh"]) < .1)
         time.sleep(2); command("REFUEL")
         wait_for("real detector's 30 to 80 fuel candidate", lambda s: s["candidateCount"] == 1 and s.get("collecting") is True, timeout=25)
+        wait_for("car parked at the pump", lambda s: s.get("fuelVisit", 0) >= .99)
+        time.sleep(2)
         checkpoint("05-refuel")
         command("RESTART"); request("/vehicle/gear?gear=Drive"); speed(35)
         wait_for("question after restart", lambda s: s["phase"] == "QUESTION" and s["stage"] == "AMOUNT")
+        wait_for("car merged back onto the road", lambda s: s.get("fuelVisit") == 0)
         distance(.60); time.sleep(3); checkpoint("06-question")
         command("AMOUNT")
         wait_for("amount confirmation", lambda s: s["stage"] == "CONFIRM" and s["monthTotal"] == 0)

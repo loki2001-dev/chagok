@@ -1,0 +1,6 @@
+
+io.chagok.app.CompanionSmokeTest:..
+
+Time: 24.843
+
+OK (2 tests)

@@ -16,6 +16,8 @@ class CompanionSceneView(context: Context) : View(context) {
     var motion = MotionSnapshot()
         set(value) { field = value; serviceVisit.advance(0f, value); invalidate() }
     var skin = CarSkin.RACER
+    internal val fuelVisit = FuelVisit()
+    private val bay by lazy { ServiceBayRenderer(context) }
     var preview = false
     var previewSpeed = 45f
     var previewTurn = 0
@@ -112,6 +114,7 @@ class CompanionSceneView(context: Context) : View(context) {
         val allowed = motion.animationAllowed && (!preview || !motion.restricted)
         val speed = if (preview) previewSpeed / 3.6f else motion.speedMps ?: 0f
         if (allowed) {
+            fuelVisit.advance(dt)
             clock += dt
             val turn = if (preview) previewTurn else motion.turn ?: 0
             steer += (turn - steer) * min(1f, dt*3.6f)
@@ -124,7 +127,7 @@ class CompanionSceneView(context: Context) : View(context) {
             sideTravel += pixels
             val previous = director.active
             val scenery = director.scenery
-            director.step(dt, pixels, speed > .3f, true, question.isNotEmpty() || serviceVisit.frame != null, seen) { event ->
+            if (fuelVisit.position == 0f) director.step(dt, pixels, speed > .3f, true, question.isNotEmpty() || serviceVisit.frame != null, seen) { event ->
                 if (preview) true else collect(event).also { if (it) onEncounter(event.scene) }
             }
             if (previous == null && director.active != null) {
@@ -148,7 +151,7 @@ class CompanionSceneView(context: Context) : View(context) {
             val flame=if(allowed&&skin==CarSkin.RACER)boost else 0f
             val car=landscapeRenderer.draw(canvas,layout,skin,steer,if(preview)previewTurn else motion.turn?:0,pose,
                 if(preview)previewSpeed/3.6f else motion.speedMps?:0f,rain,flame,clock,sideTravel,director.scenery,previousScenery,blend,
-                director.active,allowed,bitmaps.getValue("booster"))
+                director.active,allowed,bitmaps.getValue("booster"), if(allowed && fuelVisit.position>0f) bay else null, fuelVisit.position, !fuelVisit.parkedAtPump)
             serviceVisit.frame?.let { serviceRenderer.draw(canvas, layout, car.x, car.y, car.width, car.height, car.groundY, it) }
             if(question.isNotEmpty())drawBubble(canvas,layout.speechBubble(car.x,car.y,car.width,car.height))
             canvas.restore()
@@ -186,9 +189,14 @@ class CompanionSceneView(context: Context) : View(context) {
             for(side in listOf(-1,1)) { val fx=centerX+side*w*.125f-fw/2;rect.set(fx,y+h*.88f,fx+fw,y+h*.88f+fh);canvas.drawBitmap(bitmaps.getValue("booster"),null,rect,paint) }
             paint.alpha=255
         }
-        rect.set(x,y,x+w,y+h);canvas.drawBitmap(car,null,rect,paint)
+        val bayCar = if (allowed && fuelVisit.position > 0f)
+            bay.drawFuel(canvas,layout.width,layout.height,false,car,skin,clock,fuelVisit.position,centerX,centerY,w,departing = !fuelVisit.parkedAtPump)
+        else null
+        if (bayCar == null) {
+            rect.set(x,y,x+w,y+h);canvas.drawBitmap(car,null,rect,paint)
+        }
         val turn=if(preview)previewTurn else motion.turn?:0
-        val blink=allowed&&turn!=0&&clock%.84f<.44f
+        val blink=bayCar==null&&allowed&&turn!=0&&clock%.84f<.44f
         if(blink){
             paint.color=Color.rgb(255,188,61);paint.strokeWidth=2.2f;paint.strokeCap=Paint.Cap.ROUND
             if(skin==CarSkin.RACER){
@@ -210,7 +218,7 @@ class CompanionSceneView(context: Context) : View(context) {
             }
         }
         serviceVisit.frame?.let { serviceRenderer.draw(canvas, layout, centerX, centerY, w, h, centerY+h/2, it) }
-        if(question.isNotEmpty()) drawBubble(canvas,layout.speechBubble(centerX,centerY,w,h))
+        if(question.isNotEmpty()) drawBubble(canvas,layout.speechBubble(bayCar?.centerX() ?: centerX,bayCar?.centerY() ?: centerY,bayCar?.width() ?: w,bayCar?.height() ?: h))
         paint.alpha=255;canvas.restore()
         renderState=RenderState(centerX,0f,w,blink,rain,flame,travel,if(allowed)director.active?.scene?.id else null,director.scenery,renderState.frames+1,centerY,h)
         describe(allowed)
@@ -219,7 +227,8 @@ class CompanionSceneView(context: Context) : View(context) {
         val description = (if(preview)"미리보기. " else "")+(if(allowed) "${if(skin==CarSkin.RACER)"네온 레이서" else "현대 세단"}. ${director.active?.scene?.name.orEmpty()}" else "자동 차량일지 기록 중. 주행 제한에 맞춰 연출을 쉬고 있어요.")+
             (if(question.isNotEmpty()) ". ${question.replace('\n',' ')} $questionHint" else "") +
             (serviceVisit.frame?.let { ". ${it.caption}. 방문 기념 연출" } ?: "")
-        if(contentDescription!=description)contentDescription=description
+        val label = if (allowed && fuelVisit.position > 0f) "주유소. $description" else description
+        if(contentDescription!=label)contentDescription=label
     }
     /** Slice at the empty asphalt, so people, kerbs and buildings never stretch with window width. */
     private fun drawRoadTile(c: Canvas, bitmap: Bitmap, y: Float) {

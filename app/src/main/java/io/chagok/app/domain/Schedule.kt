@@ -44,10 +44,14 @@ data class ScheduleStatus(
     /** 현재 km가 기준 정비 km보다 작다. 차량 변경·계기판 교체 등 검토가 필요하다 */
     val odometerReversed: Boolean,
 ) {
+    val firstFill get() = basis == null && plan.item == Item.COOLANT
+    val intervalKm get() = if (firstFill) plan.initialKm else plan.intervalKm
+    val intervalMonths get() = plan.intervalMonths.takeIf { basis != null }
     val state: ScheduleState
         get() = when {
-            plan.intervalKm == null && plan.intervalMonths == null -> ScheduleState.NO_PLAN
-            basis == null -> ScheduleState.NO_RECORD
+            plan.intervalKm == null && plan.intervalMonths == null &&
+                !(firstFill && intervalKm != null) -> ScheduleState.NO_PLAN
+            basis == null && nextKm == null -> ScheduleState.NO_RECORD
             kmState == ConditionState.DUE || dateState == ConditionState.DUE -> ScheduleState.DUE
             kmState == ConditionState.SOON || dateState == ConditionState.SOON -> ScheduleState.SOON
             else -> ScheduleState.UPCOMING
@@ -56,7 +60,7 @@ data class ScheduleStatus(
     /** 사용한 주기 비율. 거리와 날짜 중 진행이 빠른 쪽을 표시한다. */
     val progressPercent: Int?
         get() {
-            val distance = plan.intervalKm?.takeIf { it > 0 }?.let { interval ->
+            val distance = intervalKm?.takeIf { it > 0 }?.let { interval ->
                 remainingKm?.let { (interval - it) * 100 / interval }
             }
             val date = if (basis != null && nextDate != null && remainingDays != null) {
@@ -96,19 +100,22 @@ object ScheduleCalculator {
         entries: List<DiaryEntry>,
         currentKm: Double?,
         today: LocalDate,
+        reportedServiceKm: Double? = null,
     ): ScheduleStatus {
         val basis = basisOf(plan.item, entries)
-        val core = CoreSchedule.status(corePlan(plan), basis?.let(::coreBase), currentKm, today, CORE_CONFIG)
+        val firstFill = plan.item == Item.COOLANT && basis == null
+        val kmInterval = if (firstFill) plan.initialKm else plan.intervalKm
 
-        // 주기를 정하지 않은 계획에서도 역행을 알려야 하므로 core 상태(REVIEW)가 아니라 앱 기준으로 직접 본다
-        val basisKm = basis?.odometer?.value
+        val basisKm = if (basis == null) reportedServiceKm else basis.odometer?.value
+        val core = CoreSchedule.status(corePlan(plan), basis?.let(::coreBase), currentKm, today, CORE_CONFIG)
+        val nextKm = if (basis == null && basisKm != null && kmInterval != null) basisKm + kmInterval else core.nextKm
         val reversed = basisKm != null && currentKm != null && currentKm < basisKm
-        val remainingKm = if (reversed) null else core.remainingKm
+        val remainingKm = if (!reversed && nextKm != null && currentKm != null) nextKm - currentKm else null
         val kmState = when {
-            plan.intervalKm == null -> ConditionState.NOT_SET
-            basis == null || core.nextKm == null || currentKm == null || reversed -> ConditionState.PENDING
-            core.kmDue -> ConditionState.DUE
-            remainingKm!! <= SOON_KM -> ConditionState.SOON
+            kmInterval == null -> ConditionState.NOT_SET
+            nextKm == null || currentKm == null || reversed -> ConditionState.PENDING
+            currentKm >= nextKm -> ConditionState.DUE
+            nextKm - currentKm <= SOON_KM -> ConditionState.SOON
             else -> ConditionState.UPCOMING
         }
         val dateState = when {
@@ -118,7 +125,7 @@ object ScheduleCalculator {
             core.daysLeft!! <= SOON_DAYS -> ConditionState.SOON
             else -> ConditionState.UPCOMING
         }
-        return ScheduleStatus(plan, basis, core.nextKm, core.nextDate, kmState, dateState, remainingKm, core.daysLeft, reversed)
+        return ScheduleStatus(plan, basis, nextKm, core.nextDate, kmState, dateState, remainingKm, core.daysLeft, reversed)
     }
 
     private val CORE_CONFIG = ScheduleConfig(soonKm = SOON_KM, soonDays = SOON_DAYS, regressionToleranceKm = 0.0)
