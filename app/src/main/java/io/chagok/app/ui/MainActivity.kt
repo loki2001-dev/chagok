@@ -35,6 +35,7 @@ import io.chagok.app.domain.EngineOilDetails
 import io.chagok.app.domain.EntryStatus
 import io.chagok.app.domain.Item
 import io.chagok.app.domain.ItemKind
+import io.chagok.app.domain.MaintenanceRecommendation
 import io.chagok.app.domain.Mission
 import io.chagok.app.domain.Powertrain
 import io.chagok.app.domain.Reading
@@ -53,6 +54,9 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import io.chagok.app.companion.WorkshopView
+import io.chagok.app.companion.BayJob
+import io.chagok.app.companion.CarSkin
 import io.chagok.app.companion.MonitorState
 import io.chagok.app.companion.RecordingStartup
 import io.chagok.app.companion.VehicleMonitorService
@@ -64,6 +68,30 @@ import io.chagok.app.companion.CompanionActivity
  * 상태가 바뀔 때마다 현재 화면을 다시 그린다 (데이터가 작고 화면이 단순하다).
  */
 class MainActivity : Activity() {
+    private var workshop: WorkshopView? = null
+
+    private fun closeWorkshop() {
+        workshop?.let { (it.parent as? FrameLayout)?.removeView(it) }
+        workshop = null
+    }
+
+    private fun showWorkshop(entry: DiaryEntry) {
+        val job = BayJob.forItem(entry.item) ?: return
+        showWorkshop(job, entry.wheels, entry.engineOil?.manufacturer, entry.engineOil?.liters, entry.item.label)
+    }
+
+    /** Call after a successful maintenance save, with fields from that saved record. */
+    internal fun showWorkshop(job: BayJob, wheels: Set<Wheel> = emptySet(),
+                              oilBrand: String? = null, oilLitres: Double? = null, itemLabel: String = job.label) {
+        if (restricted || !resumed || !driving.animationAllowed) return
+        closeWorkshop()
+        val root = overlay.parent as FrameLayout
+        val skin = CarSkin.entries.firstOrNull { it.name == store.setting("companion.skin/$user") } ?: CarSkin.RACER
+        workshop = WorkshopView(this,job,skin,wheels,oilBrand,oilLitres,itemLabel,finished = ::closeWorkshop).also {
+            root.addView(it,root.indexOfChild(overlay),FrameLayout.LayoutParams(MATCH_PARENT,MATCH_PARENT))
+        }
+    }
+
     private enum class Screen(val label: String) {
         HOME("차량 요약"),
         DRIVES("운행 기록"),
@@ -165,6 +193,7 @@ class MainActivity : Activity() {
             val wasRestricted = restricted
             restricted = r
             overlay.visibility = if (restricted) View.VISIBLE else View.GONE
+            if (!driving.animationAllowed || restricted) closeWorkshop()
             if (restricted) {
                 requestGeneration++
                 dialogs.toList().forEach { it.dismiss() }
@@ -187,6 +216,7 @@ class MainActivity : Activity() {
 
     override fun onPause() {
         resumed = false
+        closeWorkshop()
         requestGeneration++
         speech.cancel()
         monitor.close()
@@ -349,8 +379,7 @@ class MainActivity : Activity() {
 
     private fun home() {
         val driveCard = AutoDiaryView(ui, store, service, user).today { month=YearMonth.now();go(Screen.DRIVES) }
-        content.addView(dashboard().home(currentKm(), driveCard, { go(Screen.SCHEDULE) },
-            { item -> planDialog(item, null) }, { go(Screen.CANDIDATES) },
+        content.addView(dashboard().home(currentKm(), driveCard, ::planDialog, ::serviceMileageDialog, { go(Screen.CANDIDATES) },
             { go(Screen.DIARY) }, { month = YearMonth.from(service.today()); go(Screen.STATS) }, ::openEntry))
         val changes = service.changesSince(user)
         if (changes.isNotEmpty()) content.addView(ui.card(
@@ -631,6 +660,7 @@ class MainActivity : Activity() {
         if (updated.isFailure) { message = updated.exceptionOrNull()?.message; render(); return }
         when (val r = service.confirm(d.id, allowDuplicate)) {
             is DiaryService.ConfirmResult.Saved -> {
+                showWorkshop(r.entry)
                 activeDraftId = null
                 checks = emptyList()
                 partial = ""
@@ -776,7 +806,11 @@ class MainActivity : Activity() {
             ui.text(e.odometer?.let { km(it.value) } ?: "미입력",32f,bold=true),
             ui.label(e.odometer?.source?.label ?: "거리 기준 일정은 계산을 미뤄요"),
             ui.divider(),
-            ui.text(if (e.candidateId != null) "자동 감지한 후보를 확인한 기록이에요." else "직접 남긴 기록이에요.", 22f, Palette.sub))
+            ui.text(when {
+                e.visitId != null -> listOfNotNull("방문 확인", e.placeName).joinToString(" · ")
+                e.candidateId != null -> "자동 감지한 후보를 확인한 기록이에요."
+                else -> "직접 남긴 기록이에요."
+            }, 22f, Palette.sub))
         e.energyAmount?.let { details.addView(ui.text("${if (e.item == Item.CHARGE) "충전량" else "주유량"} $it ${if (e.item == Item.CHARGE) "kWh" else "L"}", 24f)) }
         if (e.item == Item.ENGINE_OIL) {
             details.addView(ui.text("엔진오일 제조사 · ${e.engineOil?.manufacturer ?: "미입력"}", 22f))
@@ -939,7 +973,7 @@ class MainActivity : Activity() {
         val statuses = ordered.associateBy { it.plan.item }
         val urgent = ordered.count { it.state == ScheduleState.DUE || it.state == ScheduleState.SOON }
         content.addView(ui.card(ui.text(if (urgent > 0) "먼저 살펴볼 관리 ${urgent}건" else "다음 교환·점검을 미리 준비해요", 28f, bold = true),
-            ui.text("날짜와 거리 중 먼저 도래하는 기준으로 알려드려요. 주기는 차량 매뉴얼에 맞춰 설정해 주세요.", 22f, Palette.sub)))
+            ui.text("첫 일정은 주행거리로 계산해요. 항목별 정비를 기록하면 날짜와 거리 중 먼저 도래하는 기준을 적용해요.", 22f, Palette.sub)))
         val items = service.maintenanceItems()
             .sortedBy { item -> ordered.indexOfFirst { it.plan.item == item }.let { if (it < 0) Int.MAX_VALUE else it } }
         items.forEach { item ->
@@ -950,7 +984,7 @@ class MainActivity : Activity() {
                 card.addView(ui.text("${s.state.label} · ${DiaryDashboard.remaining(s)}", 26f, stateColor(s.state), true))
                 card.addView(dashboard().pair(
                     ui.column(4).apply { addView(ui.label("다음 관리 거리"));addView(ui.text(s.nextKm?.let(::km) ?: if(s.kmState==ConditionState.NOT_SET)"사용 안 함" else "계산 보류",24f,bold=true)) },
-                    ui.column(4).apply { addView(ui.label("다음 관리 날짜"));addView(ui.text(s.nextDate?.format(dateFmt) ?: if(s.dateState==ConditionState.NOT_SET)"사용 안 함" else "계산 보류",24f,bold=true)) }))
+                    ui.column(4).apply { addView(ui.label("다음 관리 날짜"));addView(ui.text(s.nextDate?.format(dateFmt) ?: if(s.basis == null && s.plan.intervalMonths != null)"정비 기록 후 계산" else "사용 안 함",24f,bold=true)) }))
                 card.addView(ui.text("최근 기록: ${s.basis?.let { "${it.performedOn.format(dateFmt)}${it.odometer?.let { o -> " · ${km(o.value)}" } ?: ""}" } ?: "기록 없음"}", 22f, Palette.sub))
                 card.addView(ui.text("주기 출처: ${s.plan.source}", 20f, Palette.sub))
                 if (!s.plan.notificationsOn) card.addView(ui.text("알림 꺼짐 · 관리 시기는 계속 계산해요", 20f, Palette.sub))
@@ -974,15 +1008,47 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun serviceMileageDialog() {
+        val previous = service.reportedServiceKm()?.let { java.math.BigDecimal.valueOf(it).stripTrailingZeros().toPlainString() }
+        val input = ui.input("마지막 정비 주행거리 km", null, numeric = true).apply {
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+            setText(previous)
+        }
+        val body = ui.column().apply {
+            addView(ui.label("정비 기록이 없는 항목의 첫 일정을 이 거리부터 계산해요."))
+            currentKm()?.let { addView(ui.label("현재 누적 주행거리 ${km(it)}")) }
+            addView(ui.field("마지막 정비 주행거리 · km", input))
+        }
+        dialog("마지막 정비 주행거리", body) {
+            val value = number(input.text.toString(), "주행거리") ?: error("주행거리를 입력해 주세요.")
+            service.setReportedServiceKm(value, currentKm())
+            render()
+        }
+    }
+
     private fun planDialog(item: Item, s: ScheduleStatus?) {
         val kmIn = ui.input("거리 주기 km", s?.plan?.intervalKm?.toString(), numeric = true)
         val moIn = ui.input("기간 주기 개월", s?.plan?.intervalMonths?.toString(), numeric = true)
         val srcIn = ui.input("예: 차량 매뉴얼", s?.plan?.source, numeric = false)
-        dialog("${item.label} 주기", ui.column().apply { addView(dashboard().pair(ui.field("거리 주기 · km",kmIn),ui.field("기간 주기 · 개월",moIn)));addView(ui.label("사용하지 않는 기준은 비워 두세요."));addView(ui.field("주기 출처",srcIn)) }) {
+        val coolant = item == Item.COOLANT
+        val firstKm = if (coolant) ui.input("최초 거리 km", s?.plan?.initialKm?.toString(), true) else null
+        val body = ui.column().apply {
+            MaintenanceRecommendation.byItem[item]?.let { addView(ui.label("표의 권장 주기 · ${it.description()}")) }
+            if (firstKm != null) {
+                addView(ui.label("첫 교환 전"))
+                addView(ui.field("최초 거리 · km",firstKm))
+                addView(ui.label("교환 이후"))
+            }
+            addView(dashboard().pair(ui.field("거리 주기 · km",kmIn),ui.field("기간 주기 · 개월",moIn)))
+            addView(ui.label("사용하지 않는 기준은 비워 두세요."))
+            addView(ui.field("주기 출처",srcIn))
+        }
+        dialog("${item.label} 주기", body) {
             fun interval(input: EditText): Int? = input.text.toString().let {
                 if (it.isBlank()) null else it.toIntOrNull()?.takeIf { v -> v > 0 } ?: error("주기는 양의 정수로 입력해 주세요.")
             }
-            service.setPlan(item, interval(kmIn), interval(moIn), srcIn.text.toString())
+            service.setPlan(item, interval(kmIn), interval(moIn), srcIn.text.toString(),
+                firstKm?.let(::interval))
             render()
         }
     }

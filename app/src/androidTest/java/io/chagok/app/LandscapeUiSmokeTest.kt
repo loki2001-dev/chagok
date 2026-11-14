@@ -66,7 +66,7 @@ class LandscapeUiSmokeTest {
                         val ui=Ui(ctx).apply { availableWidthDp=width }
                         val drive = AutoDiaryView(ui, store, diary, "나").today {}
                         var selected: Item? = null
-                        val page=DiaryDashboard(ctx,ui,diary).home(47200.0,drive,{},{ selected = it },{},{},{},{}).apply { setBackgroundColor(Palette.bg) }
+                        val page=DiaryDashboard(ctx,ui,diary).home(47200.0,drive,{ item, _ -> selected = item },{},{},{},{},{}).apply { setBackgroundColor(Palette.bg) }
                         val w=ui.dp(width)
                         page.measure(View.MeasureSpec.makeMeasureSpec(w,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED))
                         capture(page,w,page.measuredHeight,if(fontScale==1f)"summary-${if(pending)"pending" else "empty"}-$width" else null)
@@ -78,14 +78,13 @@ class LandscapeUiSmokeTest {
                         assertEquals("6,000km", (labels.single { it.text == "교환 후 주행" }.parent as ViewGroup)
                             .let { it.getChildAt(1) as TextView }.text.toString())
                         assertEquals(1, labels.count { it.text == "주행 마모도" })
-                        assertTrue(labels.any { it.text == "권장 10,000km 중 6,000km 주행 · 4,000km 남음" })
+                        assertTrue(labels.any { it.text == "주기 10,000km 중 6,000km 주행 · 4,000km 남음" })
                         assertEquals(5, labels.count { it.text == "사용 기간" })
                         assertTrue(labels.any { it.text.endsWith("% · 예정") && it.currentTextColor == Palette.accent })
-                        assertTrue(labels.any { it.text == "주기 미설정 · 9개" })
+                        assertTrue(labels.any { it.text == "주기 미설정 · 4개" })
                         assertTrue(labels.any { it.text == Item.BATTERY_12V_REPLACE.label })
                         assertTrue(labels.any { it.text == Item.DRIVE_BELT.label })
-                        val tireLabel = labels.single { it.text == Item.TIRE_REPLACE.label }
-                        val tireRow = (tireLabel.parent.parent as View)
+                        val tireRow = all(page).single { it.contentDescription == "${Item.TIRE_REPLACE.label} 주기 수정" }
                         assertTrue(tireRow.performClick())
                         assertEquals(Item.TIRE_REPLACE, selected)
                         val review=all(page).single { it.tag=="summary-review-card" };val mileage=all(page).single { it.tag=="summary-mileage-card" }

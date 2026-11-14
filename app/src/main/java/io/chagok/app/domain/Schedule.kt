@@ -44,22 +44,29 @@ data class ScheduleStatus(
     /** 현재 km가 기준 정비 km보다 작다. 차량 변경·계기판 교체 등 검토가 필요하다 */
     val odometerReversed: Boolean,
 ) {
+    val firstFill get() = basis == null && plan.item == Item.COOLANT
+    val intervalKm get() = if (firstFill) plan.initialKm else plan.intervalKm
+    val intervalMonths get() = plan.intervalMonths.takeIf { basis != null }
     val state: ScheduleState
         get() = when {
-            plan.intervalKm == null && plan.intervalMonths == null -> ScheduleState.NO_PLAN
-            basis == null -> ScheduleState.NO_RECORD
+            plan.intervalKm == null && plan.intervalMonths == null &&
+                !(firstFill && intervalKm != null) -> ScheduleState.NO_PLAN
+            basis == null && nextKm == null -> ScheduleState.NO_RECORD
             kmState == ConditionState.DUE || dateState == ConditionState.DUE -> ScheduleState.DUE
             kmState == ConditionState.SOON || dateState == ConditionState.SOON -> ScheduleState.SOON
             else -> ScheduleState.UPCOMING
         }
 
-    /** 기준 정비 이후 주행한 거리. 거리 조건을 계산할 수 있을 때만 값이 있다. */
+    /**
+     * 기준 정비 이후 주행한 거리. 거리 조건을 계산할 수 있을 때만 값이 있다.
+     * 기록이 없어도 사용자가 알려 준 마지막 정비 주행거리로 다음 거리가 잡히면 계산된다.
+     */
     val usedKm: Double?
-        get() = plan.intervalKm?.let { interval -> remainingKm?.let { interval - it } }
+        get() = intervalKm?.let { interval -> remainingKm?.let { interval - it } }
 
-    /** 권장 주행 대비 마모도(%). 얼마나 넘겼는지 보이도록 100을 넘을 수 있다. */
+    /** 적용 중인 주행 주기 대비 마모도(%). 얼마나 넘겼는지 보이도록 100을 넘을 수 있다. */
     val wearPercent: Int?
-        get() = plan.intervalKm?.takeIf { it > 0 }?.let { interval ->
+        get() = intervalKm?.takeIf { it > 0 }?.let { interval ->
             usedKm?.let { (it * 100 / interval).toInt().coerceAtLeast(0) }
         }
 
@@ -111,19 +118,22 @@ object ScheduleCalculator {
         entries: List<DiaryEntry>,
         currentKm: Double?,
         today: LocalDate,
+        reportedServiceKm: Double? = null,
     ): ScheduleStatus {
         val basis = basisOf(plan.item, entries)
-        val core = CoreSchedule.status(corePlan(plan), basis?.let(::coreBase), currentKm, today, CORE_CONFIG)
+        val firstFill = plan.item == Item.COOLANT && basis == null
+        val kmInterval = if (firstFill) plan.initialKm else plan.intervalKm
 
-        // 주기를 정하지 않은 계획에서도 역행을 알려야 하므로 core 상태(REVIEW)가 아니라 앱 기준으로 직접 본다
-        val basisKm = basis?.odometer?.value
+        val basisKm = if (basis == null) reportedServiceKm else basis.odometer?.value
+        val core = CoreSchedule.status(corePlan(plan), basis?.let(::coreBase), currentKm, today, CORE_CONFIG)
+        val nextKm = if (basis == null && basisKm != null && kmInterval != null) basisKm + kmInterval else core.nextKm
         val reversed = basisKm != null && currentKm != null && currentKm < basisKm
-        val remainingKm = if (reversed) null else core.remainingKm
+        val remainingKm = if (!reversed && nextKm != null && currentKm != null) nextKm - currentKm else null
         val kmState = when {
-            plan.intervalKm == null -> ConditionState.NOT_SET
-            basis == null || core.nextKm == null || currentKm == null || reversed -> ConditionState.PENDING
-            core.kmDue -> ConditionState.DUE
-            remainingKm!! <= SOON_KM -> ConditionState.SOON
+            kmInterval == null -> ConditionState.NOT_SET
+            nextKm == null || currentKm == null || reversed -> ConditionState.PENDING
+            currentKm >= nextKm -> ConditionState.DUE
+            nextKm - currentKm <= SOON_KM -> ConditionState.SOON
             else -> ConditionState.UPCOMING
         }
         val dateState = when {
@@ -133,7 +143,7 @@ object ScheduleCalculator {
             core.daysLeft!! <= SOON_DAYS -> ConditionState.SOON
             else -> ConditionState.UPCOMING
         }
-        return ScheduleStatus(plan, basis, core.nextKm, core.nextDate, kmState, dateState, remainingKm, core.daysLeft, reversed)
+        return ScheduleStatus(plan, basis, nextKm, core.nextDate, kmState, dateState, remainingKm, core.daysLeft, reversed)
     }
 
     private val CORE_CONFIG = ScheduleConfig(soonKm = SOON_KM, soonDays = SOON_DAYS, regressionToleranceKm = 0.0)

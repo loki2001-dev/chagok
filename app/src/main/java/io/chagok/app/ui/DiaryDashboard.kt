@@ -40,8 +40,8 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
     fun home(
         currentKm: Double?,
         driveCard: View,
-        openSchedule: () -> Unit,
-        setUpPlan: (Item) -> Unit,
+        editPlan: (Item, ScheduleStatus?) -> Unit,
+        editMileage: () -> Unit,
         openReview: () -> Unit,
         openDiary: () -> Unit,
         openStats: () -> Unit,
@@ -64,20 +64,21 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
             tag = "summary-mileage-card"
         }
         val items = service.maintenanceItems()
-        val schedules = service.schedules(currentKm).filter {
-            it.plan.item in items && it.state != ScheduleState.NO_PLAN
-        }
+        val allPlans = service.schedules(currentKm).associateBy { it.plan.item }
+        val schedules = allPlans.values.filter { it.plan.item in items && it.state != ScheduleState.NO_PLAN }
         val scheduledItems = schedules.map { it.plan.item }.toSet()
         return ui.column(16).apply {
-            addView(ui.section("정비 주기", if (schedules.isNotEmpty()) "마지막 정비 이후 주행과 기간으로 본 마모도" else null))
-            schedules.map { maintenanceCard(it, currentKm, openSchedule) }.chunked(2).forEach { cards ->
+            addView(ui.section("정비 주기", "항목을 눌러 내 차의 주기를 수정하세요."))
+            val mileageLabel = service.reportedServiceKm()?.let(::km) ?: "기록 없는 항목의 기준 입력"
+            addView(ui.actionRow("마지막 정비 주행거리", mileageLabel, Icon.CAR, editMileage))
+            schedules.map { status -> maintenanceCard(status, currentKm) { editPlan(status.plan.item, status) } }.chunked(2).forEach { cards ->
                 addView(if (cards.size == 2) pair(cards[0], cards[1]) else cards.single())
             }
             val unconfigured = items.filterNot { it in scheduledItems }
             if (unconfigured.isNotEmpty()) {
                 addView(ui.section("주기 미설정 · ${unconfigured.size}개"))
                 unconfigured.map { item ->
-                    ui.actionRow(item.label, "주기 설정", Icon.WRENCH) { setUpPlan(item) }
+                    ui.actionRow(item.label, "주기 설정", Icon.WRENCH) { editPlan(item, allPlans[item]) }
                 }.chunked(2).forEach { rows ->
                     addView(if (rows.size == 2) pair(rows[0], rows[1]) else rows.single())
                 }
@@ -154,7 +155,7 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
         val basisKm = basis?.odometer?.value
         val drivenKm = status.usedKm ?: if (basisKm != null && currentKm != null && currentKm >= basisKm) currentKm - basisKm else null
         val label = when (status.state) {
-            ScheduleState.DUE -> needsAction
+            ScheduleState.DUE -> if (item == Item.TRANSMISSION_OIL) "교체 여부 점검" else needsAction
             ScheduleState.SOON -> "임박"
             ScheduleState.UPCOMING -> if (percent == null) "계산 보류" else "예정"
             else -> status.state.label
@@ -163,6 +164,15 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
         val tone = if (urgent) Palette.danger else Palette.accent
         return ui.card().apply {
             addView(cardHeading(item.label, Icon.WRENCH, true, tone))
+            MaintenanceRecommendation.byItem[item]?.let { rec ->
+                addView(ui.text("권장 · ${rec.description()}", 20f, Palette.sub))
+            }
+            val active = listOfNotNull(status.intervalKm?.let { "%,dkm".format(it) },
+                status.intervalMonths?.let { "${it}개월" }).joinToString(" 또는 ")
+            if (active.isNotEmpty()) {
+                val phase = if (status.basis == null) "최초 기준" else "적용 기준"
+                addView(ui.text("$phase · $active", 22f, Palette.text))
+            }
             addView(ui.text(listOfNotNull(percent?.let { "$it%" }, label).joinToString(" · "),
                 if (percent == null) 24f else 30f, tone, true))
             if (basis != null) {
@@ -177,15 +187,16 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
                     }), LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f).apply { marginStart = ui.dp(12) })
                 })
             }
-            val interval = status.plan.intervalKm
+            // 첫 정비 전 냉각수처럼 적용 주기가 계획값과 다를 수 있어 ScheduleStatus의 적용값을 쓴다
+            val interval = status.intervalKm
             val wear = status.wearPercent
             val used = status.usedKm
             val leftKm = status.remainingKm
             if (interval != null && wear != null && used != null && leftKm != null) {
                 addView(ui.divider())
-                val rest = if (leftKm > 0) "${km(leftKm)} 남음" else if (leftKm < 0) "${km(-leftKm)} 지남" else "권장 주행 도달"
+                val rest = if (leftKm > 0) "${km(leftKm)} 남음" else if (leftKm < 0) "${km(-leftKm)} 지남" else "주기 도달"
                 addView(meter("주행 마모도", wear, conditionTone(status.kmState),
-                    "권장 ${km(interval.toDouble())} 중 ${km(used)} 주행 · $rest"))
+                    "주기 ${km(interval.toDouble())} 중 ${km(used)} 주행 · $rest"))
             } else if (status.kmState == ConditionState.PENDING) {
                 addView(ui.divider())
                 addView(ui.text(if (status.odometerReversed) "주행 마모도 · 주행거리 확인이 필요해요" else "주행 마모도 · 주행거리를 확인하면 계산해요", 20f, Palette.sub))
@@ -193,20 +204,21 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
             val age = status.agePercent
             val today = status.asOf
             val nextDate = status.nextDate
-            val intervalMonths = status.plan.intervalMonths
+            val intervalMonths = status.intervalMonths
             if (basis != null && age != null && today != null && nextDate != null && intervalMonths != null) {
                 addView(ui.divider())
                 val rest = when {
                     today.isBefore(nextDate) -> "${span(today, nextDate)} 남음"
                     today.isAfter(nextDate) -> "${span(nextDate, today)} 지남"
-                    else -> "권장 기간 도달"
+                    else -> "주기 도달"
                 }
                 addView(meter("사용 기간", age, conditionTone(status.dateState),
-                    "권장 ${months(intervalMonths)} 중 ${span(basis.performedOn, today)}째 사용 · $rest"))
+                    "주기 ${months(intervalMonths)} 중 ${span(basis.performedOn, today)}째 사용 · $rest"))
                 addView(ui.text("$dateLabel ${nextDate.format(dates)}", 20f, Palette.sub))
             }
             background = ui.touch(Palette.surface, 20, if (urgent) tone else Palette.border)
             isFocusable = true
+            contentDescription = "${item.label} 주기 수정"
             setOnClickListener { open() }
         }
     }
@@ -252,7 +264,12 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
             row.addView(ui.icon(Icon.CHEVRON,22,Palette.sub),LinearLayout.LayoutParams(ui.dp(22),ui.dp(22)).apply { marginStart=ui.dp(12) })
             addView(row)
             if(narrow)addView(ui.text(won(entry.cost),28f,tone,true))
-            addView(ui.text(listOfNotNull(entry.odometer?.let { km(it.value) },if(entry.candidateId!=null)"자동 감지 후 확인" else "직접 기록",
+            val origin = when {
+                entry.visitId != null -> listOfNotNull("방문 확인", entry.placeName).joinToString(" · ")
+                entry.candidateId != null -> "자동 감지 후 확인"
+                else -> "직접 기록"
+            }
+            addView(ui.text(listOfNotNull(entry.odometer?.let { km(it.value) },origin,
                 if(entry.version>1)"수정 ${entry.version-1}회" else null).joinToString(" · "),20f,Palette.sub))
             background=ui.touch()
         },"${entry.performedOn} ${entry.item.label} 기록 상세",open)

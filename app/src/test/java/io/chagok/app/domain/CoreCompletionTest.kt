@@ -29,7 +29,7 @@ class CoreCompletionTest {
         assertEquals(Source.USER, e.odometer!!.source)
         assertEquals(47200.0, e.odometer.observed!!.value, 0.0)
         assertEquals(70000L, service.ledger(YearMonth.from(service.today())).total)
-        assertEquals(57000.0, service.schedules(47200.0).single().nextKm!!, 0.0)
+        assertEquals(57000.0, service.schedules(47200.0).single { it.plan.item == Item.ENGINE_OIL }.nextKm!!, 0.0)
         assertEquals(2, e.version)
         assertEquals(1, e.history.size)
     }
@@ -82,7 +82,7 @@ class CoreCompletionTest {
         service.selectUser("B")
         assertTrue(service.timeline().isEmpty()); assertNull(service.entry(d.id))
         assertEquals(0L, service.ledger(YearMonth.from(service.today())).total)
-        assertEquals(ScheduleState.NO_RECORD, service.schedules(47200.0).single().state)
+        assertEquals(ScheduleState.NO_RECORD, service.schedules(47200.0).single { it.plan.item == Item.ENGINE_OIL }.state)
         assertFalse(service.report(d.performedOn, d.performedOn, null, true).contains("엔진오일 교환"))
         assertTrue(runCatching { service.setCost(d.id, 1) }.isFailure)
         assertTrue(runCatching { service.cancel(d.id) }.isFailure)

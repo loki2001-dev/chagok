@@ -103,6 +103,7 @@ object Codec {
         .putOpt("km", p.intervalKm).putOpt("months", p.intervalMonths)
         .put("source", p.source).put("setOn", p.setOn.toString())
         .put("notify", p.notificationsOn).putOpt("snoozed", p.snoozedUntil?.toString())
+        .putOpt("initialKm", p.initialKm)
 
     fun plan(o: JSONObject) = MaintenancePlan(
         vehicleId = o.getString("vehicleId"),
@@ -113,6 +114,7 @@ object Codec {
         setOn = LocalDate.parse(o.getString("setOn")),
         notificationsOn = o.getBoolean("notify"),
         snoozedUntil = o.optStringOrNull("snoozed")?.let(LocalDate::parse),
+        initialKm = if (o.isNull("initialKm")) null else o.getInt("initialKm"),
     )
 
     fun candidate(c: DetectionCandidate) = JSONObject()
