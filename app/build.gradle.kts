@@ -42,6 +42,8 @@ android {
 }
 
 dependencies {
+    // 발화 해석·관리 일정 계산 규칙(순수 Kotlin 모듈)
+    implementation(project(":core"))
     implementation("androidx.core:core:1.13.1")
     // 기획서 8장: 누적 주행거리(CAR_DRIVE), 연료·SoC(CAR_ENERGY)
     implementation("ai.pleos.playground:Vehicle:2.3.2")
