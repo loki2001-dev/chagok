@@ -1,0 +1,80 @@
+{
+  "verifiedAt": "2026-11-14T16:46:58.150630+09:00",
+  "environment": "Pleos 2.1.0 emulator / Android API 34 / user 10",
+  "build": "BUILD SUCCESSFUL",
+  "unitTests": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "integratedSmoke": {
+    "uniqueScenarios": 26,
+    "passedAfterTargetedRerun": 26,
+    "log": "device-smoke.txt",
+    "finalBuild": true,
+    "note": "The full run had one native-surface navigation timing failure; all four parked UI tests were rerun with an explicit selected-tab wait."
+  },
+  "targetedRecoverySmoke": {
+    "tests": 6,
+    "passed": 6,
+    "log": "final-targeted-smoke.txt"
+  },
+  "boot": {
+    "verifiedAt": "2026-11-14T16:45:00.368305+09:00",
+    "package": "io.chagok.app.smoke",
+    "user": "10",
+    "rebootedEmulator": true,
+    "appLaunchedAfterBoot": false,
+    "recordingEnabled": "true",
+    "bootEvent": "android.intent.action.BOOT_COMPLETED|2026-11-14T07:44:45.525886Z",
+    "foregroundServiceResumed": true,
+    "freshVehicleObservation": "2026-11-14T07:44:54.856598Z",
+    "lastStartError": ""
+  },
+  "layoutCaptures": {
+    "count": 12,
+    "widthsDp": [
+      320,
+      841,
+      1682
+    ],
+    "heightDp": 1210
+  },
+  "nativeEvidence": "android-evidence/native-parked-pages.mp4",
+  "nativeAppBounds": {
+    "task": 1000610,
+    "left": 1718,
+    "top": 90,
+    "right": 2559,
+    "bottom": 1300,
+    "visible": true
+  },
+  "installedNormalPackage": "io.chagok.app",
+  "normalDataPreserved": true,
+  "normalDataBefore": {
+    "entryCount": 0,
+    "entryDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "databaseUserVersion": 2
+  },
+  "normalDataAfter": {
+    "entryCount": 0,
+    "entryDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "databaseUserVersion": 3,
+    "preservedDocumentCounts": {
+      "entry": 0,
+      "profile": 1,
+      "plan": 0,
+      "sharing": 0,
+      "progress": 0,
+      "encounter": 0,
+      "encounter_receipt": 0
+    }
+  },
+  "apkSha256": "b7c62a71bb3c70a7cdef3d15ccf32a6cf327b42edadcd2522589e684d480bddb",
+  "limits": [
+    "Emulator verification; real vehicle power and background policy still require vehicle testing.",
+    "Charging/refueling are inferred from percentage changes, not charge state, kWh, litres or cost.",
+    "No on-road voice recognition accuracy claim; NO_VIDEO handling remains in place."
+  ]
+}

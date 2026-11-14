@@ -1,0 +1,12 @@
+{
+  "verifiedAt": "2026-11-14T16:45:00.368305+09:00",
+  "package": "io.chagok.app.smoke",
+  "user": "10",
+  "rebootedEmulator": true,
+  "appLaunchedAfterBoot": false,
+  "recordingEnabled": "true",
+  "bootEvent": "android.intent.action.BOOT_COMPLETED|2026-11-14T07:44:45.525886Z",
+  "foregroundServiceResumed": true,
+  "freshVehicleObservation": "2026-11-14T07:44:54.856598Z",
+  "lastStartError": ""
+}
