@@ -392,7 +392,7 @@ class MainActivity : Activity() {
     }
 
     private fun more() {
-        content.addView(ui.button("정비소·주유소 방문 감지") { startActivity(android.content.Intent(this, PlacesActivity::class.java)) })
+        content.addView(ui.button("도로·정비소·주유소 감지 설정") { startActivity(android.content.Intent(this, PlacesActivity::class.java)) })
         content.addView(ui.text("${service.profile().name} · $user",24f,Palette.sub))
         content.addView(ui.card(
             ui.actionRow("확인할 기록 ${service.reviewCount()}건","자동 감지와 작성 중인 기록",Icon.JOURNAL) { go(Screen.CANDIDATES) },ui.divider(),

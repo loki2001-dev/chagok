@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import io.chagok.app.domain.*
+import io.chagok.app.roads.*
 import io.chagok.app.domain.DetectionCandidate
 import io.chagok.app.domain.DiaryEntry
 import io.chagok.app.domain.DiaryStore
@@ -126,6 +127,10 @@ class SqliteStore(context: Context, databaseName: String = "chagok.db") : DiaryS
     override fun setting(key: String): String? = one("setting", key)?.getString("v")
     override fun saveSetting(key: String, value: String) = put("setting", key, null, JSONObject().put("v", value))
 
+    override fun roadUsage(vehicleId: String) = all("road-usage",vehicleId).map(Codec::roadUsage)
+    override fun saveRoadUsage(day: RoadUsageDay) = put("road-usage","${day.vehicleId}/${day.date}",day.vehicleId,Codec.roadUsage(day))
+    override fun roadUsageCheckpoint(vehicleId: String) = one("road-checkpoint",vehicleId)?.let(Codec::roadCheckpoint)
+    override fun saveRoadUsageCheckpoint(vehicleId: String, checkpoint: RoadUsageCheckpoint) = put("road-checkpoint",vehicleId,vehicleId,Codec.roadCheckpoint(checkpoint))
     override fun trips(vehicleId: String) = all("trip",vehicleId).map(Codec::trip)
     override fun saveTrip(trip: DriveTrip) = put("trip",trip.id,trip.vehicleId,Codec.trip(trip))
     override fun gaps(vehicleId: String) = all("gap",vehicleId).map { RecordingGap(it.getString("id"),vehicleId,Instant.parse(it.getString("from")),Instant.parse(it.getString("to")),it.getString("reason")) }

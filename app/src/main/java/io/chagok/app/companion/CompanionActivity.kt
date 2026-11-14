@@ -210,7 +210,7 @@ open class CompanionActivity : Activity() {
             !state.enabled->"자동 기록 꺼짐"
             state.motion.speedMps==null->"차량 속도 미수신 · 권한과 연결을 확인해 주세요"
             !state.motion.animationAllowed->"자동 기록 중 · 주행 제한에 맞춰 연출을 쉬고 있어요"
-            state.motion.speedMps!!>.3f->"함께 가는 중"
+            state.motion.speedMps!!>.3f->state.roadStatus?.let { "함께 가는 중 · $it" } ?: "함께 가는 중"
             else->"잠시 쉬는 중 · ${state.recordingStatus}"
         }
     }

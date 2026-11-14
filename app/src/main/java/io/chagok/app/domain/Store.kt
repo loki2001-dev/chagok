@@ -1,12 +1,17 @@
 package io.chagok.app.domain
 
 import java.time.Instant
+import io.chagok.app.roads.*
 
 /** 일지 저장소. 앱은 SQLite, 단위 시험은 [MemoryStore]를 쓴다 */
 interface DiaryStore {
     fun <T> transaction(block: () -> T): T
     fun setting(key: String): String?
     fun saveSetting(key: String, value: String)
+    fun roadUsage(vehicleId: String): List<RoadUsageDay>
+    fun saveRoadUsage(day: RoadUsageDay)
+    fun roadUsageCheckpoint(vehicleId: String): RoadUsageCheckpoint?
+    fun saveRoadUsageCheckpoint(vehicleId: String, checkpoint: RoadUsageCheckpoint)
     fun trips(vehicleId: String): List<DriveTrip>
     fun saveTrip(trip: DriveTrip)
     fun gaps(vehicleId: String): List<RecordingGap>
@@ -47,6 +52,12 @@ interface DiaryStore {
 
 class MemoryStore : DiaryStore {
     override fun <T> transaction(block: () -> T): T = block()
+    private val roadDays=linkedMapOf<Pair<String,java.time.LocalDate>,RoadUsageDay>()
+    private val roadCheckpoints=mutableMapOf<String,RoadUsageCheckpoint>()
+    override fun roadUsage(vehicleId: String) = roadDays.values.filter { it.vehicleId == vehicleId }
+    override fun saveRoadUsage(day: RoadUsageDay) { roadDays[day.vehicleId to day.date]=day }
+    override fun roadUsageCheckpoint(vehicleId: String) = roadCheckpoints[vehicleId]
+    override fun saveRoadUsageCheckpoint(vehicleId: String, checkpoint: RoadUsageCheckpoint) { roadCheckpoints[vehicleId]=checkpoint }
     private var catalogue = emptyList<ServicePlace>()
     private val visits = linkedMapOf<String, PlaceVisit>()
     override fun places() = catalogue

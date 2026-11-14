@@ -27,6 +27,8 @@ class PlacesActivity : Activity() {
     private var safe = false
     private var dialog: AlertDialog? = null
     private var user = "나"
+    private var roadStatus = "도로 감지 꺼짐"
+    private var roadText: TextView? = null
     private val main = Handler(Looper.getMainLooper())
     private val worker = Executors.newSingleThreadExecutor()
     override fun onCreate(state: Bundle?) {
@@ -45,6 +47,8 @@ class PlacesActivity : Activity() {
             blocked.visibility = if(safe) View.GONE else View.VISIBLE
             if(!safe) dialog?.dismiss()
             if(::status.isInitialized) status.text = summary()
+            roadStatus = state.roadStatus ?: "도로 감지 꺼짐"
+            roadText?.text = roadStatus
         }
         render(); body.visibility = View.GONE
     }
@@ -58,6 +62,25 @@ class PlacesActivity : Activity() {
         (store.setting("places.status") ?: "방문 감지 꺼짐")
     private fun render() {
         body.removeAllViews()
+        text("지도 기반 도로 감지")
+        roadText = text(roadStatus)
+        text("전국 도로 지도를 앱에 포함했어요. 위치는 차량 안에서만 비교하며 이동 경로를 저장하지 않아요. 지도 추정이므로 실제 도로와 다를 수 있어요. 시골·도시 여부나 통행 가능 여부는 판정하지 않아요.")
+        val roadEnabled = store.setting(io.chagok.app.roads.RoadDetector.ENABLED) == "true"
+        button(if(roadEnabled) "도로 감지 끄기" else "도로 감지 켜기") {
+            if(roadEnabled) { store.saveSetting(io.chagok.app.roads.RoadDetector.ENABLED,"false"); render() }
+            else if(checkSelfPermission(PleosLocation.PERMISSION) != PackageManager.PERMISSION_GRANTED)
+                requestPermissions(arrayOf(PleosLocation.PERMISSION), 73)
+            else { store.saveSetting(io.chagok.app.roads.RoadDetector.ENABLED,"true"); render() }
+        }
+        button("도로별 누적 통계 보기") {
+            val today=java.time.LocalDate.now(io.chagok.app.roads.RoadUsageRecorder.ZONE)
+            val summary=diary.roadUsage(java.time.LocalDate.of(2000,1,1),today)
+            val lines=summary.buckets.entries.joinToString("\n") { (key,value) -> "${key.label}: ${"%.2f".format(value.distanceKm)}km · ${value.movingMillis/60000}분" }
+            dialog=AlertDialog.Builder(this).setTitle("도로별 주행 통계 · 누적")
+                .setMessage(lines+"\n\n거리는 차량 누적 주행거리 차이입니다. 등급이 바뀐 구간·감지 꺼짐·관측 공백은 미분류에 포함합니다.\n시내·시골 환경: 아직 전체 미분류\n관측 공백 ${summary.observationGapMillis/1000}초 · 거리 미수신 주행 ${summary.distanceMissingMillis/1000}초 · 거리 이상값 ${summary.rejectedDistanceSamples}건")
+                .setPositiveButton("닫기",null).show()
+        }
+        text("지도: © OpenStreetMap contributors · ODbL 1.0\n출처: https://www.openstreetmap.org/copyright · Geofabrik 대한민국 추출본\nhttps://opendatacommons.org/licenses/odbl/1-0/\n지도는 앱 업데이트 때 갱신됩니다.")
         text("정비소·주유소 방문 감지")
         status = text(summary())
         text("위치는 차량 안에서 목록과 비교합니다. 근처 정차는 이용 사실을 뜻하지 않으며, 확인 후에만 일지에 저장합니다.")
@@ -109,6 +132,10 @@ class PlacesActivity : Activity() {
     }
     override fun onRequestPermissionsResult(request: Int, permissions: Array<out String>, results: IntArray) {
         super.onRequestPermissionsResult(request, permissions, results)
+        if(request == 73) {
+            store.saveSetting(io.chagok.app.roads.RoadDetector.ENABLED, (results.isNotEmpty() && results[0] == PackageManager.PERMISSION_GRANTED).toString())
+            render()
+        }
         if(request == 71) {
             store.saveSetting(PlaceVisitTracker.ENABLED, (results.isNotEmpty() && results[0] == PackageManager.PERMISSION_GRANTED).toString())
             render()

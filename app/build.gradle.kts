@@ -20,7 +20,7 @@ android {
     buildTypes {
         create("smoke") {
             initWith(getByName("debug"))
-            applicationIdSuffix = ".smoke"
+            applicationIdSuffix = if(providers.gradleProperty("roadProbe").orNull == "true") ".roadprobe" else ".smoke"
             matchingFallbacks += "debug"
         }
         release {

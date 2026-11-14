@@ -610,3 +610,7 @@ python tools/capture-readme.py
 ## 라이선스
 
 프로젝트 코드 라이선스는 [MIT](LICENSE)입니다. Asta Sans에는 [SIL Open Font License](app/src/main/assets/licenses/AstaSans-OFL.txt)가 적용되며, 서드파티 SDK는 각각의 이용 조건을 따릅니다. 이미지 에셋은 저장소에 포함된 제작 결과물이며, 생성 지시는 위 설계 자료에 보관합니다.
+
+### 도로별 주행 통계
+
+Pleos 위치와 앱에 포함된 전국 OSM 도로 자료를 차량 안에서 대조해 도로 등급별 거리·시간을 누적합니다. `도로·정비소·주유소 감지 설정`에서 켤 수 있고, 다른 함수에서는 `diary.roadUsage(시작일, 종료일)`로 조회합니다. 거리는 차량 누적 주행거리 차이를 사용하며 미분류·관측 공백도 함께 반환합니다. 시내/시골 환경 분류와 소모품 주기 계산은 포함하지 않습니다. [데이터 출처, 조회 API, 검증 및 한계](doc/roads/README.md).
