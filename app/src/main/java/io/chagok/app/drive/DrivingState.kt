@@ -20,6 +20,12 @@ class DrivingState(context: Context, private val log: (String) -> Unit) {
     var available: Boolean = false
         private set
 
+    var activeRestrictions: Int = CarUxRestrictions.UX_RESTRICTIONS_FULLY_RESTRICTED
+        private set
+
+    val animationAllowed: Boolean get() = available &&
+        activeRestrictions and CarUxRestrictions.UX_RESTRICTIONS_NO_VIDEO == 0
+
     private var listener: ((Boolean) -> Unit)? = null
 
     init {
@@ -39,7 +45,16 @@ class DrivingState(context: Context, private val log: (String) -> Unit) {
         onChange(restricted)
     }
 
+    fun refresh() {
+        runCatching {
+            check(car?.isConnected == true)
+            available = true
+            update(manager?.currentCarUxRestrictions)
+        }.onFailure { available = false; update(null) }
+    }
+
     private fun update(r: CarUxRestrictions?) {
+        activeRestrictions = r?.activeRestrictions ?: CarUxRestrictions.UX_RESTRICTIONS_FULLY_RESTRICTED
         restricted = r?.isRequiresDistractionOptimization ?: true
         listener?.invoke(restricted)
     }
@@ -48,5 +63,8 @@ class DrivingState(context: Context, private val log: (String) -> Unit) {
         runCatching { manager?.unregisterListener() }
         runCatching { car?.disconnect() }
         listener = null
+        available = false
+        restricted = true
+        activeRestrictions = CarUxRestrictions.UX_RESTRICTIONS_FULLY_RESTRICTED
     }
 }
