@@ -84,7 +84,8 @@ class UtteranceParser(private val today: () -> LocalDate) {
 
         fun serviceMileage(raw: String): Double? {
             val answer = raw.lowercase().trim().trimEnd('.', '!', '?')
-            val match = Regex("""(?:약\s*)?([0-9일이삼사오육칠팔구십백천만영공.,\s]+?)\s*(?:km|킬로미터|킬로|키로미터|키로)?\s*(?:입니다|였어요|이었어요|이에요|예요|요)?""")
+            // "4만 킬로로 기억해요", "4만 킬로 정도요" are answers too.
+            val match = Regex("""(?:약\s*)?([0-9일이삼사오육칠팔구십백천만영공.,\s]+?)\s*(?:km|킬로미터|킬로|키로미터|키로)?\s*(?:쯤|정도)?\s*(?:(?:으로|로)\s*기억(?:해|나)?요?|입니다|였어요|이었어요|이에요|예요|요)?""")
                 .matchEntire(answer) ?: return null
             val number = match.groupValues[1].replace(Regex("""\s+"""), "")
             if (',' in number && !Regex("""\d{1,3}(,\d{3})+(\.\d+)?""").matches(number)) return null

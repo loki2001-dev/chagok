@@ -244,7 +244,10 @@ open class CompanionActivity : Activity() {
     override fun onPause() {
         resumed=false;speechAttempt++;handler.removeCallbacksAndMessages(null);scene.pause();speech.cancel();listening=false
         scene.serviceVisit.cancel()
+        // Unanswered questions are released so a later parking can ask them again.
+        if (mileageQuestionKm != null) diary.releaseServiceMileage()
         mileageQuestionKm = null
+        repair.visitId?.let { store.saveSetting(askedKey("visit/$it"), "") }
         repair.clear(); closeRepairMotion()
         if(conversation.asking)conversation.defer()
         syncQuestion()
@@ -262,7 +265,9 @@ open class CompanionActivity : Activity() {
     }
     protected fun applyMonitorState(value:MonitorState) {
         state=value;scene.motion=value.motion
-        if (mileageQuestionKm != null && (!value.enabled || safeForTouch())) finishMileageQuestion()
+        // Voice questions belong to parked time: leaving Park drops them until a later parking.
+        if (mileageQuestionKm != null && (!value.enabled || (deferQuestionsWhileMoving && !safeForTouch()))) interruptMileageQuestion()
+        if (repair.active && deferQuestionsWhileMoving && !safeForTouch()) deferRepair()
         if (!safeForTouch() || !state.motion.animationAllowed) closeRepairMotion()
         scene.fuelVisit.observe(value.fuelVisitId, value.motion)
         if(!state.enabled)scene.serviceVisit.cancel()
@@ -279,6 +284,7 @@ open class CompanionActivity : Activity() {
     private fun enforceParkedUi() {
         if(!parked){
             if(conversation.asking && deferQuestionsWhileMoving) { speechAttempt++;speech.cancel();listening=false;conversation.defer();questionAt=SystemClock.elapsedRealtime();syncQuestion() }
+            if (deferQuestionsWhileMoving) { deferRepair(); interruptMileageQuestion() }
             dialog?.dismiss()
             if(showingCollection)hideCollection()
             scene.serviceVisit.cancel()
@@ -292,8 +298,10 @@ open class CompanionActivity : Activity() {
     private fun parkedRepairChoice() {
         if (dialog?.isShowing == true) return
         val items = repair.repairs()
-        val picking = repair.choosing
+        val picking = repair.choosing && !repair.confirming
         val choices = if (picking) items.map { it.label } else listOf("네", "아니요", "나중에")
+        // The answer timeout must not close the list while the user is choosing.
+        questionAt = SystemClock.elapsedRealtime()
         dialog = AlertDialog.Builder(this).setTitle(repair.question)
             .setItems(choices.toTypedArray()) { _, index ->
                 if (repair.active && safeForTouch()) {
@@ -362,8 +370,10 @@ open class CompanionActivity : Activity() {
                         store.setting(askedKey("visit/${it.id}")) != "true" }
                     val visit = visits.firstOrNull { it.place.kind == PlaceKind.FUEL }
                     if(dialog?.isShowing != true && audio.mode==android.media.AudioManager.MODE_NORMAL) {
-                        if(departed != null && !queue.muted() && state.motion.speedMps != null && state.motion.parkGear != null) {
-                            if (mileageQuestionKm != null) finishMileageQuestion()
+                        val voiceReady = speech.isAvailable() && hasAppPermission(Manifest.permission.RECORD_AUDIO)
+                        // A departed workshop visit is asked about at a later parking, never while driving.
+                        if(departed != null && voiceReady && queue.canOffer(safe)) {
+                            if (mileageQuestionKm != null) interruptMileageQuestion()
                             queue.offered("visit/${departed.id}")
                             store.saveSetting(askedKey("visit/${departed.id}"),"true")
                             repair.begin(departed); questionAt = now; syncQuestion(); listen()
@@ -375,13 +385,15 @@ open class CompanionActivity : Activity() {
                                 .setPositiveButton("확인하기") { _, _ -> startActivity(Intent(this@CompanionActivity, io.chagok.app.ui.PlacesActivity::class.java)) }
                                 .setNegativeButton("아니요") { _, _ -> diary.rejectVisit(visit.id, user) }
                                 .setNeutralButton("나중에", null).create().also { it.setOnDismissListener { visitDialog = false }; it.show() }
-                        } else if(mileageQuestionKm == null && speech.isAvailable() && hasAppPermission(Manifest.permission.RECORD_AUDIO)) {
+                        } else if(mileageQuestionKm == null && voiceReady) {
                             val candidate = queue.next(candidates, safe)
                             if (candidate != null) beginQuestion(candidate.id)
-                            else if (!queue.muted() && state.motion.parkGear == false &&
-                                (state.motion.speedMps ?: 0f) > .3f) {
+                            // Asked once, at a parking after the first recorded drive.
+                            else if (queue.canOffer(safe) && diary.serviceMileagePending() &&
+                                store.trips(diary.profile().id).isNotEmpty()) {
                                 val current = diary.currentKm(state.odometer)
                                 if (current != null && diary.offerServiceMileage()) {
+                                    queue.offered("service-mileage")
                                     mileageQuestionKm = current
                                     mileageHint = "예를 들어 ‘4만 2천 킬로’"
                                     questionAt = now
@@ -393,8 +405,8 @@ open class CompanionActivity : Activity() {
                     }
                 }
             }
-            if(repair.active && now-questionAt>=25_000) completeRepair { repair.receive("나중에") }
-            if (mileageQuestionKm != null && now-questionAt >= 25_000) finishMileageQuestion()
+            if(repair.active && dialog?.isShowing != true && now-questionAt>=25_000) completeRepair { repair.receive("나중에") }
+            if (mileageQuestionKm != null && now-questionAt >= 25_000) interruptMileageQuestion()
             if(conversation.asking&&now-questionAt>=20_000){speech.cancel();listening=false;conversation.defer();questionAt=now;syncQuestion()}
             if(conversation.stage==EnergyConversation.Stage.FINISHED&&now-questionAt>=5000){conversation.clear();syncQuestion()}
             footer.isClickable = repair.active && safeForTouch()
@@ -514,7 +526,7 @@ open class CompanionActivity : Activity() {
             override fun onFinal(text:String){if(token==speechAttempt&&resumed){listening=false;receiveAnswer(text)}}
             override fun onFailed(reason:String){if(token==speechAttempt&&resumed){
                 listening=false
-                if (mileageQuestionKm != null) finishMileageQuestion()
+                if (mileageQuestionKm != null) interruptMileageQuestion()
                 else if(!repair.active) { conversation.defer();questionAt=SystemClock.elapsedRealtime() }
                 syncQuestion()
             }}
@@ -526,7 +538,8 @@ open class CompanionActivity : Activity() {
             val current = diary.currentKm(state.odometer) ?: initialKm
             val km = UtteranceParser.serviceMileage(text)
             when {
-                listOf("몰라", "모르", "기억", "나중", "취소", "건너").any(text::contains) -> finishMileageQuestion()
+                // "4만 킬로로 기억해요" is an answer; only "기억이 안 나요" declines.
+                km == null && Regex("몰라|모르|기억(이)?\\s*안|나중|취소|건너").containsMatchIn(text) -> finishMileageQuestion()
                 km != null && km <= current -> {
                     diary.setReportedServiceKm(km, current)
                     finishMileageQuestion("${DiaryService.km(km)}를 첫 정비 일정의 기준으로 저장했어요")
@@ -551,6 +564,17 @@ open class CompanionActivity : Activity() {
         toastText = message
         toastUntil = SystemClock.elapsedRealtime() + 5000
         syncQuestion()
+    }
+    /** Driving resumed before the answer: drop the question and ask again at a later parking. */
+    private fun deferRepair() {
+        val id = repair.visitId ?: return
+        completeRepair { repair.clear(); "정차 후 다시 물어볼게요" }
+        store.saveSetting(askedKey("visit/$id"), "")
+    }
+    /** Ended without an answer. The one-time question may be asked again at a later parking. */
+    private fun interruptMileageQuestion() {
+        if (mileageQuestionKm == null) return
+        if (diary.releaseServiceMileage()) finishMileageQuestion("정차 후 다시 물어볼게요") else finishMileageQuestion()
     }
     private fun completeRepair(answer: () -> String?) {
         speechAttempt++; speech.cancel(); listening = false

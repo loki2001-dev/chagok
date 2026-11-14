@@ -85,12 +85,36 @@ class RecommendedPlansTest {
     }
 
     @Test fun koreanMileageAnswersAcceptDistanceAndRejectUnrelatedSpeech() {
-        listOf("사만 이천 킬로", "4만 2천 킬로", "42,000km", "42000입니다", "약 4.2만 키로요").forEach {
+        listOf("사만 이천 킬로", "4만 2천 킬로", "42,000km", "42000입니다", "약 4.2만 키로요",
+            "4만 2천 킬로로 기억해요", "4만 2천 킬로 정도요", "42,000km쯤").forEach {
             assertEquals(it, 42_000.0, UtteranceParser.serviceMileage(it)!!, 0.0)
         }
         assertEquals(0.0, UtteranceParser.serviceMileage("0 km")!!, 0.0)
-        listOf("몰라요", "-300km", "4만원", "3,5km", "40~50km", "").forEach {
+        listOf("몰라요", "-300km", "4만원", "3,5km", "40~50km", "", "기억이 안 나요").forEach {
             assertNull(it, UtteranceParser.serviceMileage(it))
         }
+    }
+
+    @Test fun unansweredMileageQuestionIsReleasedForALaterParkingAtMostThreeTimes() {
+        assertTrue(diary.serviceMileagePending())
+        assertTrue(diary.offerServiceMileage())
+        assertFalse(diary.serviceMileagePending())
+        // Driving resumed or no answer: ask again later, but not forever.
+        assertTrue(diary.releaseServiceMileage())
+        assertTrue(diary.serviceMileagePending())
+        assertTrue(diary.offerServiceMileage())
+        assertTrue(diary.releaseServiceMileage())
+        assertTrue(diary.offerServiceMileage())
+        assertFalse(diary.releaseServiceMileage())
+        assertFalse(diary.serviceMileagePending())
+        assertFalse(DiaryService(store, clock).offerServiceMileage())
+    }
+
+    @Test fun answeredMileageIsNeverReleased() {
+        assertTrue(diary.offerServiceMileage())
+        diary.setReportedServiceKm(42_000.0, 47_000.0)
+        assertFalse(diary.releaseServiceMileage())
+        assertFalse(diary.serviceMileagePending())
+        assertFalse(diary.offerServiceMileage())
     }
 }
