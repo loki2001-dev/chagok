@@ -29,6 +29,18 @@ class DiaryService(
 
     private val parser = UtteranceParser(::today)
     private val trackers = mutableMapOf<EnergyKind, EnergyTracker>()
+    private var viewer: String? = null
+
+    fun selectUser(user: String) { require(user.isNotBlank()); viewer = user; registerUser(user) }
+    fun sharing(user: String) = store.sharing(user)
+    fun setSharing(user: String, readers: Set<String>?) {
+        require(viewer == null || viewer == user) { "내 기록의 공유 범위만 바꿀 수 있어요." }
+        store.saveSharing(SharingPolicy(user, readers?.map(String::trim)?.filter(String::isNotEmpty)?.toSet()))
+    }
+    fun canRead(entry: DiaryEntry, user: String): Boolean = entry.author == user ||
+        (entry.status != EntryStatus.DRAFT && store.sharing(entry.author).readers.let { it == null || user in it })
+    fun canEdit(entry: DiaryEntry) = viewer == null || entry.author == viewer
+    private fun visibleEntries() = store.entries(profile().id).filter { viewer == null || canRead(it, viewer!!) }
 
     // ---------------------------------------------------------------- 차량 프로필
 
@@ -67,7 +79,8 @@ class DiaryService(
      * @param activeDraftId 화면에 열려 있는 초안. 수정·취소 발화의 대상이다
      */
     fun handleVoice(text: String, odometer: Reading, author: String, activeDraftId: String?): VoiceOutcome {
-        val active = activeDraftId?.let(store::entry)?.takeIf { it.status == EntryStatus.DRAFT }
+        if (viewer != null && viewer != author) return VoiceOutcome.Ask("현재 사용자로 입력해 주세요.")
+        val active = activeDraftId?.let(store::entry)?.takeIf { it.status == EntryStatus.DRAFT && it.author == author }
         return when (val intent = parser.parse(text)) {
             is SpokenIntent.Record -> draft(intent, odometer, author, text)
             is SpokenIntent.CorrectCost -> {
@@ -135,12 +148,16 @@ class DiaryService(
         var candidateId: String? = null
         if (item.kind == ItemKind.ENERGY) {
             val kind = if (item == Item.REFUEL) EnergyKind.FUEL else EnergyKind.SOC
-            val candidate = pendingCandidates().firstOrNull { it.kind == kind }
+            val matches = pendingCandidates().filter {
+                it.kind == kind && it.after.receivedAt.atZone(zone).toLocalDate() == date.date
+            }
+            val candidate = matches.singleOrNull()
             if (candidate != null) {
                 candidateId = candidate.id
                 checks += "자동 기록 후보(${CandidateRules.describe(candidate)})와 연결해요. 맞는지 확인해 주세요."
             } else {
-                checks += "연결할 후보가 없어요. 수동 기록으로 저장돼요."
+                checks += if (matches.size > 1) "같은 날 후보가 여러 개예요. 자동 기록 후보에서 맞는 기록을 선택해 주세요."
+                    else "같은 날짜의 후보가 없어요. 수동 기록으로 저장돼요."
             }
             if (item == Item.CHARGE) checks += "충전량(kWh)과 비용은 직접 입력해요. SoC에서 추정하지 않아요."
         }
@@ -169,6 +186,9 @@ class DiaryService(
      * 오늘 기록이고 차량 값이 새것이면 차량 출처로 붙인다. 과거 기록에는 붙이지 않는다.
      */
     fun manualDraft(item: Item, date: LocalDate, cost: Long?, odometer: Reading, author: String): DiaryEntry {
+        require(viewer == null || viewer == author)
+        require(item.availableFor(profile().powertrain))
+        require(!date.isAfter(today()))
         val fresh = freshObservation(odometer)?.takeIf { date == today() }
         val entry = DiaryEntry(
             id = newId(),
@@ -187,32 +207,89 @@ class DiaryService(
 
     // ---------------------------------------------------------------- 수정·확정·취소
 
-    fun entry(id: String): DiaryEntry? = store.entry(id)
+    fun entry(id: String): DiaryEntry? = store.entry(id)?.takeIf { viewer == null || canRead(it, viewer!!) }
 
-    fun setCost(id: String, cost: Long?) = edit(id, "비용 ${won(store.entry(id)?.cost)} → ${won(cost)}") { it.copy(cost = cost) }
+    fun setCost(id: String, cost: Long?): DiaryEntry? {
+        require(cost == null || cost >= 0) { "비용은 0원 이상으로 입력해 주세요." }
+        return edit(id, "비용 ${won(store.entry(id)?.cost)} → ${won(cost)}") { it.copy(cost = cost) }
+    }
 
-    fun setDate(id: String, date: LocalDate) = edit(id, "날짜 → $date") { it.copy(performedOn = date) }
+    fun setDate(id: String, date: LocalDate) = edit(id, "날짜 → $date") { withDate(it, date) }
+
+    private fun withDate(entry: DiaryEntry, date: LocalDate): DiaryEntry {
+        require(!date.isAfter(today())) { "미래 날짜에는 정비 기록을 저장할 수 없어요." }
+        if (date == entry.performedOn) return entry
+        return entry.copy(performedOn = date, candidateId = null,
+            odometer = entry.odometer?.takeUnless { it.source == Source.VEHICLE },
+            detachedObservation = entry.odometer?.observed ?: entry.detachedObservation)
+    }
+
+    /** 모든 편집 필드를 한 번에 검증하고 저장한다. 중간 저장·이력 분할을 피한다. */
+    fun updateEntry(id: String, date: LocalDate, km: Double?, cost: Long?, amount: Double?, memo: String?, wheels: Set<Wheel>): DiaryEntry? {
+        require(km == null || (km.isFinite() && km >= 0)) { "주행거리를 올바르게 입력해 주세요." }
+        require(cost == null || cost >= 0) { "비용을 올바르게 입력해 주세요." }
+        require(amount == null || (amount.isFinite() && amount > 0)) { "주유·충전량은 0보다 커야 해요." }
+        return edit(id, "날짜·주행거리·비용·수량·메모 수정") { original ->
+            var e = withDate(original, date)
+            // 날짜가 바뀌었는데 기존 자동 km를 그대로 보낸 경우에는 자동 첨부를 해제한다.
+            val effectiveKm = if (date != original.performedOn && original.odometer?.source == Source.VEHICLE && km == original.odometer.value) null else km
+            if (effectiveKm != e.odometer?.value) e = e.copy(odometer = effectiveKm?.let {
+                FieldEvidence(it, "km", Source.USER, observed = original.odometer?.observed ?: original.detachedObservation)
+            }, detachedObservation = original.odometer?.observed ?: original.detachedObservation)
+            e.copy(cost = cost, energyAmount = amount.takeIf { e.item.kind == ItemKind.ENERGY }, memo = memo?.trim()?.ifBlank { null },
+                wheels = wheels.takeIf { e.item == Item.TIRE_REPLACE } ?: emptySet())
+        }
+    }
+
+    fun replaceItem(id: String, item: Item): DiaryEntry? = edit(id, "항목 → ${item.label}") {
+        require(item.availableFor(profile().powertrain)) { "차량 동력원에 맞지 않는 항목이에요." }
+        it.copy(item = item, candidateId = null, energyAmount = null, wheels = emptySet())
+    }
 
     fun setWheels(id: String, wheels: Set<Wheel>) = edit(id, "바퀴 → ${wheels.joinToString { w -> w.label }}") { it.copy(wheels = wheels) }
 
     /** 사용자가 km를 입력·수정하면 출처는 사용자 값이 되고, 원래 차량 관측값은 남겨 둔다 */
     fun setOdometer(id: String, km: Double?) = edit(id, "주행거리 → ${km?.let(::km) ?: "미입력"}") {
-        val observed = it.odometer?.observed
-        it.copy(odometer = km?.let { v -> FieldEvidence(v, "km", Source.USER, observed = observed) })
+        require(km == null || (km.isFinite() && km >= 0)) { "주행거리를 올바르게 입력해 주세요." }
+        val observed = it.odometer?.observed ?: it.detachedObservation
+        it.copy(odometer = km?.let { v -> FieldEvidence(v, "km", Source.USER, observed = observed) }, detachedObservation = observed)
     }
 
-    private fun edit(id: String, summary: String, change: (DiaryEntry) -> DiaryEntry): DiaryEntry? {
+    private fun edit(id: String, summary: String, change: (DiaryEntry) -> DiaryEntry): DiaryEntry? = store.transaction {
+        editInternal(id, summary, change)
+    }
+
+    private fun editInternal(id: String, summary: String, change: (DiaryEntry) -> DiaryEntry): DiaryEntry? {
         val current = store.entry(id) ?: return null
+        require(canEdit(current)) { "작성자만 기록을 수정할 수 있어요." }
         if (current.status == EntryStatus.CANCELLED) return current
         var updated = change(current)
+        if (updated == current) return current
         if (current.status == EntryStatus.CONFIRMED) {
+            validateOdometer(updated)?.let { throw IllegalArgumentException(it) }
+            val detail = buildList {
+                if (current.performedOn != updated.performedOn) add("날짜 ${current.performedOn} → ${updated.performedOn}")
+                if (current.item != updated.item) add("항목 ${current.item.label} → ${updated.item.label}")
+                if (current.odometer != updated.odometer) add("주행거리 ${current.odometer?.value ?: "미입력"} → ${updated.odometer?.value ?: "미입력"} km")
+                if (current.cost != updated.cost) add("비용 ${won(current.cost)} → ${won(updated.cost)}")
+                if (current.energyAmount != updated.energyAmount) add("수량 ${current.energyAmount ?: "미입력"} → ${updated.energyAmount ?: "미입력"}")
+                if (current.memo != updated.memo) add("메모 ${current.memo ?: "없음"} → ${updated.memo ?: "없음"}")
+                if (current.wheels != updated.wheels) add("바퀴 ${current.wheels.joinToString { it.label }} → ${updated.wheels.joinToString { it.label }}")
+                if (current.candidateId != updated.candidateId) add("후보 연결 변경")
+            }.joinToString(" · ")
             // 저장 후 수정은 변경 이력을 보존한다
             updated = updated.copy(
                 version = current.version + 1,
-                history = current.history + Revision(current.version + 1, now(), summary),
+                history = current.history + Revision(current.version + 1, now(), detail.ifBlank { summary }),
+                updatedAt = now(),
             )
         }
         store.saveEntry(updated)
+        if (current.candidateId != updated.candidateId) current.candidateId?.let { cid ->
+            store.candidates(current.vehicleId).firstOrNull { it.id == cid && it.linkedEntryId == id }?.let {
+                store.saveCandidate(it.copy(state = CandidateState.PENDING, linkedEntryId = null))
+            }
+        }
         return updated
     }
 
@@ -224,10 +301,16 @@ class DiaryService(
         data class Rejected(val reason: String) : ConfirmResult
     }
 
-    fun confirm(id: String, allowDuplicate: Boolean = false): ConfirmResult {
+    fun confirm(id: String, allowDuplicate: Boolean = false): ConfirmResult = store.transaction { confirmInternal(id, allowDuplicate) }
+
+    private fun confirmInternal(id: String, allowDuplicate: Boolean): ConfirmResult {
         val draft = store.entry(id) ?: return ConfirmResult.Rejected("초안을 찾을 수 없어요.")
+        if (!canEdit(draft)) return ConfirmResult.Rejected("작성자만 기록을 저장할 수 있어요.")
         if (draft.status != EntryStatus.DRAFT) return ConfirmResult.Rejected("이미 ${draft.status.label}된 기록이에요.")
         if (draft.performedOn.isAfter(today())) return ConfirmResult.Rejected("미래 날짜에는 정비 기록을 저장할 수 없어요.")
+        if (!draft.item.availableFor(profile().powertrain)) return ConfirmResult.Rejected("현재 차량 동력원에 맞지 않는 항목이에요.")
+        if (draft.cost?.let { it < 0 } == true) return ConfirmResult.Rejected("비용을 확인해 주세요.")
+        validateOdometer(draft)?.let { return ConfirmResult.Rejected(it) }
 
         val confirmed = confirmedEntries()
         if (!allowDuplicate) {
@@ -248,19 +331,45 @@ class DiaryService(
         }
 
         val candidate = draft.candidateId?.let { cid -> store.candidates(draft.vehicleId).firstOrNull { it.id == cid } }
+        if (draft.candidateId != null && (candidate == null || candidate.state == CandidateState.EXCLUDED)) {
+            return ConfirmResult.Rejected("제외되었거나 없는 후보예요. 후보 연결을 해제하거나 새로 입력해 주세요.")
+        }
+        if (candidate != null && (candidate.after.receivedAt.atZone(zone).toLocalDate() != draft.performedOn ||
+                draft.item != if (candidate.kind == EnergyKind.FUEL) Item.REFUEL else Item.CHARGE)) {
+            return ConfirmResult.Rejected("후보의 날짜와 항목을 다시 확인해 주세요.")
+        }
         if (candidate != null && candidate.state == CandidateState.CONFIRMED && candidate.linkedEntryId != draft.id) {
             return ConfirmResult.Rejected("이 후보는 이미 다른 기록으로 확정됐어요.")
         }
 
-        val saved = draft.copy(status = EntryStatus.CONFIRMED)
+        val saved = draft.copy(status = EntryStatus.CONFIRMED, updatedAt = now())
         store.saveEntry(saved)
         candidate?.let { store.saveCandidate(it.copy(state = CandidateState.CONFIRMED, linkedEntryId = saved.id)) }
+        if (store.progress(saved.author).none { it.topic == Topic.FIRST_DIARY && !it.needsReview }) {
+            store.saveProgress(LearningProgress(saved.author, Topic.FIRST_DIARY, LearningCatalog.CONTENT_VERSION, now(), saved.id))
+        }
         return ConfirmResult.Saved(saved, warnings)
     }
 
+    private fun validateOdometer(entry: DiaryEntry): String? {
+        val km = entry.odometer?.value ?: return null
+        if (!km.isFinite() || km < 0) return "주행거리를 올바르게 입력해 주세요."
+        val conflict = store.entries(entry.vehicleId).any { other ->
+            val v = other.odometer?.value
+            other.id != entry.id && other.status == EntryStatus.CONFIRMED && v != null &&
+                ((other.performedOn < entry.performedOn && v > km) || (other.performedOn > entry.performedOn && v < km))
+        }
+        return if (conflict) "정비 날짜와 주행거리 순서가 다른 기록과 맞지 않아요. 값을 확인해 주세요." else null
+    }
+
+    fun unlinkCandidate(id: String) = edit(id, "후보 연결 해제") { it.copy(candidateId = null) }
+
     /** 초안이면 버리고, 확정 기록이면 취소 상태로 남긴다. 비용·일정·도장에서 빠진다 */
-    fun cancel(id: String) {
+    fun cancel(id: String) = store.transaction { cancelInternal(id) }
+
+    private fun cancelInternal(id: String) {
         val entry = store.entry(id) ?: return
+        require(canEdit(entry)) { "작성자만 기록을 취소할 수 있어요." }
         when (entry.status) {
             EntryStatus.DRAFT -> store.deleteEntry(id)
             EntryStatus.CANCELLED -> return
@@ -270,6 +379,7 @@ class DiaryService(
                         status = EntryStatus.CANCELLED,
                         version = entry.version + 1,
                         history = entry.history + Revision(entry.version + 1, now(), "취소"),
+                        updatedAt = now(),
                     ),
                 )
                 entry.candidateId?.let { cid ->
@@ -283,17 +393,25 @@ class DiaryService(
     }
 
     fun confirmedEntries(): List<DiaryEntry> =
-        store.entries(profile().id).filter { it.status == EntryStatus.CONFIRMED }
+        visibleEntries().filter { it.status == EntryStatus.CONFIRMED }
 
-    fun drafts(): List<DiaryEntry> = store.entries(profile().id).filter { it.status == EntryStatus.DRAFT }
+    fun drafts(): List<DiaryEntry> = visibleEntries().filter { it.status == EntryStatus.DRAFT }
+
+    /** A candidate already being reviewed as a draft is one task, not two. */
+    fun unreviewedCandidates(): List<DetectionCandidate> {
+        val drafting = drafts().mapNotNull { it.candidateId }.toSet()
+        return pendingCandidates().filter { it.id !in drafting }
+    }
+
+    fun reviewCount() = drafts().size + unreviewedCandidates().size
 
     /** 타임라인: 확정·취소 기록, 최근 순 */
     fun timeline(): List<DiaryEntry> =
-        store.entries(profile().id)
+        visibleEntries()
             .filter { it.status != EntryStatus.DRAFT }
             .sortedWith(compareByDescending<DiaryEntry> { it.performedOn }.thenByDescending { it.createdAt })
 
-    fun ledger(month: java.time.YearMonth) = Ledger.month(store.entries(profile().id), month)
+    fun ledger(month: java.time.YearMonth) = Ledger.month(visibleEntries(), month)
 
     // ---------------------------------------------------------------- 관리 일정
 
@@ -324,7 +442,7 @@ class DiaryService(
 
     /** 급한 순서: 도래 → 임박 → 예정 → 기록 없음 → 주기 미설정 */
     fun schedules(currentKm: Double?): List<ScheduleStatus> {
-        val entries = store.entries(profile().id)
+        val entries = visibleEntries()
         val order = listOf(ScheduleState.DUE, ScheduleState.SOON, ScheduleState.UPCOMING, ScheduleState.NO_RECORD, ScheduleState.NO_PLAN)
         return store.plans(profile().id)
             .filter { it.item.availableFor(profile().powertrain) }
@@ -353,19 +471,28 @@ class DiaryService(
     fun observeEnergy(kind: EnergyKind, value: Double?, parked: Boolean): DetectionCandidate? {
         if (kind !in energyKinds()) return null
         val vid = profile().id
-        val tracker = trackers.getOrPut(kind) { EnergyTracker(kind).also { it.restore(store.energyBaseline(vid, kind)) } }
-        return when (val r = tracker.feed(value, now(), parked)) {
-            EnergyTracker.Result.None -> null
-            is EnergyTracker.Result.BaselineMoved -> {
-                store.saveEnergyBaseline(vid, kind, r.baseline)
-                null
-            }
-            is EnergyTracker.Result.Rise -> {
-                store.saveEnergyBaseline(vid, kind, r.after)
-                if (CandidateRules.isDuplicate(r, kind, store.candidates(vid))) return null
-                DetectionCandidate(newId(), vid, kind, r.before, r.after, CandidateState.PENDING, r.gapLong)
-                    .also(store::saveCandidate)
-            }
+        val tracker = trackers.getOrPut(kind) { EnergyTracker(kind).also { t ->
+            store.energyCheckpoint(vid,kind)?.let(t::restoreCheckpoint) ?: t.restore(store.energyBaseline(vid,kind))
+        } }
+        return store.transaction {
+            val result=tracker.feed(value,now(),parked)
+            store.saveEnergyCheckpoint(vid,kind,tracker.checkpoint())
+            tracker.baseline?.let { store.saveEnergyBaseline(vid,kind,it) }
+            if(result !is EnergyTracker.Result.Rise)return@transaction null
+            val existing=store.candidates(vid).firstOrNull { it.kind==kind&&it.before.receivedAt==result.before.receivedAt }
+            if(existing!=null) {
+                // A confirmed/excluded event must never turn into another bill as SoC keeps rising.
+                if(existing.state!=CandidateState.PENDING)return@transaction null
+                val next=existing.copy(after=result.after,gapLong=existing.gapLong||result.gapLong,collecting=!result.finished)
+                store.saveCandidate(next)
+                store.entries(vid).filter { it.candidateId==next.id&&it.status==EntryStatus.DRAFT }.forEach { d ->
+                    val date=next.after.receivedAt.atZone(zone).toLocalDate()
+                    if(d.performedOn==existing.after.receivedAt.atZone(zone).toLocalDate()&&d.performedOn!=date)
+                        store.saveEntry(d.copy(performedOn=date,odometer=null,detachedObservation=d.odometer?.observed ?: d.detachedObservation))
+                }
+                next
+            } else if(CandidateRules.isDuplicate(result,kind,store.candidates(vid)))null
+            else DetectionCandidate(newId(),vid,kind,result.before,result.after,CandidateState.PENDING,result.gapLong,collecting=!result.finished).also(store::saveCandidate)
         }
     }
 
@@ -374,10 +501,13 @@ class DiaryService(
 
     /** 후보를 확인해 일지 초안으로 만든다. 금액·날짜는 사용자가 확인한 뒤 [confirm]으로 저장한다 */
     fun draftFromCandidate(id: String, author: String, odometer: Reading): DiaryEntry? {
+        require(viewer == null || viewer == author) { "현재 사용자로 입력해 주세요." }
         val c = pendingCandidates().firstOrNull { it.id == id } ?: return null
         val item = if (c.kind == EnergyKind.FUEL) Item.REFUEL else Item.CHARGE
+        if (!item.availableFor(profile().powertrain)) return null
+        store.entries(c.vehicleId).firstOrNull { it.status == EntryStatus.DRAFT && it.author == author && it.candidateId == id }?.let { return it }
         val fresh = freshObservation(odometer)
-            ?.takeIf { Duration.between(c.after.receivedAt, it.receivedAt).abs() <= FRESH_LIMIT }
+            ?.takeIf { c.after.receivedAt.atZone(zone).toLocalDate() == today() && Duration.between(c.after.receivedAt, it.receivedAt).abs() <= FRESH_LIMIT }
         val entry = DiaryEntry(
             id = newId(),
             vehicleId = c.vehicleId,
@@ -394,6 +524,15 @@ class DiaryService(
         return entry
     }
 
+    fun rememberUnknownCost(id: String, unknown: Boolean) { entry(id)?.takeIf(::canEdit)?.let { store.saveSetting("unknown-cost/$id",unknown.toString()) } }
+    fun costWasUnknown(id: String)=store.setting("unknown-cost/$id")=="true"
+    fun questionQueue(user: String)=QuestionQueue(store,profile().id,user,clock)
+    fun rejectCandidate(id: String) = store.transaction {
+        val c=store.candidates(profile().id).firstOrNull { it.id==id&&it.state==CandidateState.PENDING } ?: return@transaction
+        store.entries(c.vehicleId).filter { it.candidateId==id&&it.status==EntryStatus.DRAFT&&canEdit(it) }.forEach { cancelInternal(it.id) }
+        store.saveCandidate(c.copy(state=CandidateState.EXCLUDED))
+    }
+
     fun excludeCandidate(id: String) {
         store.candidates(profile().id).firstOrNull { it.id == id && it.state == CandidateState.PENDING }
             ?.let { store.saveCandidate(it.copy(state = CandidateState.EXCLUDED)) }
@@ -401,16 +540,19 @@ class DiaryService(
 
     // ---------------------------------------------------------------- 관리 도감
 
-    fun stamps(user: String): List<LearningProgress> = store.progress(user)
+    fun stamps(user: String): List<LearningProgress> = store.progress(user).map { p ->
+        val evidence = store.entry(p.evidenceEntryId)
+        if (evidence == null || evidence.status != EntryStatus.CONFIRMED || !canRead(evidence, user)) p.copy(needsReview = true) else p
+    }
 
     /** 상황에 맞는 미션 한 개만 추천한다. 이미 도장을 받은 주제는 다시 추천하지 않는다 */
     fun recommendedMission(user: String, currentKm: Double?): Mission? = missions(user, currentKm).firstOrNull()
 
     fun missions(user: String, currentKm: Double?): List<Mission> {
-        val done = store.progress(user).filter { !it.needsReview }.map { it.topic }.toSet()
+        val done = stamps(user).filter { !it.needsReview }.map { it.topic }.toSet()
         val result = mutableListOf<Mission>()
         if (Topic.FIRST_DIARY !in done) {
-            confirmedEntries().minByOrNull { it.createdAt }?.let { result += LearningCatalog.firstDiary(it) }
+            confirmedEntries().filter { canRead(it, user) }.minByOrNull { it.createdAt }?.let { result += LearningCatalog.firstDiary(it) }
         }
         if (Topic.READ_INTERVAL !in done) {
             schedules(currentKm).firstNotNullOfOrNull { LearningCatalog.readInterval(it) }?.let { result += it }
@@ -421,23 +563,23 @@ class DiaryService(
     data class AnswerResult(val correct: Boolean, val hint: String?, val stamped: Boolean)
 
     fun answer(user: String, mission: Mission, choice: Int): AnswerResult {
+        if (viewer != null && viewer != user) return AnswerResult(false, "현재 사용자로 학습해 주세요.", false)
         if (choice != mission.answerIndex) return AnswerResult(false, mission.hint, false)
-        val existing = store.progress(user).firstOrNull { it.topic == mission.topic }
+        val existing = stamps(user).firstOrNull { it.topic == mission.topic }
         if (existing != null && !existing.needsReview) return AnswerResult(true, null, false)
         val evidence = store.entry(mission.evidenceEntryId)
-        if (evidence == null || evidence.status != EntryStatus.CONFIRMED) return AnswerResult(true, null, false)
+        if (evidence == null || evidence.status != EntryStatus.CONFIRMED || !canRead(evidence, user)) return AnswerResult(true, null, false)
         store.saveProgress(LearningProgress(user, mission.topic, LearningCatalog.CONTENT_VERSION, now(), evidence.id))
         return AnswerResult(true, null, true)
     }
 
     private fun reviewStampsAfterCancel(cancelled: DiaryEntry) {
-        val users = (store.progress(cancelled.author) + allProgressFor(cancelled.id)).distinct()
+        val users = store.allProgress().filter { it.evidenceEntryId == cancelled.id }
         for (p in users.filter { it.evidenceEntryId == cancelled.id }) {
             val alternative = when (p.topic) {
-                Topic.FIRST_DIARY -> confirmedEntries().minByOrNull { it.createdAt }
-                Topic.READ_INTERVAL -> schedules(null).firstNotNullOfOrNull { s ->
-                    s.basis?.takeIf { s.plan.intervalKm != null && s.plan.intervalMonths != null }
-                }
+                Topic.FIRST_DIARY -> store.entries(cancelled.vehicleId).filter { it.status == EntryStatus.CONFIRMED && canRead(it, p.user) }.minByOrNull { it.createdAt }
+                Topic.READ_INTERVAL -> store.plans(cancelled.vehicleId).filter { it.intervalKm != null && it.intervalMonths != null }
+                    .firstNotNullOfOrNull { plan -> ScheduleCalculator.basisOf(plan.item, store.entries(cancelled.vehicleId).filter { canRead(it, p.user) }) }
                 else -> null
             }
             store.saveProgress(
@@ -446,28 +588,25 @@ class DiaryService(
         }
     }
 
-    private val knownUsers = mutableSetOf<String>()
-
     /** 공용 일지 사용자 목록 (도장 근거 재검토용). 화면에서 사용자를 고를 때 등록한다 */
     fun registerUser(user: String) {
-        knownUsers += user
+        require(user.isNotBlank())
     }
-
-    private fun allProgressFor(entryId: String): List<LearningProgress> =
-        knownUsers.flatMap { store.progress(it) }.filter { it.evidenceEntryId == entryId }
 
     // ---------------------------------------------------------------- 공용 일지 · 리포트
 
     /** 다른 사람이 마지막 확인 이후 새로 확정한 기록 (기획서 1장: 인수인계는 공용 일지의 변경 사항 확인) */
     fun changesSince(user: String): List<DiaryEntry> {
         val since = store.lastSeen(user)
-        return confirmedEntries().filter { it.author != user && (since == null || it.createdAt.isAfter(since)) }
+        return store.entries(profile().id).filter { it.status != EntryStatus.DRAFT && canRead(it, user) &&
+            it.author != user && (since == null || it.updatedAt.isAfter(since)) }
     }
 
     fun markSeen(user: String) = store.saveLastSeen(user, now())
 
     /** 정비 리포트. 선택한 날짜·항목만 담고 VIN·개인 프로필은 넣지 않는다 */
     fun report(from: LocalDate, to: LocalDate, items: Set<Item>?, includeMemos: Boolean): String {
+        require(!from.isAfter(to)) { "시작일은 종료일보다 늦을 수 없어요." }
         val rows = confirmedEntries()
             .filter { !it.performedOn.isBefore(from) && !it.performedOn.isAfter(to) && (items == null || it.item in items) }
             .sortedBy { it.performedOn }
@@ -479,6 +618,7 @@ class DiaryService(
                 append("${e.performedOn} · ${e.item.label}")
                 e.odometer?.let { append(" · ${km(it.value)}(${it.source.label})") }
                 append(" · ${won(e.cost)}")
+                e.energyAmount?.let { append(" · $it ${if (e.item == Item.CHARGE) "kWh" else "L"}(사용자 입력)") }
                 if (e.wheels.isNotEmpty()) append(" · ${e.wheels.joinToString { it.label }}")
                 appendLine()
                 if (includeMemos && e.memo != null) appendLine("  메모: ${e.memo}")
@@ -491,7 +631,8 @@ class DiaryService(
 
     private fun freshObservation(reading: Reading): Observation? {
         val obs = (reading as? Reading.Value)?.observation ?: return null
-        return obs.takeIf { Duration.between(it.receivedAt, now()) <= FRESH_LIMIT }
+        val age = Duration.between(obs.receivedAt, now())
+        return obs.takeIf { it.value.isFinite() && it.value >= 0 && !age.isNegative && age <= FRESH_LIMIT }
     }
 
     private fun time(at: Instant) = TIME.format(at.atZone(zone))

@@ -39,6 +39,20 @@ class DiaryServiceTest {
 
     private fun saved(id: String) = service.confirm(id) as DiaryService.ConfirmResult.Saved
 
+    @Test fun `확인함은 후보와 연결된 초안을 중복 집계하지 않는다`() {
+        service.updateProfile("전기차", Powertrain.EV, null)
+        store.saveCandidate(DetectionCandidate("review", service.profile().id, EnergyKind.SOC,
+            Observation(20.0, clock.instant().minusSeconds(60)), Observation(80.0, clock.instant()), CandidateState.PENDING, false))
+        assertEquals(1, service.reviewCount())
+        val draft = service.draftFromCandidate("review", "나", odo(47200.0))!!
+        assertEquals(1, service.reviewCount())
+        assertTrue(service.unreviewedCandidates().isEmpty())
+        saved(draft.id)
+        assertEquals(0, service.reviewCount())
+        service.cancel(draft.id)
+        assertEquals(1, service.reviewCount())
+    }
+
     @Test
     fun `대표 시연 - 말하기, 확인, 일정 갱신, 도감`() {
         service.setPlan(Item.ENGINE_OIL, 10_000, 12, "시연용 예시값")
@@ -57,7 +71,9 @@ class DiaryServiceTest {
         assertEquals(java.time.LocalDate.of(2027, 11, 8), s.nextDate)
 
         val missions = service.missions("나", 47_200.0)
-        assertEquals(listOf(Topic.FIRST_DIARY, Topic.READ_INTERVAL), missions.map { it.topic })
+        // 첫 유효 기록을 저장하면 첫걸음 도장은 자동 지급, 주기 도장은 퀴즈로 획득.
+        assertEquals(Topic.FIRST_DIARY, service.stamps("나").single().topic)
+        assertEquals(listOf(Topic.READ_INTERVAL), missions.map { it.topic })
         missions.forEach { m ->
             val wrong = service.answer("나", m, (m.answerIndex + 1) % m.choices.size)
             assertFalse(wrong.correct)
@@ -142,7 +158,7 @@ class DiaryServiceTest {
         assertEquals(EntryStatus.CANCELLED, service.entry(d.draft.id)!!.status)
         assertEquals(0L, service.ledger(java.time.YearMonth.of(2026, 11)).total)
         assertEquals(ScheduleState.NO_RECORD, service.schedules(47_200.0).single().state)
-        assertTrue(service.stamps("나").single().needsReview)
+        assertTrue(service.stamps("나").all { it.needsReview })
     }
 
     @Test
