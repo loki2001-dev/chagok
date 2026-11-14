@@ -1,0 +1,451 @@
+{
+  "passed": true,
+  "scene": "landscape-rain",
+  "summaryRefocused": false,
+  "summaryDelayMs": 2016,
+  "durationSeconds": 66.8,
+  "result": {
+    "phase": "SUMMARY",
+    "error": "",
+    "speedKmh": 0,
+    "turn": 0,
+    "parked": true,
+    "restricted": false,
+    "fuelReplay": 80,
+    "baseline": 80,
+    "candidateCount": 0,
+    "confirmedCount": 1,
+    "monthTotal": 50000,
+    "stage": "FINISHED",
+    "maxBoost": 0,
+    "maxSpeedKmh": 85,
+    "savedAtMs": 2471822,
+    "summaryAtMs": 2473838,
+    "frames": 2974,
+    "skin": "HYUNDAI",
+    "landscape": true,
+    "rainConfirmed": true,
+    "rain": 1,
+    "wiperMode": "CONTINUOUS_LEVEL_3",
+    "carY": 257.58798,
+    "events": [
+      {
+        "event": "READY",
+        "elapsedMs": 2342301
+      },
+      {
+        "event": "DRIVE",
+        "elapsedMs": 2412497
+      },
+      {
+        "event": "LEFT",
+        "elapsedMs": 2418648
+      },
+      {
+        "event": "RIGHT",
+        "elapsedMs": 2425261
+      },
+      {
+        "event": "ACCELERATE",
+        "elapsedMs": 2432943
+      },
+      {
+        "event": "PARK",
+        "elapsedMs": 2442159
+      },
+      {
+        "event": "REFUEL",
+        "elapsedMs": 2445222
+      },
+      {
+        "event": "RESTART",
+        "elapsedMs": 2459287
+      },
+      {
+        "event": "QUESTION",
+        "elapsedMs": 2460768
+      },
+      {
+        "event": "AMOUNT_50000",
+        "elapsedMs": 2466379
+      },
+      {
+        "event": "SAVED_50000",
+        "elapsedMs": 2471822
+      },
+      {
+        "event": "SUMMARY",
+        "elapsedMs": 2473838
+      }
+    ]
+  },
+  "checkpoints": [
+    {
+      "phase": "DRIVE",
+      "error": "",
+      "speedKmh": 35,
+      "turn": 0,
+      "parked": false,
+      "restricted": true,
+      "fuelReplay": 30,
+      "baseline": 30,
+      "candidateCount": 0,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "IDLE",
+      "maxBoost": 0,
+      "maxSpeedKmh": 35,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 1879,
+      "skin": "HYUNDAI",
+      "landscape": true,
+      "rainConfirmed": true,
+      "rain": 1,
+      "wiperMode": "CONTINUOUS_LEVEL_3",
+      "carY": 282.15042,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2342301
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2412497
+        }
+      ],
+      "checkpoint": "01-driving",
+      "runSeconds": 3.83
+    },
+    {
+      "phase": "LEFT",
+      "error": "",
+      "speedKmh": 35,
+      "turn": -1,
+      "parked": false,
+      "restricted": true,
+      "fuelReplay": 30,
+      "baseline": 30,
+      "candidateCount": 0,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "IDLE",
+      "maxBoost": 0,
+      "maxSpeedKmh": 35,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 1951,
+      "skin": "HYUNDAI",
+      "landscape": true,
+      "rainConfirmed": true,
+      "rain": 1,
+      "wiperMode": "CONTINUOUS_LEVEL_3",
+      "carY": 282.53754,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2342301
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2412497
+        },
+        {
+          "event": "LEFT",
+          "elapsedMs": 2418648
+        }
+      ],
+      "checkpoint": "02-left",
+      "runSeconds": 10.06
+    },
+    {
+      "phase": "RIGHT",
+      "error": "",
+      "speedKmh": 35,
+      "turn": 1,
+      "parked": false,
+      "restricted": true,
+      "fuelReplay": 30,
+      "baseline": 30,
+      "candidateCount": 0,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "IDLE",
+      "maxBoost": 0,
+      "maxSpeedKmh": 35,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 1956,
+      "skin": "HYUNDAI",
+      "landscape": true,
+      "rainConfirmed": true,
+      "rain": 1,
+      "wiperMode": "CONTINUOUS_LEVEL_3",
+      "carY": 294.50415,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2342301
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2412497
+        },
+        {
+          "event": "LEFT",
+          "elapsedMs": 2418648
+        },
+        {
+          "event": "RIGHT",
+          "elapsedMs": 2425261
+        }
+      ],
+      "checkpoint": "03-right",
+      "runSeconds": 17.22
+    },
+    {
+      "phase": "ACCELERATE",
+      "error": "",
+      "speedKmh": 85,
+      "turn": 0,
+      "parked": false,
+      "restricted": true,
+      "fuelReplay": 30,
+      "baseline": 30,
+      "candidateCount": 0,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "IDLE",
+      "maxBoost": 0,
+      "maxSpeedKmh": 85,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 2019,
+      "skin": "HYUNDAI",
+      "landscape": true,
+      "rainConfirmed": true,
+      "rain": 1,
+      "wiperMode": "CONTINUOUS_LEVEL_3",
+      "carY": 282.1539,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2342301
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2412497
+        },
+        {
+          "event": "LEFT",
+          "elapsedMs": 2418648
+        },
+        {
+          "event": "RIGHT",
+          "elapsedMs": 2425261
+        },
+        {
+          "event": "ACCELERATE",
+          "elapsedMs": 2432943
+        }
+      ],
+      "checkpoint": "04-accelerate",
+      "runSeconds": 23.2
+    },
+    {
+      "phase": "REFUEL",
+      "error": "",
+      "speedKmh": 0,
+      "turn": 0,
+      "parked": true,
+      "restricted": false,
+      "fuelReplay": 80,
+      "baseline": 80,
+      "candidateCount": 1,
+      "collecting": true,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "IDLE",
+      "maxBoost": 0,
+      "maxSpeedKmh": 85,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 2576,
+      "skin": "HYUNDAI",
+      "landscape": true,
+      "rainConfirmed": true,
+      "rain": 1,
+      "wiperMode": "CONTINUOUS_LEVEL_3",
+      "carY": 257.58798,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2342301
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2412497
+        },
+        {
+          "event": "LEFT",
+          "elapsedMs": 2418648
+        },
+        {
+          "event": "RIGHT",
+          "elapsedMs": 2425261
+        },
+        {
+          "event": "ACCELERATE",
+          "elapsedMs": 2432943
+        },
+        {
+          "event": "PARK",
+          "elapsedMs": 2442159
+        },
+        {
+          "event": "REFUEL",
+          "elapsedMs": 2445222
+        }
+      ],
+      "checkpoint": "05-refuel",
+      "runSeconds": 44.05
+    },
+    {
+      "phase": "QUESTION",
+      "error": "",
+      "speedKmh": 35,
+      "turn": 0,
+      "parked": false,
+      "restricted": true,
+      "fuelReplay": 80,
+      "baseline": 80,
+      "candidateCount": 1,
+      "collecting": false,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "AMOUNT",
+      "maxBoost": 0,
+      "maxSpeedKmh": 85,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 2737,
+      "skin": "HYUNDAI",
+      "landscape": true,
+      "rainConfirmed": true,
+      "rain": 1,
+      "wiperMode": "CONTINUOUS_LEVEL_3",
+      "carY": 282.96927,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2342301
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2412497
+        },
+        {
+          "event": "LEFT",
+          "elapsedMs": 2418648
+        },
+        {
+          "event": "RIGHT",
+          "elapsedMs": 2425261
+        },
+        {
+          "event": "ACCELERATE",
+          "elapsedMs": 2432943
+        },
+        {
+          "event": "PARK",
+          "elapsedMs": 2442159
+        },
+        {
+          "event": "REFUEL",
+          "elapsedMs": 2445222
+        },
+        {
+          "event": "RESTART",
+          "elapsedMs": 2459287
+        },
+        {
+          "event": "QUESTION",
+          "elapsedMs": 2460768
+        }
+      ],
+      "checkpoint": "06-question",
+      "runSeconds": 51.75
+    },
+    {
+      "phase": "CONFIRM",
+      "error": "",
+      "speedKmh": 35,
+      "turn": 0,
+      "parked": false,
+      "restricted": true,
+      "fuelReplay": 80,
+      "baseline": 80,
+      "candidateCount": 1,
+      "collecting": false,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "CONFIRM",
+      "maxBoost": 0,
+      "maxSpeedKmh": 85,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 2868,
+      "skin": "HYUNDAI",
+      "landscape": true,
+      "rainConfirmed": true,
+      "rain": 1,
+      "wiperMode": "CONTINUOUS_LEVEL_3",
+      "carY": 282.9795,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2342301
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2412497
+        },
+        {
+          "event": "LEFT",
+          "elapsedMs": 2418648
+        },
+        {
+          "event": "RIGHT",
+          "elapsedMs": 2425261
+        },
+        {
+          "event": "ACCELERATE",
+          "elapsedMs": 2432943
+        },
+        {
+          "event": "PARK",
+          "elapsedMs": 2442159
+        },
+        {
+          "event": "REFUEL",
+          "elapsedMs": 2445222
+        },
+        {
+          "event": "RESTART",
+          "elapsedMs": 2459287
+        },
+        {
+          "event": "QUESTION",
+          "elapsedMs": 2460768
+        },
+        {
+          "event": "AMOUNT_50000",
+          "elapsedMs": 2466379
+        }
+      ],
+      "checkpoint": "07-confirm",
+      "runSeconds": 57.3
+    }
+  ],
+  "scope": "Real SDK speed/gear/turn/odometer; scripted fuel and STT-result replay; real detector, conversation, SQLite and summary. Emulator-only moving-question/animation override."
+}
