@@ -27,7 +27,7 @@
   },
   "note": "Entire public portal snapshot, not a guarantee of all current businesses. Rejected rows remain in original CSV and exclusions.csv.",
   "files": {
-    "exclusions.csv": "c6f9d4f83781ba05bac31e657c2a6f76f94643c95b50f07c0eb116906ed44145",
+    "exclusions.csv": "5564ded72a05c81b924346cd687ab7d14bc5918ee1d45127418fdb479039cfa8",
     "fuel-ready.csv": "d72e8724552fdf0fc089af5f98473a86a8284bede13d599754ddd76788c176e2",
     "fuel.csv": "d72e8724552fdf0fc089af5f98473a86a8284bede13d599754ddd76788c176e2",
     "raw/fuel-header.json": "af4b033414bc60a5e5dc2d4e37ad8b50ce392cd3a781f46327ebe934028e07fa",
