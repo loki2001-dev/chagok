@@ -1,0 +1,26 @@
+{
+  "capturedAt": "2026-11-14T12:35:14.196949Z",
+  "package": "io.chagok.app.smoke",
+  "viewportDp": "841x1210",
+  "images": [
+    "01-companion.png",
+    "02-question.png",
+    "03-confirm.png",
+    "04-saved.png",
+    "05-summary.png",
+    "06-diary.png",
+    "07-detail.png",
+    "08-statistics.png",
+    "09-drives.png",
+    "10-maintenance.png"
+  ],
+  "fixture": true,
+  "tripKm": 38.2,
+  "observedMovingSeconds": 1500,
+  "socBefore": 30,
+  "socAfter": 80,
+  "odometerKm": 47200,
+  "costBeforeConfirmation": 0,
+  "costAfterConfirmation": 12000,
+  "method": "Native Android Views with deterministic fixtures; real energy detector, conversation and SQLite. Text delivered at STT-result boundary; not a microphone or live-driving test. First frame is parked preview."
+}
