@@ -63,7 +63,7 @@ class LandscapeUiSmokeTest {
                         val ui=Ui(ctx).apply { availableWidthDp=width }
                         val drive = AutoDiaryView(ui, store, diary, "나").today {}
                         var selected: Item? = null
-                        val page=DiaryDashboard(ctx,ui,diary).home(47200.0,drive,{},{ selected = it },{},{},{},{}).apply { setBackgroundColor(Palette.bg) }
+                        val page=DiaryDashboard(ctx,ui,diary).home(47200.0,drive,{ item, _ -> selected = item },{},{},{},{},{}).apply { setBackgroundColor(Palette.bg) }
                         val w=ui.dp(width)
                         page.measure(View.MeasureSpec.makeMeasureSpec(w,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED))
                         capture(page,w,page.measuredHeight,if(fontScale==1f)"summary-${if(pending)"pending" else "empty"}-$width" else null)
@@ -72,11 +72,10 @@ class LandscapeUiSmokeTest {
                         assertEquals(Palette.danger, labels.single { it.text.endsWith("% · 임박") }.currentTextColor)
                         assertTrue(labels.any { it.text.startsWith("보충 예정일 ") })
                         assertTrue(labels.any { it.text.endsWith("% · 예정") && it.currentTextColor == Palette.accent })
-                        assertTrue(labels.any { it.text == "주기 미설정 · 9개" })
+                        assertTrue(labels.any { it.text == "주기 미설정 · 4개" })
                         assertTrue(labels.any { it.text == Item.BATTERY_12V_REPLACE.label })
                         assertTrue(labels.any { it.text == Item.DRIVE_BELT.label })
-                        val tireLabel = labels.single { it.text == Item.TIRE_REPLACE.label }
-                        val tireRow = (tireLabel.parent.parent as View)
+                        val tireRow = all(page).single { it.contentDescription == "${Item.TIRE_REPLACE.label} 주기 수정" }
                         assertTrue(tireRow.performClick())
                         assertEquals(Item.TIRE_REPLACE, selected)
                         val review=all(page).single { it.tag=="summary-review-card" };val mileage=all(page).single { it.tag=="summary-mileage-card" }

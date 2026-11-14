@@ -63,7 +63,7 @@ class UtteranceParser(private val today: () -> LocalDate) {
 
     fun parse(raw: String): SpokenIntent = when (val intent = CoreParser.parse(raw, today())) {
         is VoiceIntent.Draft -> {
-            val item = itemOf(intent)
+            val item = if (Regex("냉각수|부동액").containsMatchIn(raw) && Regex("교체|교환|갈았|갈아|바꿨|바꾸").containsMatchIn(raw)) Item.COOLANT else itemOf(intent)
             SpokenIntent.Record(
                 item = item,
                 date = SpokenDate(intent.date.date, kindOf(intent.date.kind)),
@@ -81,6 +81,18 @@ class UtteranceParser(private val today: () -> LocalDate) {
     companion object {
         /** 텍스트에 나온 원 단위 금액을 순서대로 돌려준다. "8만 원", "8만5천원", "80,000원", "만 원", "1.5만 원" */
         fun amounts(text: String): List<Long> = CoreParser.amounts(text)
+
+        fun serviceMileage(raw: String): Double? {
+            val answer = raw.lowercase().trim().trimEnd('.', '!', '?')
+            val match = Regex("""(?:약\s*)?([0-9일이삼사오육칠팔구십백천만영공.,\s]+?)\s*(?:km|킬로미터|킬로|키로미터|키로)?\s*(?:입니다|였어요|이었어요|이에요|예요|요)?""")
+                .matchEntire(answer) ?: return null
+            val number = match.groupValues[1].replace(Regex("""\s+"""), "")
+            if (',' in number && !Regex("""\d{1,3}(,\d{3})+(\.\d+)?""").matches(number)) return null
+            val compact = number.replace(",", "")
+            if (compact == "영" || compact == "공") return 0.0
+            if (compact.all { it.isDigit() || it == '.' }) return compact.toDoubleOrNull()?.takeIf { it.isFinite() }
+            return parseNumber(compact)?.toDouble()
+        }
 
         fun parseNumber(s: String): Long? = KoreanNumber.parse(s)?.takeIf { it > 0 }
 

@@ -6,6 +6,11 @@
 # 발화는 예시 발화 버튼으로 STT 결과와 같은 해석 경로를 실행한다.
 set -uo pipefail
 
+if [[ ${1:-} == --fuel-workshop ]]; then
+    shift
+    exec bash "$(dirname "$0")/demo-fuel-workshop.sh" "$@"
+fi
+
 ADB=${ADB:-$HOME/Android/Sdk/platform-tools/adb}
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 OUT=$ROOT/demo

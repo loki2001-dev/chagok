@@ -4,6 +4,7 @@ import http.client
 import urllib.error
 import argparse
 import pathlib
+import re
 import subprocess
 import sys
 import threading
@@ -35,7 +36,11 @@ def main():
     sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--class", dest="test_class", help="Optional instrumentation class or class#method")
+    parser.add_argument("--workshop-visit", action="store_true",
+                        help="Drive to a synthetic repair shop, park for 60s, save a belt replacement and verify the dashboard")
     args = parser.parse_args()
+    if args.workshop_visit and args.test_class:
+        parser.error("--workshop-visit selects its own instrumentation class")
     if subprocess.check_output(["adb", "shell", "getprop", "ro.kernel.qemu"], text=True).strip() != "1":
         raise RuntimeError("Signal injection is restricted to an Android emulator")
     current_user = subprocess.check_output(["adb", "shell", "am", "get-current-user"], text=True).strip()
@@ -58,6 +63,13 @@ def main():
     original = None
     process = None
     watchdog = None
+    gps_thread = None
+    departed = threading.Event()
+    old_gps = None
+    def geo_fix(longitude, latitude):
+        result = subprocess.check_output(["adb", "emu", "geo", "fix", str(longitude), str(latitude)], text=True)
+        if result.strip() != "OK":
+            raise RuntimeError("Emulator GPS injection failed: " + result.strip())
     try:
         time.sleep(1)
         original = request("/vehicle/state")
@@ -69,6 +81,13 @@ def main():
                    "io.chagok.app.smoke.test/androidx.test.runner.AndroidJUnitRunner"]
         if args.test_class:
             command[-1:-1] = ["-e", "class", args.test_class]
+        if args.workshop_visit:
+            command[-1:-1] = ["-e", "workshopVisit", "true", "-e", "class", "io.chagok.app.WorkshopVisitIntegrationTest"]
+            locations = subprocess.check_output(["adb", "shell", "dumpsys", "location"], text=True, encoding="utf-8")
+            last_gps = re.search(r"last location=Location\[gps ([-\d.]+),([-\d.]+)", locations)
+            if last_gps:
+                old_gps = (last_gps[2], last_gps[1])
+            geo_fix(127.0, 37.51)
         lines = []
         with LOG.open("w", encoding="utf-8") as log:
             process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding="utf-8")
@@ -79,6 +98,15 @@ def main():
                 if "chagok_signal=" in line:
                     signal = line.strip().split("chagok_signal=", 1)[1]
                     print("Virtual Console:", signal, flush=True)
+                    if signal == "WORKSHOP_APPROACH" and args.workshop_visit:
+                        def stream_gps():
+                            while not stopped.is_set():
+                                geo_fix(127.0, 37.51 if departed.is_set() else 37.5)
+                                stopped.wait(2)
+                        gps_thread = threading.Thread(target=stream_gps, daemon=True)
+                        gps_thread.start()
+                    elif signal == "WORKSHOP_EXIT" and args.workshop_visit:
+                        departed.set()
                     if signal == "RESET":
                         request("/vehicle/controls?speed=0&accelerator=0&brake=0", "PUT")
                         request("/vehicle/gear?gear=Park", "PUT")
@@ -124,6 +152,10 @@ def main():
             time.sleep(1)
         finally:
             stopped.set(); thread.join(timeout=3)
+            if gps_thread:
+                gps_thread.join(timeout=5)
+            if old_gps:
+                geo_fix(*old_gps)
 
 
 if __name__ == "__main__":

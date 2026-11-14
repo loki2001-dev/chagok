@@ -492,9 +492,32 @@ class DiaryService(
 
     // ---------------------------------------------------------------- 관리 일정
 
-    fun setPlan(item: Item, intervalKm: Int?, intervalMonths: Int?, source: String) {
+    private val mileageKey get() = "maintenance.lastServiceKm/${profile().id}"
+    fun reportedServiceKm(): Double? = store.setting(mileageKey)?.toDoubleOrNull()
+
+    fun setReportedServiceKm(km: Double, currentKm: Double?) = store.transaction {
+        require(km.isFinite() && km >= 0) { "0 이상의 주행거리를 입력해 주세요." }
+        require(currentKm == null || km <= currentKm) { "현재 누적 주행거리 이하로 알려주세요." }
+        store.saveSetting(mileageKey, km.toString())
+        store.saveSetting("$mileageKey/asked", "true")
+    }
+
+    /** Claim this vehicle's one-time question across activity restarts and user switches. */
+    fun offerServiceMileage(): Boolean {
+        val key = "$mileageKey/asked"
+        if (store.setting(key) == "true") return false
+        return store.transaction {
+            if (store.setting(key) == "true" || reportedServiceKm() != null ||
+                schedules(null).none { it.basis == null && it.intervalKm != null }) false
+            else { store.saveSetting(key, "true"); true }
+        }
+    }
+
+    fun setPlan(item: Item, intervalKm: Int?, intervalMonths: Int?, source: String,
+                initialKm: Int? = null) {
         require(intervalKm == null || intervalKm > 0) { "주기 거리는 0보다 커야 해요" }
         require(intervalMonths == null || intervalMonths > 0) { "주기 개월은 0보다 커야 해요" }
+        require(initialKm == null || initialKm > 0)
         val existing = store.plans(profile().id).firstOrNull { it.item == item }
         store.savePlan(
             MaintenancePlan(
@@ -505,6 +528,8 @@ class DiaryService(
                 source = source.ifBlank { "출처 미입력" },
                 setOn = today(),
                 notificationsOn = existing?.notificationsOn ?: true,
+                snoozedUntil = existing?.snoozedUntil,
+                initialKm = initialKm,
             ),
         )
     }
@@ -521,9 +546,20 @@ class DiaryService(
     fun schedules(currentKm: Double?): List<ScheduleStatus> {
         val entries = visibleEntries()
         val order = listOf(ScheduleState.DUE, ScheduleState.SOON, ScheduleState.UPCOMING, ScheduleState.NO_RECORD, ScheduleState.NO_PLAN)
-        return store.plans(profile().id)
-            .filter { it.item.availableFor(profile().powertrain) }
-            .map { ScheduleCalculator.evaluate(it, entries, currentKm, today()) }
+        val vehicle = profile()
+        val recommendations = MaintenanceRecommendation.byItem.filterKeys { it.availableFor(vehicle.powertrain) }
+        val stored = store.plans(vehicle.id)
+        // Re-read inside the transaction so an edit from a second connection always wins.
+        val plans = if (stored.map { it.item }.containsAll(recommendations.keys)) stored else store.transaction {
+            val existing = store.plans(vehicle.id).associateBy { it.item }
+            val missing = recommendations.filterKeys { it !in existing }.map { (item, recommendation) ->
+                recommendation.plan(vehicle.id, item, today()).also(store::savePlan)
+            }
+            existing.values + missing
+        }
+        val reportedKm = reportedServiceKm()
+        return plans.filter { it.item.availableFor(vehicle.powertrain) }
+            .map { ScheduleCalculator.evaluate(it, entries, currentKm, today(), reportedKm) }
             .sortedWith(compareBy<ScheduleStatus> { order.indexOf(it.state) }.thenBy { it.remainingDays ?: Long.MAX_VALUE })
     }
 

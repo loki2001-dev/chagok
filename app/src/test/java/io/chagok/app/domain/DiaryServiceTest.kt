@@ -62,11 +62,11 @@ class DiaryServiceTest {
         assertEquals(47_200.0, d.draft.odometer!!.value, 0.0)
         // 확인 전에는 비용과 일정에 반영되지 않는다
         assertEquals(0L, service.ledger(java.time.YearMonth.of(2026, 11)).total)
-        assertEquals(ScheduleState.NO_RECORD, service.schedules(47_200.0).single().state)
+        assertEquals(ScheduleState.NO_RECORD, service.schedules(47_200.0).single { it.plan.item == Item.ENGINE_OIL }.state)
 
         saved(d.draft.id)
         assertEquals(80_000L, service.ledger(java.time.YearMonth.of(2026, 11)).total)
-        val s = service.schedules(47_200.0).single()
+        val s = service.schedules(47_200.0).single { it.plan.item == Item.ENGINE_OIL }
         assertEquals(57_200.0, s.nextKm!!, 0.0)
         assertEquals(java.time.LocalDate.of(2027, 11, 8), s.nextDate)
 
@@ -157,7 +157,7 @@ class DiaryServiceTest {
         service.cancel(d.draft.id)
         assertEquals(EntryStatus.CANCELLED, service.entry(d.draft.id)!!.status)
         assertEquals(0L, service.ledger(java.time.YearMonth.of(2026, 11)).total)
-        assertEquals(ScheduleState.NO_RECORD, service.schedules(47_200.0).single().state)
+        assertEquals(ScheduleState.NO_RECORD, service.schedules(47_200.0).single { it.plan.item == Item.ENGINE_OIL }.state)
         assertTrue(service.stamps("나").all { it.needsReview })
     }
 
