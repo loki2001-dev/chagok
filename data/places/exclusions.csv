@@ -1,0 +1,2257 @@
+﻿dataset,original_csv_line,name,address,reason
+repair,4,동방카포스,충청남도 아산시 좌부동 56-1,not_operating
+repair,6,충무카센타,충청남도 아산시 배방읍 공수리 151-1,not_operating
+repair,8,우리공업사,충청남도 아산시 도고면 기곡리 196-11,not_operating
+repair,9,스마일카포스,충청남도 아산시 득산동 338-5,not_operating
+repair,10,공단카센타,충청남도 아산시 득산동 387-8,not_operating
+repair,11,암석카센타,충청남도 아산시 모종동 560-12,not_operating
+repair,12,웰컴카포스,충청남도 아산시 권곡동 540-2,not_operating
+repair,13,음봉카센타,충청남도 아산시 음봉면 덕지리 45-15,not_operating
+repair,14,신동카독크,충청남도 아산시 신동 164-1,not_operating
+repair,15,카포유모터스,충청남도 아산시 모종동 561-29,not_operating
+repair,16,용화카센타,충청남도 아산시 용화동 437-8,not_operating
+repair,17,신인섬카써비스,충청남도 아산시 신인동 232,not_operating
+repair,22,고속카센타,충청남도 아산시 배방읍 장재리 479-1,not_operating
+repair,23,영성카독크,충청남도 아산시 인주면 밀두리 134-6,not_operating
+repair,24,진흥공업사,충청남도 아산시 온천1동 78-4,not_operating
+repair,28,맥가이버 카 크리닉,충청남도 아산시 삼동로86번길 25-19(권곡동),not_operating
+repair,29,서해카센타,충청남도 아산시 둔포면 둔포리 478-3,not_operating
+repair,30,예일크린카,충청남도 아산시 권곡동 542-4,not_operating
+repair,32,성심카포스,충청남도 아산시 신창면 서부북로 848,not_operating
+repair,33,정비나라,충청남도 아산시 음봉면 덕지리 45-15,not_operating
+repair,34,아산호카센타,충청남도 아산시 염치읍 서원리 19-9,not_operating
+repair,35,박사카센타,충청남도 아산시 인주면 밀두리 420-1,not_operating
+repair,37,신동카독크,충청남도 아산시 권곡동 534-7,not_operating
+repair,38,용화카모터스,충청남도 아산시 용화동 437-8,not_operating
+repair,39,동천리카센타,충청남도 아산시 음봉면 동천리 230-1,not_operating
+repair,41,우리카공업사,충청남도 아산시 도고면 기곡리 196-11,not_operating
+repair,42,천복카센타,충청남도 아산시 방축동 111-20,not_operating
+repair,43,미스터카공업사,충청남도 아산시 모종동 54-4,not_operating
+repair,44,충무자동차정비공업사,충청남도 아산시 배방면 공수리 183-23,not_operating
+repair,45,신아산카센타,충청남도 아산시 염치읍 석정리 28-9,not_operating
+repair,48,아름다운자동차공업사용화점,충청남도 아산시 시민로 217(용화동),not_operating
+repair,49,금곡카센타,충청남도 아산시 좌부동 4-4,not_operating
+repair,52,369카크리닉정비세차,충청남도 아산시 모종동 592-11,not_operating
+repair,53,터미널카,충청남도 아산시 모종동 558-13,not_operating
+repair,55,엘지오토오아시스,충청남도 아산시 방축동 166-3,not_operating
+repair,56,아산모터스,충청남도 아산시 권곡동 532-6,not_operating
+repair,58,태광MOTORS,충청남도 아산시 영인면 신운리 141,not_operating
+repair,59,배방공업사,충청남도 아산시 배방읍 모산로 17,not_operating
+repair,60,한국타이어온양대리점,충청남도 아산시 권곡동 533-31,not_operating
+repair,62,미래정비공업사,충청남도 아산시 인주면 공세리 116-5,not_operating
+repair,63,용마카모터스,충청남도 아산시 온천동 36-146,not_operating
+repair,66,뉴한양카센타,충청남도 아산시 읍내동 256,not_operating
+repair,67,은혜카포스,충청남도 아산시 온천동 1294,not_operating
+repair,69,대한카센타,충청남도 아산시 신창면 읍내리 243-1,not_operating
+repair,72,형제카센타,충청남도 아산시 둔포면 둔포리 415-12,not_operating
+repair,74,우리카센타,충청남도 아산시 득산동 381-11,not_operating
+repair,75,현대자동차 모종점,충청남도 아산시 모종동 432-1,not_operating
+repair,76,아산현대서비스,충청남도 아산시 모종동 432-1,not_operating
+repair,79,인주공단센타,충청남도 아산시 인주면 밀두리 121-1,not_operating
+repair,82,만도프라자아산탕정점,충청남도 아산시 탕정면 호산리 341,not_operating
+repair,84,르노삼성자동차 서비스센타 아산정비,충청남도 아산시 곡교천로 7(방축동),not_operating
+repair,85,시민카랜드,충청남도 아산시 권곡동 544-3,not_operating
+repair,87,한밝자동차정비,충청남도 아산시 영인면 아산리 353-16,not_operating
+repair,88,천광카포스,충청남도 아산시 실옥동 203,not_operating
+repair,89,기술카써비스,충청남도 아산시 용화동 30-15,not_operating
+repair,90,쌍용자동차모산코너,충청남도 아산시 배방읍 구령리 167-15,not_operating
+repair,91,남영자동차정비공업사,충청남도 아산시 방축동 141-22,not_operating
+repair,94,현대모비스,충청남도 아산시 용화동 372-41,not_operating
+repair,99,드레그튜닝클럽,충청남도 아산시 득산동 386-5,not_operating
+repair,100,삼성카랜드,충청남도 아산시 탕정면 탕정로93번길 3-20,not_operating
+repair,102,모비스카클리닉,충청남도 아산시 음봉면 원남리 123-3,not_operating
+repair,103,설화모터스,충청남도 아산시 장존동 325,not_operating
+repair,105,웰컴카포스,충청남도 아산시 온천동 1323,not_operating
+repair,106,온양자동차정비공업사,충청남도 아산시 실옥동 346-1,not_operating
+repair,107,충무공업사,충청남도 아산시 모종동 560-10,not_operating
+repair,108,신창종합정비(주),충청남도 아산시 신창면 창암리 124-3,not_operating
+repair,109,박기용카센타,충청남도 아산시 용화동 590,not_operating
+repair,110,쎄븐자동차공업사,충청남도 아산시 음봉면 산동리 445-1,not_operating
+repair,111,신한라자동차정비공업사,충청남도 아산시 권곡동 549-16,not_operating
+repair,112,대흥카센타,충청남도 아산시 선장면 대흥리 266-10,not_operating
+repair,116,차사랑카포스,충청남도 아산시 득산동 338-5,not_operating
+repair,117,명동카센타,충청남도 아산시 모종동 424-20,not_operating
+repair,120,동방오토카랜드,충청남도 아산시 배방읍 세교리 408-14,not_operating
+repair,121,음봉온천카센타,충청남도 아산시 음봉면 산정리 64,not_operating
+repair,125,금호타이어방축대리점,충청남도 아산시 온천대로 1377(방축동),not_operating
+repair,129,월드카모터스,충청남도 아산시 모종동 590-1,not_operating
+repair,130,상운카공업사,충청남도 아산시 모종동 582-5,not_operating
+repair,131,붕붕카포스,충청남도 아산시 용화동 750,not_operating
+repair,132,호서카클리닉,충청남도 아산시 배방읍 회룡리 400-7,not_operating
+repair,135,동아자동차부분정비공업사,충청남도 아산시 배방읍 휴대리 179-1,not_operating
+repair,137,(주)동양고속,"충청남도 아산시 번영로205번길 8, ,557-2(모종동)",not_operating
+repair,139,모터스,충청남도 아산시 신창면 읍내리 409-2,not_operating
+repair,143,으뜸카매니저,충청남도 아산시 온천동 152-6,not_operating
+repair,144,카젠풍기점,충청남도 아산시 외암로 1568(풍기동),not_operating
+repair,145,청운카서비스,충청남도 아산시 번영로206번길 7-9(모종동),not_operating
+repair,147,설화모터스,충청남도 아산시 장존동 325,not_operating
+repair,149,설화모터스,충청남도 아산시 장존동 325,not_operating
+repair,156,한솔카센타,충청남도 아산시 배방읍 공수리 151-25,not_operating
+repair,157,아산원효보링,충청남도 아산시 염치읍 염성리 150,not_operating
+repair,159,아산원효보링,충청남도 아산시 염치읍 염성리 150,not_operating
+repair,160,삼육오카센타,충청남도 아산시 순천향로 881(읍내동),not_operating
+repair,164,청원카,충청남도 아산시 권곡동 549-16,not_operating
+repair,165,온정카서비스,충청남도 아산시 탕정면 용두리 493-3,not_operating
+repair,171,(주)영인자동차공업사,충청남도 아산시 영인면 월선리 279,not_operating
+repair,172,신인카포스,"충청남도 아산시 신인동 399-2, 400-3",not_operating
+repair,173,그린자동차정비,충청남도 아산시 온천동 78-9,not_operating
+repair,174,미래카써비스,충청남도 아산시 용화동 437-8,not_operating
+repair,176,삼성카명품휠타이어,충청남도 아산시 배방읍 공수리293-1,not_operating
+repair,177,용천타이어,충청남도 아산시 염치읍 아산로 611,not_operating
+repair,179,충남카센타,충청남도 아산시 온천동 72-18,not_operating
+repair,180,숯골정비나라,충청남도 아산시 용화동 251-4,not_operating
+repair,183,아산카센타,충청남도 아산시 영인면 아산리 154-1,not_operating
+repair,184,대성공업사,충청남도 아산시 염치읍 곡교리 195-12,not_operating
+repair,186,신기자동차정비,충청남도 아산시 모종동 573-3,not_operating
+repair,188,장원종합카센타,충청남도 아산시 모종동 592-6,not_operating
+repair,190,음봉차사랑,충청남도 아산시 음봉면 송촌리 363-5,not_operating
+repair,196,하나카센타,충청남도 아산시 탕정면 동산리 91-2,not_operating
+repair,197,청솔카포스,충청남도 아산시 인주면 신성리 186-33,not_operating
+repair,199,의성자동차정비주식회사,충청남도 아산시 득산동 314,not_operating
+repair,200,GSRmotors,충청남도 아산시 배방읍 북수서로 10,not_operating
+repair,203,에스모터스,충청남도 아산시 번영로43번길 34-6(실옥동),not_operating
+repair,206,오토오아시스 아산스타점,충청남도 아산시 온천대로 1282(방축동),not_operating
+repair,212,타이어샵,충청남도 아산시 권곡동 524-1,not_operating
+repair,213,대성카크리닉,충청남도 아산시 탕정면 동산리 91-2,not_operating
+repair,216,제일카센타,충청남도 아산시 방축동 101-15,not_operating
+repair,218,조은카센타,충청남도 아산시 도고면 향산리 276-13,not_operating
+repair,219,다온카센타,충청남도 아산시 온천대로 1585(모종동),not_operating
+repair,220,오토리더 아산점,충청남도 아산시 권곡동 534-14,not_operating
+repair,221,한국타이어 배방점,충청남도 아산시 배방읍 북수리 365-44,not_operating
+repair,222,T-station 배방점,충청남도 아산시 배방읍 북수리 1393,not_operating
+repair,227,탕정모터스,충청남도 아산시 권곡동 390-9,not_operating
+repair,230,미래자동차공업사,충청남도 아산시 인주면 공세리 116-5,not_operating
+repair,231,삼성그린카포스,충청남도 아산시 번영로224번길 31(모종동),not_operating
+repair,238,배방모터스,충청남도 아산시 배방읍 공수리 293-1,not_operating
+repair,240,오토카페,충청남도 아산시 신동 650-67,not_operating
+repair,241,(주)새한에어서스펜션,충청남도 아산시 음봉면 산동로 397-6,not_operating
+repair,249,천일공업사,충청남도 아산시 음봉면 산동리 150-9,not_operating
+repair,250,온천카센타,충청남도 아산시 음봉면 아산온천로 444,not_operating
+repair,251,더 타이어 샾,충청남도 아산시 아산로 100(온천동),not_operating
+repair,252,정성카센타,충청남도 아산시 영인면 창용리 207-9,not_operating
+repair,259,에이스모터스,충청남도 아산시 둔포면 관대길 90-1,not_operating
+repair,260,유엘피(주),충청남도 아산시 영인면 월선리 275-9,not_operating
+repair,261,VIP대형정비소,충청남도 아산시 시민로 150(용화동),not_operating
+repair,264,(주)영인자동차공업사,충청남도 아산시 영인면 공세길 100,not_operating
+repair,265,동천카센타,충청남도 아산시 음봉면 충무로 602,not_operating
+repair,266,하마모터스,충청남도 아산시 음봉면 음봉로 807,not_operating
+repair,269,스마트카센타,충청남도 아산시 배방읍 배방로 57-28,not_operating
+repair,270,연암자동차정비,충청남도 아산시 음봉면 월암로 336-45,not_operating
+repair,272,DM모터스,충청남도 아산시 남부로 302(용화동),not_operating
+repair,285,모닝리페어,충청남도 아산시 염치읍 방현서길 12-9,not_operating
+repair,296,스피드메이트 아산신창점,충청남도 아산시 신창면 서부북로 868,not_operating
+repair,297,주식회사 유로카라반,충청남도 아산시 인주면 인주산단로 23-26,not_operating
+repair,300,관대모터스,충청남도 아산시 둔포면 관대길 28,not_operating
+repair,302,탑모터스,충청남도 아산시 신동 306-23,not_operating
+repair,309,더블에이치자동차,충청남도 아산시 신창면 서부북로786번길 10-2,not_operating
+repair,315,하마모터스본점,충청남도 아산시 음봉면 음봉로 805,not_operating
+repair,319,프라임모터스,충청남도 아산시 염치읍 방현동길39번길 21-22,not_operating
+repair,332,탑모터스,충청남도 아산시 모종남로90번길 47(모종동),not_operating
+repair,348,케이원모터스,충청남도 아산시 둔포면 관대길 90-1,not_operating
+repair,350,1등 아산타이어,충청남도 아산시 온천대로 1587(온천동),not_operating
+repair,353,더블에이자동차,충청남도 아산시 신창면 서부북로 10-2,not_operating
+repair,368,(주)청암홈 타이어센터 아산지점,충청남도 아산시 실옥동 123-5,not_operating
+repair,403,일성카포스,충청남도 아산시 온천동 1457,not_operating
+repair,407,삼거리카포스,충청남도 아산시 음봉면 아산온천로 432-2,not_operating
+repair,408,삼성그린카포스,충청남도 아산시 실옥동 17-4,not_operating
+repair,412,신일종합자동차부분정비공업사,충청남도 아산시 도고면 온천대로 354-6,not_operating
+repair,413,대형카센타,충청남도 아산시 권곡로 1(권곡동),not_operating
+repair,414,고을카포스,충청남도 아산시 송악면 외암리 582-4,not_operating
+repair,415,부영카센타,충청남도 아산시 선장면 아산만로 558,not_operating
+repair,424,신용카센타,충청남도 아산시 남동 216-5,not_operating
+repair,425,산전카센타,충청남도 아산시 둔포면 관대리 197-21,not_operating
+repair,711,대한자동차종합정비,경상북도 김천시 공단4길 125 (응명동),not_operating
+repair,873,올카(All Car),충청북도 음성군 대소읍 삼정리 611-49,not_operating
+repair,877,비산공업사,충청북도 음성군 소이면 충청대로 1780-1,not_operating
+repair,888,(주)음성트럭종합정비,충청북도 음성군 대소읍 대금로196번길 16,not_operating
+repair,891,한국소방산업기술원,충청북도 음성군 맹동면 연미로 426,not_operating
+repair,892,카로드,충청북도 음성군 금왕읍 유포리 339-22,not_operating
+repair,895,오일랜드,충청북도 음성군 생극면 병암리 110-2,not_operating
+repair,904,삼정종합자동차,충청북도 음성군 대소읍 소석로 26,not_operating
+repair,921,IC카센터,충청북도 음성군 대소읍 대금로196번길 8-4,not_operating
+repair,932,주식회사 하늘특장,충청북도 음성군 삼성면 대성로547번길 97-47,not_operating
+repair,938,금호카센터,충청북도 음성군 음성읍 시장로 1,not_operating
+repair,941,현대모터스,충청북도 음성군 감곡면 가곡로 304,not_operating
+repair,948,"삼성종합카,고속렉카",충청북도 음성군 대소읍 삼정리 611-49,not_operating
+repair,955,태정자동차정비공업사,충청북도 음성군 감곡면 오궁리 133-4,not_operating
+repair,956,기아카크리닉,충청북도 음성군 대소읍 대풍리 527-9,not_operating
+repair,957,음성3급부분정비공업사,충청북도 음성군 음성읍 신천리 548-6,not_operating
+repair,960,오성카공업사,충청북도 음성군 음성읍 시장로 41,not_operating
+repair,964,오토월드자동차써비스,충청북도 음성군 대소읍 소석리 5-2,not_operating
+repair,965,주식회사 대우트럭용인정비사업소 지점,충청북도 음성군 감곡면 중간말길16번길 67,not_operating
+repair,969,대성카공업사,충청북도 음성군 생극면 신양리 498-9,not_operating
+repair,971,그린특장주식회사,충청북도 음성군 삼성면 능산리 317,not_operating
+repair,973,21세기CAR매니저,충청북도 음성군 대소읍 대풍리 564,not_operating
+repair,974,카스타자동차공업사,충청북도 음성군 금왕읍 금석리 195-1,not_operating
+repair,978,1급은진자동차공업사,충청북도 음성군 금왕읍 일생로 126-16,not_operating
+repair,986,미래카3급정비,충청북도 음성군 음성읍 읍내리 366-29,not_operating
+repair,987,금왕자동차매매상사,충청북도 음성군 금왕읍 무극로 258,not_operating
+repair,988,중앙자동차공업사,충청북도 음성군 생극면 병암리 758-3,not_operating
+repair,995,만도카프라자감곡점,충청북도 음성군 감곡면 오향리 486-2,not_operating
+repair,999,유진 3 & 9,충청북도 음성군 음성읍 소여리 26-6,not_operating
+repair,1001,삼성농협자동차부분정비센타,충청북도 음성군 삼성면 덕정리 782-4,not_operating
+repair,1002,유성카센타,충청북도 음성군 감곡면 오향리 475-4,not_operating
+repair,1003,한양자동차부분정비공업사,충청북도 음성군 감곡면 오향리 536-2,not_operating
+repair,1006,오토랜드,충청북도 음성군 감곡면 오향리 522-1,not_operating
+repair,1008,목화자동차부분정비공업사,충청북도 음성군 감곡면 문촌리 64-3,not_operating
+repair,1012,차평3급부분정비공업사,충청북도 음성군 생극면 차평리 593-8,not_operating
+repair,1013,형제카센타,충청북도 음성군 삼성면 양덕리 397-21,not_operating
+repair,1014,태양카센타,충청북도 음성군 금왕읍 무극리 57-15,not_operating
+repair,1015,차평자동차공업사,충청북도 음성군 생극면 차평리 511-1,not_operating
+repair,1016,무극밧데리,충청북도 음성군 금왕읍 무극리 593-9,not_operating
+repair,1018,믿음카서비스,충청북도 음성군 생극면 신양리 371-6,not_operating
+repair,1021,만도프라자 음성점,충청북도 음성군 소이면 대장리 547-1,not_operating
+repair,1023,미남사,충청북도 음성군 금왕읍 오선리 산 110-3,not_operating
+repair,1024,현대카센터,충청북도 음성군 대소읍 오산리 129-5,not_operating
+repair,1025,3급한일공업사,충청북도 음성군 대소읍 대금로511번길 2,not_operating
+repair,1027,신선모터뱅크,충청북도 음성군 대소읍 태생리 산38-2,not_operating
+repair,1036,명성자동차부분정비공업사,충청북도 음성군 음성읍 소여리 753-3,not_operating
+repair,1037,왕자카공업사,충청북도 음성군 음성읍 신천리 627,not_operating
+repair,1056,진산카센타,전남광주통합특별시 함평군 함평읍 영수길 333,not_operating
+repair,1277,골든카부분정비,부산광역시 사상구 백양대로 661(괘법동),not_operating
+repair,1298,대저카서비스,부산광역시 사상구 새벽시장로46번길 28(감전동),not_operating
+repair,1312,교방정비,부산광역시 사상구 대동로 49(엄궁동),not_operating
+repair,1336,동명정비공업사,부산광역시 사상구 학장로135번길77(학장동),not_operating
+repair,1353,㈜여해테크,부산광역시 사상구 가야대로176번길 39(학장동),not_operating
+repair,1354,우신자동차정비,부산광역시 사상구 새벽시장로63번길 49(감전동),not_operating
+repair,1355,맥스자동차정비,부산광역시 사상구 새벽로167번길 66(감전동),not_operating
+repair,1356,(주)동일이엔에스서부산점,부산광역시 사상구 광장로 7(괘법동),not_operating
+repair,1357,엄궁카써비스,부산광역시 사상구 엄궁로191번길 32(엄궁동),not_operating
+repair,1358,원바이크,부산광역시 사상구 새벽시장로 94(감전동),not_operating
+repair,1359,동남정비공업사,부산광역시 사상구 대동로 238(학장동),not_operating
+repair,1360,그리폰,부산광역시 사상구 사상로181번길 30(괘법동),not_operating
+repair,1361,명성교통(주)정비공장,부산광역시 사상구 모라로 10(삼락동),not_operating
+repair,1362,오토오아시스 부산대풍점,부산광역시 사상구 가야대로 81(감전동),not_operating
+repair,1363,신흥카정비,부산광역시 사상구 사상로565번길 38(모라동),not_operating
+repair,1364,(주)오토밸리,부산광역시 사상구 삼덕로45번길 142(덕포동),not_operating
+repair,1365,스피드메이트 이마트 서부산점,부산광역시 사상구 낙동대로 910(감전동),not_operating
+repair,1366,영신(종합)자동차정비,부산광역시 사상구 학감대로178번길 17(학장동),not_operating
+repair,1367,대도택시㈜,부산광역시 사상구 가야대로 47(감전동),not_operating
+repair,1368,일등정비,부산광역시 사상구 광장로 87(괘법동),not_operating
+repair,1414,신우EMI,부산광역시 사상구 광장로56번길 52(괘법동),not_operating
+repair,1415,국제종합카정비,부산광역시 사상구 가야대로 1(감전동),not_operating
+repair,1416,주례자동차정비(주),부산광역시 사상구 가야대로195번길 12-14(주례동),not_operating
+repair,1417,한양정비공업사,부산광역시 사상구 모덕로 74(덕포동),not_operating
+repair,1418,우찬부분정비,부산광역시 사상구 가야대로378번길 9-1(주례동),not_operating
+repair,1419,오리스정비,부산광역시 사상구 낙동대로 1094(감전동),not_operating
+repair,1420,디케이게러지,부산광역시 사상구 사상로367번길 11(덕포동),not_operating
+repair,1421,괘법3급정비,부산광역시 사상구 사상로 172(괘법동),not_operating
+repair,1422,한타 부산판매,부산광역시 사상구 낙동대로 970(감전동),not_operating
+repair,1570,대성카셀프세차장,"부산광역시 영도구 태종로292번길 1, (청학동)",not_operating
+repair,1579,극동택시㈜,"부산광역시 영도구 해양로160, (청학동)",not_operating
+repair,1590,프로미월드 아우토반,"부산광역시 영도구 선덤산길 2, (동삼동)",not_operating
+repair,1604,J.K.모터스,"부산광역시 영도구 절영로 175, (영선동4가)",not_operating
+repair,1623,삼성카센터,전북특별자치도 남원시 요천로 1541-3,not_operating
+repair,1634,제일카센터,전북특별자치도 남원시 운봉읍 서천2길 3,not_operating
+repair,1647,대교카삽,전북특별자치도 남원시 충정로 153,not_operating
+repair,1652,킹모터스,전북특별자치도 남원시 광천남길 670,not_operating
+repair,1656,태양카센터,전북특별자치도 남원시 광천북길 231-5,not_operating
+repair,1662,고속제일밧데리,전북특별자치도 남원시 동림로 82,not_operating
+repair,1679,남신공업사,전북특별자치도 남원시 남문로482,not_operating
+repair,1760,개미종합상사,제주특별자치도 서귀포시 색달로72번길 46,not_operating
+repair,1761,한라카센타,제주특별자치도 서귀포시 대정읍 상모로 312-7,not_operating
+repair,1782,성지모터스,제주특별자치도 서귀포시 성산읍 일주동로 4057,not_operating
+repair,1807,안전종합수리센터,제주특별자치도 서귀포시 대정읍 하모중앙로 7,not_operating
+repair,1850,서귀포서비스,제주특별자치도 서귀포시 동문로 17(서귀동),not_operating
+repair,1860,남궁공업사,경기도 동두천시 동두천로 317-1(생연동),not_operating
+repair,1867,한국지엠 수빈모터스,경기도 동두천시 행선로 13,not_operating
+repair,1874,1급동서공업사,경기도 동두천시 큰시장로 11,not_operating
+repair,1877,햇빛자동차공업사,경기도 동두천시 강변로 62,not_operating
+repair,1882,스피드메이트 지행점,경기도 동두천시 평화로 2492,not_operating
+repair,1893,영상자동차공업사,경기도 동두천시 못골로 45 (생연동),not_operating
+repair,1896,애니카랜드지행점,경기도 동두천시 평화로2313번길 28,not_operating
+repair,1897,덕둔공업사,경기도 동두천시 하봉암동 140,not_operating
+repair,1898,상패카센타,경기도 동두천시 어수로 13  (상패동),not_operating
+repair,1899,대성자동차공업사,경기도 동두천시 장고갯로192번길 35,not_operating
+repair,1902,친환경자동차공업사,경기도 동두천시 동두천동 260-1,not_operating
+repair,1905,공단 자동차공업사,경기도 동두천시  강변로664번길 3,not_operating
+repair,1916,세종자동차공업사,경기도 동두천시 평화로2345(생연동),not_operating
+repair,1920,카 케어존,경기도 동두천시 평화로 2178,not_operating
+repair,1932,광산카공업사,경기도 동두천시 동광로 150,not_operating
+repair,2578,진영판매서비스,인천광역시 계양구 아나지로 502,not_operating
+repair,2634,OK카써비스,부산광역시 남구 전포대로77번길 4 (문현동),not_operating
+repair,2647,동항카자동차종합병원,부산광역시 남구 무민사로 39 (감만동),not_operating
+repair,2672,우성정비 2호점,부산광역시 남구 용호로 236(용호동),not_operating
+repair,2679,보스서비스,부산광역시 남구 무민사로40(감만동),not_operating
+repair,2687,㈜포시즌모터스,부산광역시 남구 우암로 375,not_operating
+repair,4625,YB모터스,경기도 연천군 청산면 청신로105,not_operating
+repair,5053,주식회사 폴리텍자동차서비스,인천광역시 부평구 경인로 1211 (구산동),not_operating
+repair,5079,한국지엠㈜ 인천서비스센터,"인천광역시 부평구 부평대로 233(청천동, 한국지엠주식회사)",not_operating
+repair,5365,㈜한양그린모터스,서울특별시 성동구 왕십리로 155,not_operating
+repair,6041,브로스 썸잇,충청북도 제천시 내토로15길 37(서부동),not_operating
+repair,6043,해성카센터,충청북도 제천시 신백로 61(신백동),not_operating
+repair,6045,대유자동차공업사,충청북도 제천시 고암동 603-3,not_operating
+repair,6046,유명 카 타이어,충청북도 제천시 내토로 725(교동),not_operating
+repair,6047,중원공업사 직원조합,충청북도 제천시 청전대로 251(장락동),not_operating
+repair,6048,중원공업(주),"충청북도 제천시 장락동 407,407-1,408-4,408-5,404-1",not_operating
+repair,6050,자동차와 사람들,충청북도 제천시 하소동 194-7,not_operating
+repair,6053,극동카센타,충청북도 제천시 서부동 1118,not_operating
+repair,6055,경민공업사,충청북도 제천시 강제동 127-1,not_operating
+repair,6066,대신카센타,충청북도 제천시 장락동 337-5,not_operating
+repair,6068,세명공업,충청북도 제천시 단양로 3106(고명동),not_operating
+repair,6070,BS중부사업본부(주),충청북도 제천시 장평천로 49(강제동),not_operating
+repair,6072,타이어프로 교동점,충청북도 제천시 내토로 738(장락동),not_operating
+repair,6079,성신카센타,충청북도 제천시 청전동 473-10,not_operating
+repair,6080,창원카타이어,충청북도 제천시 세거리로 6(신동),not_operating
+repair,6082,씨엑스씨모터스티디(주),"충청북도 제천시 장평천로 49, 제5동 (강제동)",not_operating
+repair,6083,쌍용오토샵,충청북도 제천시 내토로16길 10(영천동),not_operating
+repair,6088,신화공업사,충청북도 제천시 원강저로 14(강제동),not_operating
+repair,6092,세주카장락적재함,"충청북도 제천시 내토로 878, 102동(장락동)",not_operating
+repair,6105,송민공업사,"충청북도 제천시 단양로 3381, 101동(신백동)",not_operating
+repair,6106,한국타이어(주)TBX제천점,"충청북도 제천시 강저로 35, A동(강제동)",not_operating
+repair,6108,송학경정비,충청북도 제천시 송학면 도화로 510,not_operating
+repair,6114,장군카센타,충청북도 제천시 명륜로3길 3(청전동),not_operating
+repair,6115,선진공업,"충청북도 제천시 장평천로 49, 5동(강제동)",not_operating
+repair,6117,스마트공업사,충청북도 제천시 봉양읍 북부로6길 67,not_operating
+repair,6119,광성카,충청북도 제천시 의병대로34길 59(신백동),not_operating
+repair,6120,비클라인모터스,충청북도 제천시 송학면 송학로 115,not_operating
+repair,6127,엄지공업사,충청북도 제천시 장평천로 49(강제동),not_operating
+repair,6128,블레싱자동차샵,충청북도 제천시 바이오밸리3로 5(왕암동),not_operating
+repair,6129,한우리특장,충청북도 제천시 강저로5길 16(강제동),not_operating
+repair,6130,아주좋은타이어,충청북도 제천시 송학면 북부로 3415,not_operating
+repair,6133,유로공업사,충청북도 제천시 봉양읍 북부로5길 8,not_operating
+repair,6135,태성공업사,충청북도 제천시 봉양읍 북부로6길 67,not_operating
+repair,6139,제연,충청북도 제천시 봉양읍 북부로5길 16-67,not_operating
+repair,6140,(주)제천자동차운전전문학원,충청북도 제천시 강저로15길 14(강제동),not_operating
+repair,6147,우신타이어,충청북도 제천시 내토로 1109(고암동),not_operating
+repair,6150,명동카센터,충청북도 제천시 용두천로 31-1(명동),not_operating
+repair,6163,쌍용오토샵,충청북도 제천시 내토로16길 10(영천동),not_operating
+repair,6165,"평화카밧데리(농기계,에어컨)",충청북도 제천시 송학면 송학주천로 427,not_operating
+repair,6168,월드특장,충청북도 제천시 단양로 3143(고명동),not_operating
+repair,6171,방방카,충청북도 제천시 청전대로 66(청전동),not_operating
+repair,6172,넥센타이어동제천점(타이어테크동제천점),충청북도 제천시 청전대로 262(장락동),not_operating
+repair,6173,국제자동차공업사,충청북도 제천시 내토로 788(장락동),not_operating
+repair,6174,통일자동차공업사,충청북도 제천시 강저로 49(강제동),not_operating
+repair,6184,영광카인테리어,충청북도 제천시 내토로 941 (고암동),not_operating
+repair,6185,충남공업사,충청북도 제천시 세거리로 21(신동),not_operating
+repair,6198,새한밧데리,충청북도 제천시 신백동 251-5,not_operating
+repair,6202,창현카타이어,충청북도 제천시 내토로 476(화산동),not_operating
+repair,6205,준성카센타,충청북도 제천시 내토로 621(동현동),not_operating
+repair,6206,번영카센타,"충청북도 제천시 의병대로 236-1, 12동(신백동)",not_operating
+repair,6207,제천오토카센타,충청북도 제천시 청전대로 85(청전동),not_operating
+repair,6208,정덕훈오토테크닉,충청북도 제천시 용두천로 31-1(명동),not_operating
+repair,6209,중앙카인테리어,충청북도 제천시 화산동 853,not_operating
+repair,6210,청우공업사,충청북도 제천시 봉양읍 연박리 1223,not_operating
+repair,6212,터널카공업사,충청북도 제천시 봉양읍 국사봉로 243-14,not_operating
+repair,6214,신한일카세차장,충청북도 제천시 장락동 400,not_operating
+repair,6218,신한카센타,충청북도 제천시 둔전로 33(고암동),not_operating
+repair,6219,신동타이어,충청북도 제천시 내토로 140 (신동),not_operating
+repair,6220,동네방네카서비스,충청북도 제천시 풍양로1길 26 (청전동),not_operating
+repair,6221,한국카서비스타운,충청북도 제천시 내토로 482 (화산동),not_operating
+repair,6222,창원카밧데리,충청북도 제천시 세거리로 8 (신동),not_operating
+repair,6223,제천자동차종합서비스,충청북도 제천시 숭의로 36(화산동),not_operating
+repair,6224,한국지엠제천의림바로서비스,충청북도 제천시 의림대로 412(모산동),not_operating
+repair,6227,동부공업사,충청북도 제천시 단양로 3043(대랑동),not_operating
+repair,6229,새천년카인테리어,충청북도 제천시 화산동 454,not_operating
+repair,6230,수양공업사,충청북도 제천시 고암동 274,not_operating
+repair,6232,중부카밧데리,충청북도 제천시 단양로 3310(고명동),not_operating
+repair,6238,동명카센타,충청북도 제천시 명동 148-16,not_operating
+repair,6245,(주)케이비엠정비사업소,충청북도 제천시 봉양읍 북부로5길 16-67,not_operating
+repair,6246,동양카센터,충청북도 제천시 청전대로6길 11(청전동),not_operating
+repair,6247,뉴서울카센타,충청북도 제천시 청전동 134-4,not_operating
+repair,6248,오토캠프카센타,충청북도 제천시 청전대로 46(청전동),not_operating
+repair,6249,동진상사,충청북도 제천시 강제동 32,not_operating
+repair,6251,형제타이어,충청북도 제천시 제천북로 907(고암동),not_operating
+repair,6252,오성카센타,충청북도 제천시 장락동 498-12,not_operating
+repair,6253,강원카타이어,충청북도 제천시 내토로 802(장락동),not_operating
+repair,6254,제천자동차전문학원,충청북도 제천시 강제동 602-1,not_operating
+repair,6257,태일자동차공업사,충청북도 제천시 내토로 917-16(고암동),not_operating
+repair,6261,제천농협농기계자동차정비센타,충청북도 제천시 의림대로 392(고암동),not_operating
+repair,6262,자동차마을,충청북도 제천시 봉양읍 주포로8길 48,not_operating
+repair,6264,주안 카 서비스,충청북도 제천시 청전대로 254(장락동),not_operating
+repair,6266,국제자동차 서비스,충청북도 제천시 장락동 318-4,not_operating
+repair,6268,진양공업사,충청북도 제천시 내토로 788(장락동),not_operating
+repair,6272,자동차와사람들,충청북도 제천시 하소동 194-7,not_operating
+repair,6273,진양카밧데리,충청북도 제천시 제천북로 894(고암동),not_operating
+repair,6274,대랑 중앙타이어,충청북도 제천시 대랑동 270-1,not_operating
+repair,6276,제천상사,충청북도 제천시 화산동 856,not_operating
+repair,6278,청명카센타,충청북도 제천시 내토로 755(장락동),not_operating
+repair,6847,스피드메이트 도곡점,서울특별시 강남구 도곡로 166 (도곡동),not_operating
+repair,6893,지성모터스,서울특별시 강남구 영동대로115길 5 (삼성동),not_operating
+repair,6953,동형자동차정비공업사,경상남도 고성군 고성읍 율대리 690-7,not_operating
+repair,6955,동형자동차정비공업사,경상남도 고성군 고성읍 율대리 690-7,not_operating
+repair,6957,현대정비공업사,경상남도 고성군 영오면 오서리 1611-55,not_operating
+repair,6960,쌍용정비공업사,경상남도 고성군 고성읍 남해안대로 2532,not_operating
+repair,6961,남산정비,경상남도 고성군 고성읍 남해안대로 2541,not_operating
+repair,6962,고성정비(종합정비업),경상남도 고성군 회화면 배둔리 829-8,not_operating
+repair,6963,기아클리닉,경상남도 고성군 고성읍 율대리 685-2,not_operating
+repair,6964,삼삼카부분정비,경상남도 고성군 고성읍 송학리 445-5,not_operating
+repair,6967,현대카부분정비,경상남도 고성군 고성읍 신월리 125-2,not_operating
+repair,6968,미래카마스타,경상남도 고성군 고성읍 동외리 125-18,not_operating
+repair,6970,대성밧데리,경상남도 고성군 고성읍 기월리 119-5,not_operating
+repair,6979,하나로카부분정비,경상남도 고성군 고성읍 율대리 750,not_operating
+repair,6984,현대정비,경상남도 고성군 고성읍 죽계1길 1,not_operating
+repair,6987,청룡카부분정비,경상남도 고성군 거류면 신용리 1026-12,not_operating
+repair,6988,성심카부분정비,경상남도 고성군 거류면 당동리 127-5,not_operating
+repair,6989,섬심카닥터,경상남도 고성군 거류면 당동리 127-5,not_operating
+repair,6992,중앙카부분정비,경상남도 고성군 고성읍 동외리 287-9,not_operating
+repair,6993,현대밧데리부분정비,경상남도 고성군 고성읍 동외로 215,not_operating
+repair,6998,동아정비공업사,경상남도 고성군 고성읍 송학리 246-23,not_operating
+repair,7004,카스토리,경상남도 고성군 고성읍 중앙로 60-1,not_operating
+repair,7014,신진모터스,경상남도 고성군 고성읍 동외2길 28,not_operating
+repair,7021,삼보1급자동차정비,경상남도 고성군 거류면 은월리 415,not_operating
+repair,7637,부안점 기아오토큐,전북특별자치도 부안군 부안읍 오리정로 63,not_operating
+repair,7644,형제카공업사,전북특별자치도 부안군 부안읍 번영로 225,not_operating
+repair,7645,명전사,전북특별자치도 부안군 부안읍 낭주길 28,not_operating
+repair,7648,애니카랜드 부안점,전북특별자치도 부안군 부안읍 번영로 185,not_operating
+repair,7650,부령자동차공업사,전북특별자치도 부안군 부안읍 부풍로 106,not_operating
+repair,7651,대풍자동차써비스,전북특별자치도 부안군 부안읍 번영로 201,not_operating
+repair,7658,서림자동차공업사,전북특별자치도 부안군 부안읍 고마제로 68,not_operating
+repair,7659,동양오토,전북특별자치도 부안군 부안읍 부풍로 132,not_operating
+repair,7660,서진카센타,전북특별자치도 부안군 부안읍 오리정로 102,not_operating
+repair,7665,대흥카공업사,전북특별자치도 부안군 행안면 변산로 50,not_operating
+repair,7666,태광카공업사,전북특별자치도 부안군 부안읍 당산로 10,not_operating
+repair,7667,금강종합카센터,전북특별자치도 부안군 부안읍 석정로 157,not_operating
+repair,7673,덕원카정비공업사,전북특별자치도 부안군 부안읍 선은리 375-7,not_operating
+repair,7674,동진25시자동차병원,전북특별자치도 부안군 동진면 동진남로 4,not_operating
+repair,7676,신창자동차공업사,전북특별자치도 부안군 동진면 봉황리 310-11,not_operating
+repair,7698,부안카자동차공업사,전북특별자치도 부안군 부안읍 석정로 125,not_operating
+repair,7699,영전자동차공업사,전북특별자치도 부안군 보안면 부안로 1133,not_operating
+repair,8279,오토오아시스 일광점,"경기도 부천시 원미구 길주로442, (춘의동)",not_operating
+repair,8494,(주)경기자동차,"경기도 부천시 원미구 부천로198번길75, (춘의동)",not_operating
+repair,9317,르노코리아 서비스코너 대구죽전점,대구광역시 달서구 와룡로 244(죽전동),not_operating
+repair,9343,머슴타이어,대구광역시 달서구 월배로 368(송현동),not_operating
+repair,9353,에스와이에스 모터스,대구광역시 달서구 와룡로 235(죽전동),not_operating
+repair,9381,더유니크,대구광역시 달서구 월곡로99길 13(월성동),not_operating
+repair,9434,현대카프라자,대구광역시 달서구 성서로76길 7(이곡동),not_operating
+repair,9489,광명카클리닉,대구광역시 달서구 용산서로 46(용산동),not_operating
+repair,9505,신본리카센타,대구광역시 달서구 장기로 51(성당동),not_operating
+repair,9525,한타광영대리점카센타,대구광역시 달서구 문화회관5길 39(장기동),not_operating
+repair,9532,조은카센타,"대구광역시 달서구 장기로 83, 103동(성당동)",not_operating
+repair,9560,창평카써비스,대구광역시 달서구 상인서로 8-3(상인동),not_operating
+repair,9621,복래손세차,대구광역시 달서구 와룡로 253(죽전동),not_operating
+repair,9677,구일종합정비(주),"대구광역시 달서구 성서로 302, (갈산동)",not_operating
+repair,9700,오토박스부분정비,전남광주통합특별시 강진군 강진읍 영랑로 17,not_operating
+repair,9701,쌍용자동차서비스프라자,전남광주통합특별시 강진군 강진읍 중앙로 18,not_operating
+repair,9702,대산카센타,전남광주통합특별시 강진군 강진읍 삼일로 6,not_operating
+repair,9704,평화자동차공업사,전남광주통합특별시 강진군 강진읍 보은로 155,not_operating
+repair,9746,유앤아이모터스,전남광주통합특별시 동구 밤실로116번길 1(산수동),not_operating
+repair,10012,강변카,강원특별자치도 동해시 효자남길 40(동회동),not_operating
+repair,10021,(주)우창,강원특별자치도 동해시 동해대로 4699(단봉동),not_operating
+repair,10051,동해센타,강원특별자치도 동해시 동해역길 106(송정동),not_operating
+repair,10052,우정자동차정비공업사,강원특별자치도 동해시 동해역길 110-3(송정동),not_operating
+repair,10065,삼보카공업사,강원특별자치도 동해시 전천로 168(이도동),not_operating
+repair,10083,동명자동차정비공업사,강원특별자치도 동해시 감추1길 32-1(천곡동),not_operating
+repair,10099,혼다카센타,강원특별자치도 동해시 효자로 727(효가동),not_operating
+repair,10117,뉴동해항산업주식회사,강원특별자치도 동해시 대동로 261-8(송정동),not_operating
+repair,10141,미봉공업사,강원특별자치도 원주시 신림면 솔치로 2(황둔리 277),not_operating
+repair,10247,㈜한서모터스,강원특별자치도 원주시 치악로 1221-7(관설동 산65-5),not_operating
+repair,10253,대신자동차공업사,강원특별자치도 원주시 북원로 2451-11(우산동 298-3),not_operating
+repair,10504,영수자동차정비공업사,"강원특별자치도 원주시 강변로 85(단구동 12-1, 12-3)",not_operating
+repair,10572,광명카서비스,부산광역시 북구 낙동북로 647(구포동),not_operating
+repair,10573,경도정비,부산광역시 북구 백양대로 1101(구포동),not_operating
+repair,10574,우리카클리닉,부산광역시 북구 의성로 67(덕천동),not_operating
+repair,10575,대동카클리닉,부산광역시 북구 의성로 20(덕천동),not_operating
+repair,10576,본전카센타,부산광역시 북구 덕천로25번길 2,not_operating
+repair,10577,㈜삼보정비,부산광역시 북구 만덕대로 327(만덕동),not_operating
+repair,10578,부부카센터,부산광역시 북구 만덕3로 21(만덕동),not_operating
+repair,10579,라이온모터스,부산광역시 북구 낙동북로 772,not_operating
+repair,10580,금강카클리닉,부산광역시 북구 중리로 13(만덕동),not_operating
+repair,10581,화신상사,부산광역시 북구 금곡대로 704(금곡동),not_operating
+repair,10588,흥진현대모터스,부산광역시 북구 금곡대로 124(덕천동),not_operating
+repair,10589,1급 강동종합정비,부산광역시 북구 낙동대로 1755(구포동),not_operating
+repair,10590,대건모터스,부산광역시 북구 학사로 15,not_operating
+repair,10591,하나카센타,부산광역시 북구 덕천로 61(덕천동),not_operating
+repair,10592,엘리트종합정비,부산광역시 북구 의성로 91,not_operating
+repair,10593,코리아자동차정비,부산광역시 북구 금곡대로 112(덕천동),not_operating
+repair,10594,미광카인테리어,부산광역시 북구 모분재로15번길 96,not_operating
+repair,10595,스피드카센터,부산광역시 북구 만덕대로 54,not_operating
+repair,10596,사람과 자동차,부산광역시 북구 의성로 74(덕천동),not_operating
+repair,10597,타이어매니아 CH상사,부산광역시 북구 백양대로 1162(구포동),not_operating
+repair,10598,비룡카센타,부산광역시 북구 낙동대로1570번길 17(구포동),not_operating
+repair,10599,형제카서비스,부산광역시 북구 금곡대로 24,not_operating
+repair,10600,세방카인테리어,부산광역시 북구 백양대로 1080(구포동),not_operating
+repair,10601,제일카센타,부산광역시 북구 덕천로 23(구포동),not_operating
+repair,10602,신금곡카센타,부산광역시 북구 금곡대로616번길 134,not_operating
+repair,10603,스피드메이트 성진점,부산광역시 북구 만덕대로39번길 34,not_operating
+repair,10604,구명카써비스,부산광역시 북구 낙동북로663번길 78,not_operating
+repair,10605,한국카마스타,부산광역시 북구 만덕대로290번길 42(만덕동),not_operating
+repair,10606,부일카월드,부산광역시 북구 시랑로 42,not_operating
+repair,10607,티스테이션 화명점,"부산광역시 북구 금곡대로 420, 307동(화명동)",not_operating
+repair,10608,금호타이어 구포점,부산광역시 북구 덕천로 10(구포동),not_operating
+repair,10609,경선카정비,부산광역시 북구 만덕2로44번길 46(만덕동),not_operating
+repair,10677,금강카정비,부산광역시 북구 의성로121번길 1(덕천동),not_operating
+repair,10678,동해카센타,부산광역시 북구 모분재로 10(구포동),not_operating
+repair,10825,신성자동차(주),전남광주통합특별시 광산구 임방울대로 520,not_operating
+repair,10826,T station수완점,전남광주통합특별시 광산구 수완로74번길 1,not_operating
+repair,10827,지니카클리닉,전남광주통합특별시 광산구 광산로67번길 47,not_operating
+repair,10838,만민카서비스,전남광주통합특별시 광산구 임방울대로826번길 80,not_operating
+repair,10865,금강카세차장,전남광주통합특별시 광산구 풍영정길 31,not_operating
+repair,10912,진솔모터스,전남광주통합특별시 광산구 목련로 371,not_operating
+repair,10939,샤인카랜드,전남광주통합특별시 광산구 목련로 63,not_operating
+repair,10966,뉴광주카세차장,전남광주통합특별시 광산구 도산로9번길 51,not_operating
+repair,10993,뉴송정자동차서비스,전남광주통합특별시 광산구 동곡로 356,not_operating
+repair,11010,J&C모터스,전남광주통합특별시 광산구 도산로9번길 51,not_operating
+repair,11020,신창해븐카클리닉,전남광주통합특별시 광산구 장신로 326,not_operating
+repair,11050,금호자동차,전남광주통합특별시 광산구 어등대로647번길 17,not_operating
+repair,11077,월드카센타,전남광주통합특별시 광산구 상무대로 341,not_operating
+repair,11104,경도카클리닉,전남광주통합특별시 광산구 평동산단로 209,not_operating
+repair,11131,로얄자동차공업사,전남광주통합특별시 광산구 소촌로 138,not_operating
+repair,11159,대성카센타,전남광주통합특별시 광산구 월곡중앙로 56,not_operating
+repair,11160,청마자동차공업사,전남광주통합특별시 광산구 하남마항로29번길 11(하남동),not_operating
+repair,11161,부자카센터,전남광주통합특별시 광산구 왕버들로 199,not_operating
+repair,11162,(유)태왕자동차서비스,전남광주통합특별시 광산구 왕버들로 199,not_operating
+repair,11163,광주전자공업고등학교카뷰티샵,전남광주통합특별시 광산구 첨단중앙로 7,not_operating
+repair,11164,송정대광자동차공업사,전남광주통합특별시 광산구 상무대로 247,not_operating
+repair,11165,(주)부림모터스,전남광주통합특별시 광산구 사암로 799,not_operating
+repair,11166,혜성공업사,전남광주통합특별시 광산구 임방울대로 600,not_operating
+repair,11167,주)글로벌오토텍,전남광주통합특별시 광산구 평동산단2번로 213,not_operating
+repair,11168,(주)삼보일급자동차서비스,전남광주통합특별시 광산구 도천남길 213,not_operating
+repair,11169,고려모터스,전남광주통합특별시 광산구 사암로 860-15,not_operating
+repair,11170,한성자동차공업사,전남광주통합특별시 광산구 상완길 314-46,not_operating
+repair,11171,SMCAUTO (신명오토),전남광주통합특별시 광산구 신가삼효로 2,not_operating
+repair,11172,타이어프로 첨단점,전남광주통합특별시 광산구 첨단월봉로 88,not_operating
+repair,11173,지에스엠비즈㈜ 오토오아시스 운남대교점,전남광주통합특별시 광산구 임방울대로 14,not_operating
+repair,11174,신창 현대자동차서비스,전남광주통합특별시 광산구 신창로106번길 8-3,not_operating
+repair,11175,신창 현대 자동차서비스,전남광주통합특별시 광산구 신창로106번길 8-3,not_operating
+repair,11176,거성자동차공업사,전남광주통합특별시 광산구 사암로 827-21,not_operating
+repair,11177,신성자동차(주)소촌지점,전남광주통합특별시 광산구 어등대로603번길 20,not_operating
+repair,11178,(주)백룡,전남광주통합특별시 광산구 소촌로123번길 14-10,not_operating
+repair,11179,(주)프로월드자동차종합정비,전남광주통합특별시 광산구 동곡로 675-3,not_operating
+repair,11180,부성종합자동차공업사,전남광주통합특별시 광산구 용아로 439,not_operating
+repair,11181,도운카월드,전남광주통합특별시 광산구 용아로 428,not_operating
+repair,11185,황제카센타,전남광주통합특별시 광산구 사암로 94,not_operating
+repair,11186,ET자동차공업사,전남광주통합특별시 광산구 상무대로133번길 10,not_operating
+repair,11187,공항자동차공업사,전남광주통합특별시 광산구 상무대로 357,not_operating
+repair,11188,형제부분정비공업사,전남광주통합특별시 광산구 산정공원로59번길 40,not_operating
+repair,11189,백우카부분정비공업사,전남광주통합특별시 광산구 산정공원로93번길 16,not_operating
+repair,11190,금호토탈자동차공업사,전남광주통합특별시 광산구 용아로 352,not_operating
+repair,11191,그린부분정비공업사,전남광주통합특별시 광산구 사암로92번길 46,not_operating
+repair,11192,기아카크리닉첨단점,전남광주통합특별시 광산구 첨단중앙로124번길 17,not_operating
+repair,11193,형제공업사,전남광주통합특별시 광산구 우산로96번길 23,not_operating
+repair,11194,산정3급부분정비공업사,전남광주통합특별시 광산구 목련로273번안길 19,not_operating
+repair,11195,석정카써비스,전남광주통합특별시 광산구 송도로 151,not_operating
+repair,11196,대흥카센타,전남광주통합특별시 광산구 월곡중앙로47번길 29,not_operating
+repair,11197,신성부분정비,전남광주통합특별시 광산구 비아로45번길 8-6,not_operating
+repair,11198,신한자동차공업사,전남광주통합특별시 광산구 상무대로 324,not_operating
+repair,11199,월곡자동차공업사,전남광주통합특별시 광산구 월곡로 41,not_operating
+repair,11200,광주자동차공업사,전남광주통합특별시 광산구 송도로 254,not_operating
+repair,11201,매일자동차공업사,전남광주통합특별시 광산구 상무대로 409,not_operating
+repair,11202,영진자동차공업사,전남광주통합특별시 광산구 송도로 121,not_operating
+repair,11203,코리아자동차공업사,전남광주통합특별시 광산구 산정공원로93번길 12,not_operating
+repair,11204,대인자동차공업사,전남광주통합특별시 광산구 동곡로 422,not_operating
+repair,11205,우진자동차공업사,전남광주통합특별시 광산구 어등대로 643,not_operating
+repair,11206,정진자동차공업사,전남광주통합특별시 광산구 상무대로133번길 2,not_operating
+repair,11207,영자동차공업사,전남광주통합특별시 광산구 상무대로 282,not_operating
+repair,11208,남호자동차공업사,전남광주통합특별시 광산구 우산로 67,not_operating
+repair,11209,본량자동차공업사,전남광주통합특별시 광산구 용진로 376,not_operating
+repair,11210,믿음자동차공업사,전남광주통합특별시 광산구 고봉로 112,not_operating
+repair,11211,아주카센타,전남광주통합특별시 광산구 사암로 299,not_operating
+repair,11212,스피드메이트한백점,전남광주통합특별시 광산구 첨단과기로 53,not_operating
+repair,11213,현대카센타,전남광주통합특별시 광산구 비아안길 75-9,not_operating
+repair,11214,유성카맨샵,전남광주통합특별시 광산구 송촌길 14-10,not_operating
+repair,11215,카랜드부분정비공업사,전남광주통합특별시 광산구 임방울대로 838,not_operating
+repair,11216,아성종합카센타,전남광주통합특별시 광산구 임곡로 637,not_operating
+repair,11217,우리카서비스정비,전남광주통합특별시 광산구 목련로 229,not_operating
+repair,11218,하남디젤커먼레일,전남광주통합특별시 광산구 동곡로 675-11,not_operating
+repair,11219,송정카클리닉,전남광주통합특별시 광산구 송도로 172,not_operating
+repair,11220,대성카부분정비,전남광주통합특별시 광산구 사암로95번길 11,not_operating
+repair,11221,하남카센타,전남광주통합특별시 광산구 사암로 327,not_operating
+repair,11222,소촌점 현대자동차,전남광주통합특별시 광산구 소촌로 85,not_operating
+repair,11223,호반오토카클리닉,전남광주통합특별시 광산구 비아중앙로 45,not_operating
+repair,11224,대흥카공업사인테리어,전남광주통합특별시 광산구 목련로381번길 10,not_operating
+repair,11225,로얄카크리닉,전남광주통합특별시 광산구 사암로 849,not_operating
+repair,11226,뽀빠이카타운,전남광주통합특별시 광산구 사암로 369-1,not_operating
+repair,11227,남동자동차공업사,전남광주통합특별시 광산구 남동길48번길 37,not_operating
+repair,11228,조은카센타,전남광주통합특별시 광산구 신도산길 15-6,not_operating
+repair,11229,대성카마스터,전남광주통합특별시 광산구 송도로 173,not_operating
+repair,11230,SMCAUTO(신명오토),전남광주통합특별시 광산구 신가삼효로 2,not_operating
+repair,11231,정자면크리닉,전남광주통합특별시 광산구 목련로397번안길 15,not_operating
+repair,11232,벧엘오토부분정비공업사,전남광주통합특별시 광산구 첨단내촌로 19,not_operating
+repair,11233,남정오토밋션,전남광주통합특별시 광산구 사암로 149,not_operating
+repair,11234,전일자동차공업사,전남광주통합특별시 광산구 하남산단천변우로 28,not_operating
+repair,11235,화승모터스,전남광주통합특별시 광산구 목련로219번길 129,not_operating
+repair,11236,남도카센타,전남광주통합특별시 광산구 소촌로 62,not_operating
+repair,11237,최연카마스타,전남광주통합특별시 광산구 신창로106번길 8-12,not_operating
+repair,11238,고속타이어자동차공업사,전남광주통합특별시 광산구 산정공원로71번길 31,not_operating
+repair,11239,타이어박스,전남광주통합특별시 광산구 동곡로 805,not_operating
+repair,11240,남정오토,전남광주통합특별시 광산구 장덕로40번길 18,not_operating
+repair,11241,BDM,전남광주통합특별시 광산구 상무대로 487,not_operating
+repair,11242,승윤모터스,전남광주통합특별시 광산구 우산로 58,not_operating
+repair,11243,금성카센타,전남광주통합특별시 광산구 평동산단외로 257,not_operating
+repair,11244,상신카센타,전남광주통합특별시 광산구 동곡로 586,not_operating
+repair,11245,해남카클리닉,전남광주통합특별시 광산구 하남대로 341,not_operating
+repair,11246,금정남강부분정비공업사,전남광주통합특별시 광산구 북문대로 363-16,not_operating
+repair,11247,동양카인테리어,전남광주통합특별시 광산구 사암로 361,not_operating
+repair,11248,모양카클리닉,전남광주통합특별시 광산구 사암로 94,not_operating
+repair,11249,카리젠카서비스,전남광주통합특별시 광산구 임곡로 810,not_operating
+repair,11250,신촌카크리닉,전남광주통합특별시 광산구 사암로 116,not_operating
+repair,11251,호남자동차공업사,전남광주통합특별시 광산구 송도로 164,not_operating
+repair,11252,이범카센타,전남광주통합특별시 광산구 북문대로 575,not_operating
+repair,11253,황룡카센타,전남광주통합특별시 광산구 상무대로 276,not_operating
+repair,11254,효창카센타,전남광주통합특별시 광산구 사암로 788,not_operating
+repair,11255,신가카클리닉,전남광주통합특별시 광산구 목련로 315,not_operating
+repair,11256,우산카부분정비,전남광주통합특별시 광산구 우산로 107,not_operating
+repair,11257,매일카서비스,전남광주통합특별시 광산구 용아로 657,not_operating
+repair,11258,광송카서비스,전남광주통합특별시 광산구 광산로67번길 51,not_operating
+repair,11259,백산카공업사,전남광주통합특별시 광산구 송도로 268,not_operating
+repair,11260,영승카,전남광주통합특별시 광산구 상무대로 286,not_operating
+repair,11261,해피자동차공업사,전남광주통합특별시 광산구 우산로 72,not_operating
+repair,11262,에이스카서비스,전남광주통합특별시 광산구 장신로266번길 7,not_operating
+repair,11263,푸른자동차공업사,전남광주통합특별시 광산구 송도로 186,not_operating
+repair,11264,yes 카 서비스,전남광주통합특별시 광산구 산정공원로82번길 9,not_operating
+repair,11265,동현카센타,전남광주통합특별시 광산구 평동로 737,not_operating
+repair,11266,77카 오토샵,전남광주통합특별시 광산구 우산로 72,not_operating
+repair,11267,코리아 카,전남광주통합특별시 광산구 송정로30번길 22,not_operating
+repair,11268,명품카서비스,전남광주통합특별시 광산구 남동길48번길 37,not_operating
+repair,11269,현 자동차 써비스,전남광주통합특별시 광산구 신창로106번길 8-3,not_operating
+repair,11270,유성카맨샵,전남광주통합특별시 광산구 송촌길 14-10,not_operating
+repair,11271,옥동카센타,전남광주통합특별시 광산구 평동로 737,not_operating
+repair,11272,광도,전남광주통합특별시 광산구 손재로 173,not_operating
+repair,11273,삼성카랜드,전남광주통합특별시 광산구 목련로 246,not_operating
+repair,11274,선진부분정비,전남광주통합특별시 광산구 사암로 724,not_operating
+repair,11275,㈜대창석유,전남광주통합특별시 광산구 소촌로 9-6,not_operating
+repair,11276,비아 IC 카클리닉,전남광주통합특별시 광산구 사암로 896,not_operating
+repair,11277,GS넥스테이션㈜오토오아시스 운남대교점,전남광주통합특별시 광산구 임방울대로 14,not_operating
+repair,11278,오토오아시스 수완셀프점,전남광주통합특별시 광산구 장신로 152,not_operating
+repair,11279,한국타이어평동점그린산업(주),전남광주통합특별시 광산구 동곡로 843-6,not_operating
+repair,11280,동현카센타,전남광주통합특별시 광산구 임방울대로 611-8,not_operating
+repair,11281,에이스 카 써비스,전남광주통합특별시 광산구 수완로11번길 15,not_operating
+repair,11282,대건카부분정비,전남광주통합특별시 광산구 금봉로 61,not_operating
+repair,11283,서울자동차공업사,전남광주통합특별시 광산구 사암로 75-1,not_operating
+repair,11284,ET자동차공업사,전남광주통합특별시 광산구 상무대로133번길 10,not_operating
+repair,11285,중흥카서비스,전남광주통합특별시 광산구 비아안길 37-10,not_operating
+repair,11286,파이널모터스,전남광주통합특별시 광산구 우산로 72,not_operating
+repair,11287,비아점 현대자동차,전남광주통합특별시 광산구 비아동원촌길 83,not_operating
+repair,11288,SNP모터스,전남광주통합특별시 광산구 풍영철길로 159,not_operating
+repair,11289,로얄카센타,전남광주통합특별시 광산구 소촌로 138,not_operating
+repair,11290,탑모터스,전남광주통합특별시 광산구 사암로 672,not_operating
+repair,11291,운수모터스,전남광주통합특별시 광산구 동곡로 843,not_operating
+repair,11292,진모터스,전남광주통합특별시 광산구 우산로 72,not_operating
+repair,11293,타이어킹박사(주)하남점,전남광주통합특별시 광산구 사암로 858-1,not_operating
+repair,11294,진호모터스,전남광주통합특별시 광산구 하남산단1번로 108,not_operating
+repair,11295,홍춘이가차고치는집,전남광주통합특별시 광산구 우산로 79,not_operating
+repair,11296,타이어킹박사(주) 수완점,전남광주통합특별시 광산구 임방울대로 492,not_operating
+repair,11297,불만제로카클리닉,전남광주통합특별시 광산구 목련로273번길 52,not_operating
+repair,11298,중앙카서비스,전남광주통합특별시 광산구 장덕로39번길 14,not_operating
+repair,11299,문서기정비샵,전남광주통합특별시 광산구 송도로 151,not_operating
+repair,11300,타이어프로첨단점,전남광주통합특별시 광산구 첨단봉산안길 74,not_operating
+repair,11301,호남카프로,전남광주통합특별시 광산구 목련로 371,not_operating
+repair,11302,형제카센타,전남광주통합특별시 광산구 사암로118번길 55,not_operating
+repair,11303,프로 카 모터스,전남광주통합특별시 광산구 용아로379번길 35,not_operating
+repair,11304,SNP모터스,전남광주통합특별시 광산구 용아로399번길 78,not_operating
+repair,11305,월드전장,전남광주통합특별시 광산구 동곡로 843,not_operating
+repair,11306,가람모터스,전남광주통합특별시 광산구 왕버들로 181,not_operating
+repair,11307,하남기아밧데리,전남광주통합특별시 광산구 왕버들로 25,not_operating
+repair,11308,이한모터서비스(주),전남광주통합특별시 광산구 어등대로 605,not_operating
+repair,11309,운남카센타,전남광주통합특별시 광산구 임방울대로 14,not_operating
+repair,11328,대인보링공업사,전남광주통합특별시 광산구 사암로 764-48,not_operating
+repair,11329,르노 삼성자동차 지정정비코너 신촌점,전남광주통합특별시 광산구 사암로 122,not_operating
+repair,11330,대성보링공업사,전남광주통합특별시 광산구 임방울대로 600,not_operating
+repair,11331,태경카서비스,전남광주통합특별시 광산구 손재로 173,not_operating
+repair,11332,동현카센타,전남광주통합특별시 광산구 남동길48번길 37,not_operating
+repair,11333,대동카센타,전남광주통합특별시 광산구 북문대로420번길 147,not_operating
+repair,11334,화승모터스,전남광주통합특별시 광산구 목련로219번길 129,not_operating
+repair,11622,광진부분정비공업사,전남광주통합특별시 목포시 용당로196번길 34(용당동),not_operating
+repair,11667,신명성자동차,전남광주통합특별시 목포시 고하대로719번길 46(연산동),not_operating
+repair,12294,태경자동차서비스,충청북도 청주시 흥덕구 서부로 1093-11,not_operating
+repair,12316,양지공업사,충청북도 청주시 청원구 율천북로 133-1,not_operating
+repair,12359,1급현대공업사종합정비(주)강서2공장지점,충청북도 청주시 흥덕구 호암로 94,not_operating
+repair,12490,함양카센타세차장,경상남도 함양군 함양읍 교산샛길 17,not_operating
+repair,12497,금호타이어대성대리점,경상남도 함양군 함양읍 한들로 50,not_operating
+repair,12511,대한오토정비,경상남도 밀양시 중앙로 467(내이동),not_operating
+repair,12514,국도카,경상남도 밀양시 상남면 밀양대로 1518,not_operating
+repair,12531,태인카서비스,경상남도 밀양시 중앙로 159-1,not_operating
+repair,12538,타이어강호주식회사,경상남도 밀양시 밀양대로 1769(삼문동),not_operating
+repair,12540,최강모터스,경상남도 밀양시 시청서2길 4,not_operating
+repair,12542,카프렌드,경상남도 밀양시 중앙로 467(내이동),not_operating
+repair,12544,안전모터스,경상남도 밀양시 내이동 1175-5,not_operating
+repair,12545,영광카서비스,경상남도 밀양시 부북면 사포로 155,not_operating
+repair,12547,자동차이야기,경상남도 밀양시 시청서4길 21(내이동),not_operating
+repair,12554,화성카,경상남도 밀양시 부북면 전사포리 600-1,not_operating
+repair,12555,조은카클리닉,경상남도 밀양시 삼문동 719-10,not_operating
+repair,12562,엔케이,경상남도 밀양시 상남면 상남로 984,not_operating
+repair,12570,보리카클리닉,경상남도 밀양시 부북면 감천리 99-2,not_operating
+repair,12572,우성정비,경상남도 밀양시 부북면 전사포리 294-6,not_operating
+repair,12576,대명자동차정비,경상남도 밀양시 중앙로 145(가곡동),not_operating
+repair,12582,(주)누원밀양지점,경상남도 밀양시 하남읍 하남로 129,not_operating
+repair,12584,두원카센타,경상남도 밀양시 부북면 감천리 99-2,not_operating
+repair,12585,태양자동차정비공업사,경상남도 밀양시 내이동 1553-4,not_operating
+repair,12588,득일카서비스,경상남도 밀양시 단장면 표충로 369,not_operating
+repair,12589,상우카센타,경상남도 밀양시 내이동 1519-10,not_operating
+repair,12591,대흥카센타,경상남도 밀양시 산내면 산내로 1115,not_operating
+repair,12596,신우종합상사,경상남도 밀양시 내이동 584-6,not_operating
+repair,12600,월드카센타,경상남도 밀양시 무안면 사명로 461,not_operating
+repair,12601,부북카센타,경상남도 밀양시 부북면 용운길 11-1,not_operating
+repair,12604,금산카센타,경상남도 밀양시 상동면 금산리 342-1,not_operating
+repair,12606,동신종합정비3급,경상남도 밀양시 상남면 세천1길 9,not_operating
+repair,12610,철원정비타운,경상남도 밀양시 상남면 상남로 1191,not_operating
+repair,12612,금천카크리닉,경상남도 밀양시 산외면 금천리 445-7,not_operating
+repair,12615,산동카써비스,경상남도 밀양시 산외면 산외로 299,not_operating
+repair,12616,태양자동차정비공업사,경상남도 밀양시 내이동 1403-4,not_operating
+repair,12618,카매니져,경상남도 밀양시 내이동 1175-3,not_operating
+repair,12621,형제카센타,경상남도 밀양시 상남면 평촌길 24,not_operating
+repair,12622,신법카24시,경상남도 밀양시 무안면 신법리 261-1,not_operating
+repair,12624,사포합동카,경상남도 밀양시 부북면 전사포리 838-78,not_operating
+repair,12625,호야카클리닉,경상남도 밀양시 상남면 상남로 1186,not_operating
+repair,12627,첨단카라디에테,경상남도 밀양시 운전1길 10-19,not_operating
+repair,12629,인교카정비공업사,경상남도 밀양시 무안면 사명로 6,not_operating
+repair,12630,백산자동차부분정비,경상남도 밀양시 하남읍 백산리 672-17,not_operating
+repair,12632,제일카써비스,경상남도 밀양시 무안면 무안리 758-8,not_operating
+repair,12633,현대자동차수산점,경상남도 밀양시 하남읍 양동리 648-35,not_operating
+repair,12636,호성카센타,경상남도 밀양시 상동면 가곡리 780-1,not_operating
+repair,12637,국일경정비공업사,경상남도 밀양시 무안면 성덕리 662-1,not_operating
+repair,12643,영남밧데리부분정비,경상남도 밀양시 상남면 밀양대로 1473,not_operating
+repair,12644,보성카크리닉,경상남도 밀양시 내이동 122,not_operating
+repair,12645,감내3급종합정비,경상남도 밀양시 내이동 446-1,not_operating
+repair,12647,영남카센타,경상남도 밀양시 상남면 밀양대로 1473,not_operating
+repair,12648,대영카센타,경상남도 밀양시 내이동 621-21,not_operating
+repair,12650,봉화카써비스,경상남도 밀양시 산외면 금곡리 97-1,not_operating
+repair,12652,한양카써비스,경상남도 밀양시 부북면 전사포리 21-2,not_operating
+repair,12659,유천종합카써비스,경상남도 밀양시 상동면 금산7길 17-12,not_operating
+repair,12660,우진카서비스,경상남도 밀양시 부북로 6,not_operating
+repair,12663,도야카,경상남도 밀양시 하남읍 양동리 364-2,not_operating
+repair,12667,영진공업사,경상남도 밀양시 가곡6길 8-4(가곡동),not_operating
+repair,12670,밀양짚프전문점,경상남도 밀양시 터미널3길 2,not_operating
+repair,12674,제일자동차정비,경상남도 밀양시 하남읍 수산중앙로 105,not_operating
+repair,12676,영남밧데리,경상남도 밀양시 하남읍 초하로 746,not_operating
+repair,13139,(유)무진모터스,전북특별자치도 익산시 서동로38길 13-6 (금강동),not_operating
+repair,13140,그린1급자동차공업사,전북특별자치도 익산시 오산면 광양길 98-10,not_operating
+repair,13141,반도자동차공업사,전북특별자치도 익산시 황등면 화강암로 59,not_operating
+repair,13150,대훈자동차공업사 (유),전북특별자치도 익산시 목천로12길 15 A동 (인화동1가),not_operating
+repair,13181,777타이어백화점 평화점,전북특별자치도 익산시 익산대로 79 (평화동),not_operating
+repair,13184,김재두카클리닉,전북특별자치도 익산시 익산대로68길 79 (신동),not_operating
+repair,13212,태영카랜드,전북특별자치도 익산시 선화로 221-1 (남중동),not_operating
+repair,13229,동아오토,전북특별자치도 익산시 목상길 8 (목천동),not_operating
+repair,13231,제일카센타,전북특별자치도 익산시 오산면 무왕로2길 256,not_operating
+repair,13234,팔봉 R 카센타,전북특별자치도 익산시 쌍능길 6 (덕기동),not_operating
+repair,13236,한일보링,전북특별자치도 익산시 선화1로 125 (금강동),not_operating
+repair,13239,(유)원창자동차공업사,전북특별자치도 익산시 마한로 57 (영등동),not_operating
+repair,13247,미래자동차공업사,전북특별자치도 익산시 서동로38길 13-5 (금강동),not_operating
+repair,13251,서호자동차공업사,전북특별자치도 익산시 황등면 화강암로 86-8,not_operating
+repair,13265,동성카센타,전북특별자치도 익산시 무왕로 937 (신동),not_operating
+repair,13266,이동준자동차세상,전북특별자치도 익산시 무왕로 971 (신동),not_operating
+repair,13267,오토오아시스 홈플러스 익산점,전북특별자치도 익산시 무왕로 1035 (영등동 홈플러스),not_operating
+repair,13268,대성공업사,전북특별자치도 익산시 오산면 무왕로2길 321-12,not_operating
+repair,13274,스피드카센타,전북특별자치도 익산시 선화로 514,not_operating
+repair,13275,르노삼성자동차 지정정비코너 마동점,전북특별자치도 익산시 중앙로 114 (마동),not_operating
+repair,13276,석불카센타,전북특별자치도 익산시 삼기면 미륵사지로 670 (삼기면),not_operating
+repair,13277,성진카센타,전북특별자치도 익산시 서동로 511 (용제동),not_operating
+repair,13278,명진카모터스,전북특별자치도 익산시 평동로 738 (동산동),not_operating
+repair,13279,카프랜드,전북특별자치도 익산시 무왕로12길 43 (신동),not_operating
+repair,13280,수영카센타,전북특별자치도 익산시 약촌로 237 (영등동),not_operating
+repair,13281,대동종합카센타,전북특별자치도 익산시 무왕로 1614 (덕기동),not_operating
+repair,13282,터보카센타,전북특별자치도 익산시 선화로 306 (마동),not_operating
+repair,13283,대성종합카센타,전북특별자치도 익산시 함열읍 함열10길 28 (함열읍),not_operating
+repair,13284,이레카써비스,전북특별자치도 익산시 군익로 495 (송학동),not_operating
+repair,13285,인정카클리닉,전북특별자치도 익산시 동서로51길 76 (영등동),not_operating
+repair,13286,이엘씨테크,전북특별자치도 익산시 배산로 63 (모현동1가),not_operating
+repair,13295,현대종합카센타,전북특별자치도 익산시 목천로 269 (인화동1가),not_operating
+repair,13298,금마카센타,전북특별자치도 익산시 금마면 금마길 40 (금마면),not_operating
+repair,13302,알파안전,전북특별자치도 익산시 선화로 309 (마동),not_operating
+repair,13303,인정카센타,전북특별자치도 익산시 고봉로30길 85-1 (어양동),not_operating
+repair,13304,대우상사,전북특별자치도 익산시 무왕로31길 416 (월성동),not_operating
+repair,13305,현모터스,전북특별자치도 익산시 선화로 655 (부송동),not_operating
+repair,13306,TIRE TECH 넥센타이어,전북특별자치도 익산시 선화로 506 (신흥동),not_operating
+repair,13307,하나카모터스,전북특별자치도 익산시 선화로 655 (부송동),not_operating
+repair,13308,봉명카센타,전북특별자치도 익산시 익산대로 290 (남중동),not_operating
+repair,13309,수 카센타,전북특별자치도 익산시 인북로 95 (갈산동),not_operating
+repair,13310,천운카센타,전북특별자치도 익산시 서동로38길 6 (금강동),not_operating
+repair,13311,조합카센타,전북특별자치도 익산시 무왕로2길 46-9 (목천동),not_operating
+repair,13312,타이어테크 익산본점,전북특별자치도 익산시 선화로 506 (신흥동),not_operating
+repair,13313,일신카공업사,전북특별자치도 익산시 용안면 익산대로 2408-2 (용안면),not_operating
+repair,13314,자동차세상,전북특별자치도 익산시 부송로 17 (어양동),not_operating
+repair,13315,우성카센타,전북특별자치도 익산시 왕궁면 왕궁로 146 (왕궁면),not_operating
+repair,13337,통운카센타,"전북특별자치도 익산시 석암로3길 85, 802동 (팔봉동)",not_operating
+repair,13349,상룡카센타,전북특별자치도 익산시 익산대로74길 7 (신용동),not_operating
+repair,13351,익산스타카센타,전북특별자치도 익산시 오산면 군익로 348 (오산면),not_operating
+repair,13372,타이어프로 부송점,전북특별자치도 익산시 무왕로 1245 (부송동),not_operating
+repair,13374,한달음정비센타,전북특별자치도 익산시 하나로 292 (신흥동),not_operating
+repair,13376,세림카센타,전북특별자치도 익산시 낭산면 함낭로 1187 (낭산면),not_operating
+repair,13380,원카센타,전북특별자치도 익산시 무왕로 1350 (팔봉동),not_operating
+repair,13388,마동현대카프라자,전북특별자치도 익산시 주현로24길 4 (주현동),not_operating
+repair,13394,오토오아시스롯데마트익산점,전북특별자치도 익산시 무왕로 1053 (영등동),not_operating
+repair,13416,자동차마을카,전북특별자치도 익산시 황등면 황등로 23 (황등면),not_operating
+repair,13429,한국타이어 익산판매,전북특별자치도 익산시 무왕로 1373 (팔봉동),not_operating
+repair,13445,숲정이카센타,전북특별자치도 익산시 여산면 여강로 325,not_operating
+repair,13453,우리카센터,전북특별자치도 익산시 배산로 67 (모현동1가),not_operating
+repair,13455,동양밧데리,전북특별자치도 익산시 춘포로 18 (금강동),not_operating
+repair,13586,일등부분정비,전남광주통합특별시 신안군 압해읍 압해로 844,not_operating
+repair,13589,거성자동차종합정비업,전남광주통합특별시 신안군 비금면 비금북부길 26,not_operating
+repair,13594,청룡카센터,전남광주통합특별시 신안군 도초면 도초지동길 7-4,not_operating
+repair,13945,호마카정비,경상북도 울릉군 울릉읍 울릉순환로 76,not_operating
+repair,13948,울릉자동차정비공장,경상북도 울릉군 울릉읍 저동4길 33-12,not_operating
+repair,13949,현대서비스 울릉 대형점,경상북도 울릉군 북면 울릉순환로 2386,not_operating
+repair,13950,제일 경정비,경상북도 울릉군 울릉읍 울릉순환로 612,not_operating
+repair,14146,티스테이션 잠홍점,충청남도 서산시 서해로 3663(잠홍동),not_operating
+repair,14147,태영보링기공사,충청남도 서산시 수석산업로 125(수석동),not_operating
+repair,14148,MARIN카,충청남도 서산시 대산읍 명지2로 167,not_operating
+repair,14149,흥국정공(주) 대산지점,충청남도 서산시 대산읍 독곶1로 35,not_operating
+repair,14150,서산현대카,충청남도 서산시 고운로 6-7(예천동),not_operating
+repair,14151,장동붕붕카센타,충청남도 서산시 수석순환로 116(수석동),not_operating
+repair,14152,뉴성호카센타,충청남도 서산시 중앙로 532(수석동),not_operating
+repair,14153,지엔지카센타,충청남도 서산시 성연면 충의로 410,not_operating
+repair,14154,대성카센타,충청남도 서산시 남부순환로 15(수석동),not_operating
+repair,14155,희망모터스,충청남도 서산시 충의로 262(갈산동),not_operating
+repair,14156,구태양모터스,충청남도 서산시 대산읍 평신2로 17,not_operating
+repair,14157,유니자동차,충청남도 서산시 서해로 3621(잠홍동),not_operating
+repair,14158,서해자동차마을,충청남도 서산시 중앙로 496(수석동),not_operating
+repair,14159,운산중앙부분정비공업사,충청남도 서산시 운산면 운암로 1023,not_operating
+repair,14160,성진부분정비공업사,충청남도 서산시 음암면 칠거리로 8-11,not_operating
+repair,14161,우성카센타,충청남도 서산시 고운로 254(동문동),not_operating
+repair,14162,서산IC카센타,충청남도 서산시 운산면 운암로 832,not_operating
+repair,14163,평화카부분정비업,충청남도 서산시 부석면 무학로 1096,not_operating
+repair,14164,자동차성형외과,충청남도 서산시 동헌로 4-3(석남동),not_operating
+repair,14165,형제카크리닉,충청남도 서산시 해미면 중앙로 1101,not_operating
+repair,14166,국제카써비스,충청남도 서산시 율지6로 55(동문동),not_operating
+repair,14167,운산부분정비공업사,충청남도 서산시 운산면 운암로 1074,not_operating
+repair,14168,현대카센타,충청남도 서산시 중앙로 90(동문동),not_operating
+repair,14169,THE-ART(디-아트),충청남도 서산시 율지7로 10(동문동),not_operating
+repair,14170,스피드카센타,충청남도 서산시 한마음10길 6(석림동),not_operating
+repair,14171,오토크리닉,충청남도 서산시 문화로 38-1(읍내동),not_operating
+repair,14172,카마스부분정비공업사,충청남도 서산시 지곡면 충의로 1103,not_operating
+repair,14173,쇠광카크리닉,충청남도 서산시 해미면 중앙로 1101,not_operating
+repair,14174,기아자동차카클리닉(석림점),충청남도 서산시 서해로 3425(석림동),not_operating
+repair,14175,현주지프랜드,충청남도 서산시 서해로 3611(잠홍동),not_operating
+repair,14176,해미자동차정비공업사,충청남도 서산시 고북면 내포로 2435,not_operating
+repair,14177,신흥콤푸,충청남도 서산시 무학로 1855(예천동),not_operating
+repair,14178,매직터지,충청남도 서산시 중앙로 126-1(석림동),not_operating
+repair,14179,형제상사,충청남도 서산시 동헌로 8(석남동),not_operating
+repair,14180,대원자동차부분정비공업사,충청남도 서산시 지곡면 충의로 1103,not_operating
+repair,14181,신동아자동차공업사,충청남도 서산시 음암면 운암로 208,not_operating
+repair,14182,합동자동차부분정비,충청남도 서산시 대산읍 충의로 2107,not_operating
+repair,14183,월드자동차부분정비업,충청남도 서산시 음암면 운암로 208,not_operating
+repair,14184,한솔자동차부분정비공업사,충청남도 서산시 서해로 3616,not_operating
+repair,14185,애향카부분정비업,충청남도 서산시 부춘1로 19,not_operating
+repair,14186,삼성카부분정비업,충청남도 서산시 율지3로 33(동문동),not_operating
+repair,14187,현대자동차부분정비업,충청남도 서산시 안견로 194(동문동),not_operating
+repair,14188,제일자동차정비공업사,충청남도 서산시 운암로 62(수석동),not_operating
+repair,14189,서령자동차정비공업사,충청남도 서산시 안견로 107(동문동),not_operating
+repair,14190,쇠광카부분정비,충청남도 서산시 해미면 중앙로 1101,not_operating
+repair,14191,삼정카부분정비,충청남도 서산시 지곡면 충의로 1309,not_operating
+repair,14192,황금자동차공업사,충청남도 서산시 대산읍 독곶2로 18,not_operating
+repair,14193,종합자동차정비,충청남도 서산시 서해로 3197(예천동),not_operating
+repair,14194,서령부분정비공업사,충청남도 서산시 서해로 3207(예천동),not_operating
+repair,14195,번개공업사,충청남도 서산시 성연면 성연로 278,not_operating
+repair,14196,자동차병원부분정비공업사,충청남도 서산시 한마음10길 26(석림동),not_operating
+repair,14197,캠프부분정비,충청남도 서산시 안견로 333(읍내동),not_operating
+repair,14198,이윤주오토카공업사,충청남도 서산시 덕지천로 101(석림동),not_operating
+repair,14199,그린카마스티,충청남도 서산시 무학로 1841(예천동),not_operating
+repair,14200,부흥자동차공업사,충청남도 서산시 음암면 운암로 119,not_operating
+repair,14201,경진카센타,충청남도 서산시 동헌로 52(석남동),not_operating
+repair,14202,삼성부분정비공업사,충청남도 서산시 부춘5로 4(읍내동),not_operating
+repair,14203,ABC카써비스,충청남도 서산시 덕지천로 101(석림동),not_operating
+repair,14204,기아상사자동차부분정비공업사,충청남도 서산시 성연면 충의로 567-23,not_operating
+repair,14205,미광자동차부분정비,충청남도 서산시 안견로 283(읍내동),not_operating
+repair,14206,성광종합써비스,충청남도 서산시 대산읍 독곶2로 103,not_operating
+repair,14207,승진자동차부분정비업,충청남도 서산시 고운로 373(잠홍동),not_operating
+repair,14208,금강자동차부분정비,충청남도 서산시 읍내3로 12(읍내동),not_operating
+repair,14209,서산카부분정비업,충청남도 서산시 나무장1길 24(예천동),not_operating
+repair,14210,서해카부분정비업,충청남도 서산시 부석면 취평2길 48,not_operating
+repair,14211,잠홍부분정비,충청남도 서산시 서해로 3614(잠홍동),not_operating
+repair,14212,연합자동차부분정비업,충청남도 서산시 고운로 337(잠홍동),not_operating
+repair,14873,르노코리아 서비스센터 여주정비,경기도 여주시 영릉로 42(창동),not_operating
+repair,14886,TNT모터스,경기도 여주시 우암로 50(하동),not_operating
+repair,14906,대영자동차공업사,경기도 여주시 여주남로 220(연라동),not_operating
+repair,14907,신화타이어,경기도 여주시 영릉로 76(창동),not_operating
+repair,14960,주식회사 선경모터스,경기도 여주시 가남읍 은봉길 47-1,not_operating
+repair,15056,코오롱모터스(주) 창원점,경상남도 창원시 성산구 삼동로128번길 2(내동),not_operating
+repair,15107,가포자동차정비,경상남도 창원시 마산합포구 월영동4길 41(해운동),not_operating
+repair,16804,예찬자동차공업사,전북특별자치도 장수군 장계면 장무로 260,not_operating
+repair,16805,장수자동차공업사,전북특별자치도 장수군 장수읍 장천로 203,not_operating
+repair,16806,신광자동차부분정비,전북특별자치도 장수군 계남면 장무로 148-3,not_operating
+repair,16807,현대그린서비스,전북특별자치도 장수군 장수읍 장수북동길 19,not_operating
+repair,16808,붕붕카센타,전북특별자치도 장수군 장수읍 성산길 4,not_operating
+repair,16809,장수 서울자동차공업사,전북특별자치도 장수군 장수읍 장천로 224,not_operating
+repair,16934,그린카,전북특별자치도 정읍시 샘골로 95-1(수성동),not_operating
+repair,16936,박주수 타이어,전북특별자치도 정읍시 벚꽃로 94(농소동),not_operating
+repair,16937,드림카서비스,전북특별자치도 정읍시 정읍남로 1347(시기동),not_operating
+repair,16938,GS넥스테이션㈜ 오토오아시스,전북특별자치도 정읍시 벚꽃로 85,not_operating
+repair,16939,칠보중앙카센타,전북특별자치도 정읍시 칠보면 칠보중앙로 85,not_operating
+repair,16940,스피드카센타,전북특별자치도 정읍시 충정로 41-5(상동),not_operating
+repair,16941,대형타이어 할인마트,전북특별자치도 정읍시 벚꽃로 98,not_operating
+repair,16942,777타이어백화점,전북특별자치도 정읍시 서부산업도로 358(연지동),not_operating
+repair,16943,믿음자동차공업사,전북특별자치도 정읍시 신태인읍 인교2길 1,not_operating
+repair,16944,K DIESEL J.S Motors,전북특별자치도 정읍시 서부산업도로 260(연지동),not_operating
+repair,16945,탱크카공업사,전북특별자치도 정읍시 수성5로 47(수성동),not_operating
+repair,16946,태인자동차공업사,전북특별자치도 정읍시 태인면 청학길 23-5,not_operating
+repair,16947,반도자동차유리,전북특별자치도 정읍시 서부산업도로 354(연지동),not_operating
+repair,16948,정읍휴게소정비공업사,전북특별자치도 정읍시 북면 하북1길 227-23,not_operating
+repair,16949,북면카자동차공업사,전북특별자치도 정읍시 북면 정읍북로 540,not_operating
+repair,16950,차사랑공업사,전북특별자치도 정읍시 서부산업도로 373(연지동),not_operating
+repair,16951,대영자동차정비공업사,전북특별자치도 정읍시 명륜길 11-6(수성동),not_operating
+repair,16952,무진카센타,전북특별자치도 정읍시 충정로 610(용계동),not_operating
+repair,16953,신전사,전북특별자치도 정읍시 문학길 2(연지동),not_operating
+repair,17691,동이카센타,충청북도 옥천군 동이면 평산길 9-1,not_operating
+repair,17949,현대종합카써비스,강원특별자치도 영월군 영월읍 덕포시장길 8,not_operating
+repair,17952,타이어뱅크 원동IC점,부산광역시 동래구 충렬대로 494(안락동),not_operating
+repair,17953,타이어뱅크 원동IC점,부산광역시 동래구 충렬대로 494(안락동),not_operating
+repair,17956,원영카포스,강원특별자치도 영월군 영월읍 단종로 23-1,not_operating
+repair,17969,만물공업사,강원특별자치도 영월군 산솔면 태백산로 51,not_operating
+repair,17970,만물공업사,강원특별자치도 영월군 산솔면 태백산로 51,not_operating
+repair,17976,대명카포스,강원특별자치도 영월군 영월읍 하송로 117,not_operating
+repair,17980,금호자동차정비공업사,강원특별자치도 영월군 영월읍 단종로 23-1,not_operating
+repair,17984,강변카 공업사,강원특별자치도 영월군 주천면 송학주천로 1377,not_operating
+repair,19317,"피렐리타이어성남시청점,유럽정비소",경기도 성남시 중원구 여수대로 200(여수동),not_operating
+repair,19345,타이어 컬렉션,경기도 성남시 분당구 대왕판교로 198(금곡동),not_operating
+repair,19362,스피드메이트 수정충전소점,경기도 성남시 수정구 성남대로 1543(복정동),not_operating
+repair,19365,(주)하이클래스오토모빌,경기도 성남시 수정구 설개로2번길 16(시흥동),not_operating
+repair,19386,(주)에프엠케이,경기도 성남시 분당구 대왕판교로 311(궁내동),not_operating
+repair,19418,에어로 모터스,경기도 성남시 분당구 쇳골북로 28(금곡동),not_operating
+repair,19492,모리스카공업사,경기도 성남시 분당구 내정로129번길 15(정자동),not_operating
+repair,19542,종합카공업사,경기도 성남시 수정구 산성대로 389-1(단대동),not_operating
+repair,19588,(주)애니카랜드 분당정자점,경기도 성남시 분당구 황새울로12번길 14(정자동),not_operating
+repair,19608,카매니저,경기도 성남시 중원구 산성대로452번길 16(금광동),not_operating
+repair,19611,타이어 1번지,경기도 성남시 수정구 성남대로 1292(태평동),not_operating
+repair,19637,월드카샵,경기도 성남시 분당구 내정로119번길 16(정자동),not_operating
+repair,19658,오토오아시스 롯데마트 서현점,경기도 성남시 분당구 황새울로311번길 28(서현동),not_operating
+repair,20244,한밭카정비공업사,대전광역시 서구 신갈마로 156-9,not_operating
+repair,20255,타이어 반값,대전광역시 서구 계백로 1301-1,not_operating
+repair,20292,(주)세기운수,대전광역시 서구 계룡로232번길 87,not_operating
+repair,20657,영남자동차정비공장,대구광역시 서구 평리로35길 5(중리동),not_operating
+repair,20844,㈜우성택시,대구광역시 서구 국채보상로 82(중리동),not_operating
+repair,20888,신원자동차종합정비공업사,대구광역시 서구 서대구로63길 47(비산동),not_operating
+repair,21065,협신자동차서비스(주) 기장사업소,부산광역시 기장군 기장읍 대청로72번길 17,not_operating
+repair,21082,㈜우진모터스 부산서비스센터,부산광역시 연제구 과정로 197,not_operating
+repair,21092,한국지엠주식회사부산서비스센터,부산광역시 연제구 중앙대로 1146,not_operating
+repair,21130,거제점현대자동차,부산광역시 연제구 월드컵대로 259,not_operating
+repair,21380,GD팩토리,부산광역시 서구 암남로94번길 30(암남동),not_operating
+repair,21381,티스테이션 동대신점,부산광역시 서구 보수대로 204(동대신동2가),not_operating
+repair,21392,현대카센터,부산광역시 서구 까치고개로 233(토성동2가),not_operating
+repair,21396,GS엠비즈(주)오토오아시스부산대성점,부산광역시 서구 충무대로 126(남부민동),not_operating
+repair,21400,김반장카정비센타,부산광역시 서구 해돋이로 418(서대신동2가),not_operating
+repair,21408,제일정비센터,"부산광역시 중구 흑교로45번길 4(보수동2가, 제일정비센터)",not_operating
+repair,21409,현대자동차(영주점),부산광역시 중구 동영로 109,not_operating
+repair,21410,부마카센타,부산광역시 중구 대교로 117,not_operating
+repair,21411,코리아정비세차장,부산광역시 중구 흑교로45번길 9(보수동2가),not_operating
+repair,21412,미듬현대,부산광역시 중구 충장대로5번길 61(중앙동4가),not_operating
+repair,21428,경남타이어상사,부산광역시 중구 보수대로 112-1(보수동3가),not_operating
+repair,21435,산경모터스,서울특별시 강동구 천호대로 1045(천호동,not_operating
+repair,21779,명진공업사,서울특별시 관악구 난곡로 150 (신림동),not_operating
+repair,21780,정기수자동차서비스,서울특별시 관악구 은천로 157 (봉천동),not_operating
+repair,21786,유정모터스,서울특별시 관악구 남부순환로 1691 (봉천동),not_operating
+repair,21787,타이어테크 신림점,서울특별시 관악구 남부순환로190길 1 (신림동),not_operating
+repair,21792,명성자동차공업사,서울특별시 관악구 남부순환로 1682  (신림동),not_operating
+repair,21796,케이씨씨네트웍스 (주),서울특별시 관악구 과천대로 909 지하3층 (남현동),not_operating
+repair,21802,타이어킹주식회사,서울특별시 관악구 남부순환로190길 1 (신림동),not_operating
+repair,21807,쌍용오토프라자,서울특별시 관악구 봉천로 502 (봉천동),not_operating
+repair,21809,대원자동차공업사,서울특별시 관악구 양녕로16길 4 (봉천동),not_operating
+repair,21812,㈜남부현대서비스,서울특별시 관악구 남부순환로 1727-10,not_operating
+repair,21813,신관자동차공업사,서울특별시 관악구 신림로 286 (신림동),not_operating
+repair,21817,대우정비,서울특별시 관악구 봉천로12길 6 (신림동),not_operating
+repair,21825,한성모터스,서울특별시 관악구 남부순환로 1446 (신림동),not_operating
+repair,21827,영준카써비스,서울특별시 관악구 원신길 170 (신림동),not_operating
+repair,21829,진흥자동차공업사,서울특별시 관악구 원신길 146 (신림동),not_operating
+repair,21830,인헌자동차공업사,서울특별시 관악구 봉천로 537 (봉천동),not_operating
+repair,21833,태경자동차공업사,서울특별시 관악구 신사로 60 (신림동),not_operating
+repair,21836,관악카센타,서울특별시 관악구 남부순환로 1478 (신림동),not_operating
+repair,21849,광명자동차공업사,서울특별시 관악구 조원로 79 (신림동),not_operating
+repair,21852,광진자동차정비소,서울특별시 관악구 신사로 120-1 (신림동),not_operating
+repair,21853,신림점 현대자동차,서울특별시 관악구 남부순환로 1499 (신림동),not_operating
+repair,21860,성원자동차공업사,서울특별시 관악구 남부순환로 1525 (신림동),not_operating
+repair,21865,영진자동차공업사,서울특별시 관악구 봉천로 577 (봉천동),not_operating
+repair,21866,신관자동차공업사,서울특별시 관악구 남부순환로167길 42,not_operating
+repair,21870,주식회사 포튠,서울특별시 관악구 신림로 237 104동 1층 (신림동),not_operating
+repair,21874,상신자동차공업사,서울특별시 관악구 문성로 205 (신림동),not_operating
+repair,21876,인성자동차공업사,서울특별시 관악구 은천로 133 (봉천동),not_operating
+repair,21877,미림자동차공업사,서울특별시 관악구 호암로 561-1,not_operating
+repair,21884,타이어테크,서울특별시 관악구 봉천로 274 (신림동),not_operating
+repair,21885,명화자동차공업사,서울특별시 관악구 신림로 230 (신림동),not_operating
+repair,21887,이용재자동차공업사,서울특별시 관악구 남부순환로 1948 (봉천동),not_operating
+repair,21888,미산자동차공업사,서울특별시 관악구 남부순환로 1753-3,not_operating
+repair,21890,남부자동차공업사,서울특별시 관악구 남부순환로 1490 1층 (봉천동),not_operating
+repair,21891,태영자동차공업사,서울특별시 관악구 쑥고개로 89 (봉천동),not_operating
+repair,21896,천우자동차공업사,서울특별시 관악구 봉천로 446 (봉천동),not_operating
+repair,21897,삼성카에어콘라디에터,서울특별시 관악구 봉천로 327 (봉천동),not_operating
+repair,21899,서진자동차정비공업사,서울특별시 관악구 은천로 6,not_operating
+repair,21901,창영자동차공업사,서울특별시 관악구 봉천로 325 (봉천동),not_operating
+repair,21903,신림자동차공업사,서울특별시 관악구 난곡로 205 (신림동),not_operating
+repair,21904,닥터자동차공업사,서울특별시 관악구 조원로 20 (신림동),not_operating
+repair,21908,소원자동차공업사,서울특별시 관악구 호암로 484 (신림동),not_operating
+repair,21909,남진자동차공업사,서울특별시 관악구 조원로 37 (신림동),not_operating
+repair,21910,협성자동차공업사,서울특별시 관악구 조원로 159-1 (신림동),not_operating
+repair,21912,선수자동차공업사,서울특별시 관악구 남부순환로 1524 (신림동),not_operating
+repair,21913,대흥자동차공업사,서울특별시 관악구 신림로 226 1층 (신림동),not_operating
+repair,21914,남현자동차공업사,서울특별시 관악구 남부순환로 2014 (남현동),not_operating
+repair,21915,유일자동차공업사,서울특별시 관악구 낙성대로 33 (봉천동),not_operating
+repair,21917,진광자동차공업사,서울특별시 관악구 봉천로 446 (봉천동),not_operating
+repair,21918,관악모터스,서울특별시 관악구 시흥대로 526 1층 101호 (신림동),not_operating
+repair,21919,스피드메이트 신사점,서울특별시 관악구 관천로 137,not_operating
+repair,21922,새한자동차공업사,서울특별시 관악구 쑥고개로 24 (봉천동),not_operating
+repair,21927,대한자동차정비공업사,서울특별시 관악구 신림로 184 (신림동),not_operating
+repair,21931,알파자동차공업사,서울특별시 관악구 남부순환로 2008 102호 (남현동 선교빌딩),not_operating
+repair,21986,경문자동차공업사,서울특별시 동작구 동작대로29가길 33(사당동),not_operating
+repair,22402,국일카센타,서울특별시 노원구 공릉로 319,not_operating
+repair,22470,한국지엠상계지정서비스,서울특별시 노원구 수락산로 218,not_operating
+repair,22492,㈜오일카트,서울특별시 노원구 한글비석로23길 11,not_operating
+repair,22733,로타리카부분정비,부산광역시 해운대구 좌동순환로15번길 9-28(좌동),not_operating
+repair,22762,해운대종합정비주식회사,부산광역시 해운대구 해운대로 1101(송정동),not_operating
+repair,22795,영광자동차정비,부산광역시 해운대구 해운대로 1166(송정동),not_operating
+repair,22810,제이와이(JY)인터네셔널,부산광역시 해운대구 송정1로 3(송정동),not_operating
+repair,22860,㈜카렉스 센텀시티점,"부산광역시 해운대구 센텀남대로 35, 지하3층(우동, 신세계백화점)",not_operating
+repair,23557,추부투투,충청남도 금산군 추부면 금산로 2443,not_operating
+repair,23580,(주)추부현대모터스,충청남도 금산군 추부면 다복로 755,not_operating
+repair,23581,승용카자동차공업사,충청남도 금산군 추부면 다복로 655,not_operating
+repair,23582,(주)금산현대서비스,충청남도 금산군 금성면 금산로 1665,not_operating
+repair,23583,금산정비센터,"충청남도 금산군 제원면 인삼로 424, 가동",not_operating
+repair,23584,삼오공업사,충청남도 금산군 금산읍 인삼로 216,not_operating
+repair,23602,(주)다해특장,충청남도 금산군 진산면 실학로 441,not_operating
+repair,24354,주식회사 아하모터스,울산광역시 울주군 삼남읍 강당로 58,not_operating
+repair,25344,주식회사 티에스씨,대구광역시 동구 공항로 291,not_operating
+repair,25358,엠스퀘어,대구광역시 동구 안심로 327,not_operating
+repair,25373,스마일모터스,대구광역시 동구 공항로 140,not_operating
+repair,25382,오일플레이스 대구점,대구광역시 동구 신평로32길 11,not_operating
+repair,25390,큐브모터스,대구광역시 동구 안심로 307,not_operating
+repair,25403,일진운수㈜자가 2급정비공장,대구광역시 동구 화랑로25길 61,not_operating
+repair,25841,㈜동부고속종합정비 이천지점,경기도 용인시 처인구 금령로173번길 5,not_operating
+repair,25861,태금자동차서비스,경기도 이천시 장호원읍 경충대로 740-51,not_operating
+repair,25872,카레이스자동차공업사,경기도 이천시 경충대로 2731,not_operating
+repair,25883,중부특장공업사,경기도 이천시 호법면 중부대로 920,not_operating
+repair,25887,현대자동차신부발점,경기도 이천시 부발읍 경충대로 2064,not_operating
+repair,25893,행복공작소(주),경기도 이천시 설성면 진상미로813번길 189-20,not_operating
+repair,25898,한승모터스,경기도 이천시 황무로 723,not_operating
+repair,25907,하이모터스,경기도 이천시 부발읍 가좌로 1,not_operating
+repair,25910,통나무자동차공업사,경기도 이천시 부발읍 중부대로 1701-24,not_operating
+repair,25912,(주)보성공업이천사업소,경기도 이천시 대월면 대월로 292-50,not_operating
+repair,25918,(주)남천일급자동차공업사,경기도 이천시 갈산로133번길 82-16,not_operating
+repair,25919,(주)1급이화공업사,경기도 이천시 부발읍 가좌로 35,not_operating
+repair,25929,현진자동차공업사,경기도 이천시 진상미로 2374,not_operating
+repair,25941,(주)태금종합모터스,경기도 이천시 장호원읍 경충대로718번길 53,not_operating
+repair,25945,(주)중동공업사,경기도 이천시 남천로 96(중리동),not_operating
+repair,25949,(주)오토랜드,경기도 이천시 중리천로 127,not_operating
+repair,25972,건영공업사,경기도 이천시 장호원읍 성주로 53,not_operating
+repair,25973,가은모터스,경기도 이천시 대월면 경충대로 1960,not_operating
+repair,25976,TOP모터스,경기도 이천시 이섭대천로 1374,not_operating
+repair,25999,대형공업사,경기도 이천시 중부대로 1191,not_operating
+repair,26007,닥터오일,경기도 이천시 중부대로 1191(장록동),not_operating
+repair,26010,베어자동차공업사,경기도 이천시 대월면 대월로 866,not_operating
+repair,26013,백두모터스,경기도 이천시 갈산로 69(증포동),not_operating
+repair,26030,세종자동차공업사,경기도 이천시 설봉로55번길 9-3,not_operating
+repair,26033,세계로카센타,경기도 이천시 부발읍 경충대로 2165,not_operating
+repair,26034,성원카공업사,경기도 이천시 증신로 192,not_operating
+repair,26038,설봉카인테리어,경기도 이천시 관고동 228-1,not_operating
+repair,26041,선진자동차공업사,경기도 이천시 남천로 93-1(중리동),not_operating
+repair,26047,비전공업사,경기도 이천시 대월면 사동로 61,not_operating
+repair,26077,원효자동차클럽,경기도 이천시 대월면 대월로 983,not_operating
+repair,26082,오토오아시스이천터미널점,경기도 이천시 경충대로 2578(중리동),not_operating
+repair,26094,안흥종합자동차,경기도 이천시 설봉로 35(관고동),not_operating
+repair,26179,원 모터스,경기도 남양주시 퇴계원읍 도제원로 61,not_operating
+repair,26244,남성자동차공업사,경기도 남양주시 오남읍 진건오남로 525,not_operating
+repair,26278,광일카써비스,경기도 남양주시 와부읍 수레로1번길 17,not_operating
+repair,26299,서원종합카센타,경기도 남양주시 진접읍 주곡로 137,not_operating
+repair,26321,제이엠 오토모빌,경기도 남양주시 경춘로691번길 10,not_operating
+repair,26360,모터스힐,경기도 남양주시 두물로11번길 4-16(별내동),not_operating
+repair,26383,신흥자동차공업사,경기도 남양주시 화도읍 재재기로122번길 53,not_operating
+repair,26424,일심공업사,경기도 남양주시 화도읍 경춘로 1821,not_operating
+repair,26449,시그마모터스,경기도 남양주시 호평로 192-1(호평동),not_operating
+repair,26450,대동강업,경기도 남양주시 미금로 122(다산동),not_operating
+repair,26451,JJ모터스,경기도 남양주시 화도읍 경춘로 2477-34,not_operating
+repair,26452,범퍼카프로,경기도 남양주시 오남읍 양지로 57,not_operating
+repair,26453,주식회사 시대디자인특장,경기도 남양주시 진접읍 남가로131번길 21-14,not_operating
+repair,26454,덱스크루 남양주,경기도 남양주시 덕송2로6번길 16-75(별내동),not_operating
+repair,26455,킹카샵,경기도 남양주시 불암산로 56(별내동),not_operating
+repair,26456,애커먼,경기도 남양주시 오남읍 양지로 47-35,not_operating
+repair,26457,동부오토 금곡점,경기도 남양주시 진접읍 경복대로 302,not_operating
+repair,26458,송천자동차공업사,경기도 남양주시 수동면 소래비로416번길 14,not_operating
+repair,26459,대흥카모터스,경기도 남양주시 양정로 69(일패동),not_operating
+repair,26460,(주)제다코리아,경기도 남양주시 오남읍 양지로319번길 70-21,not_operating
+repair,26461,YS MOTORS,"경기도 남양주시 경춘로 1006, 1층(금곡동)",not_operating
+repair,26462,일단정지카센타,경기도 남양주시 석실로 712(금곡동),not_operating
+repair,26463,인슈커 1급자동차공업사,"경기도 남양주시 수동면 남가로 1402-4, 117동",not_operating
+repair,26464,자동차와 좋은사람들,경기도 남양주시 경춘로 925-1(금곡동),not_operating
+repair,26465,큐브랙,경기도 남양주시 진건읍 진건오남로390번길 87,not_operating
+repair,26466,큰별공업사,경기도 남양주시 화도읍 폭포로 207-11,not_operating
+repair,26467,덱스크루 남양주점,경기도 남양주시 늘을1로16번안길 9-32(호평동),not_operating
+repair,26468,세경오토정비공업사,경기도 남양주시 화도읍 수레로 1016,not_operating
+repair,26551,카플러스,경기도 남양주시 불암로 89-5(별내동),not_operating
+repair,26552,모빌원모터스,경기도 남양주시 홍유릉로 66(일패동),not_operating
+repair,26553,오남자동차공업사,경기도 남양주시 오남읍 진건오남로 806-14,not_operating
+repair,26554,오일서비스정비소남양주,경기도 남양주시 두물로27번길 27(별내동),not_operating
+repair,26555,주식회사 유로카라반,경기도 남양주시 진접읍 금강로풍경내길 11-26,not_operating
+repair,26556,타이어카페,경기도 남양주시 퇴계원읍 퇴계원로 175,not_operating
+repair,26557,티스테이션 퇴계원점,경기도 남양주시 퇴계원읍 퇴계원로 125,not_operating
+repair,26558,카앤톡,경기도 남양주시 와부읍 덕소로 88-1,not_operating
+repair,26559,세경오토밋션정비공업사,경기도 남양주시 양정로219번길 103-21(이패동),not_operating
+repair,26560,K-모터스 쌍용별내서비스센터,경기도 남양주시 불암로109번길 4-18(별내동),not_operating
+repair,26561,행복자동차,경기도 남양주시 진건읍 독정로231번길 23,not_operating
+repair,26562,남양자동차공업사,경기도 남양주시 진접읍 양진로 949,not_operating
+repair,26563,함평자동차공업사,경기도 남양주시 진접읍 경복대로 164,not_operating
+repair,26564,제일보링기공사,경기도 남양주시 진접읍 금강로1281번길 8,not_operating
+repair,26565,MJ모터스,경기도 남양주시 화도읍 수레로 1016,not_operating
+repair,26566,태원모터스,경기도 남양주시 오남읍 양지로 284,not_operating
+repair,26567,세경자동밋션정비공업사,경기도 남양주시 양정로219번길 103-21 (이패동),not_operating
+repair,26568,오륜상사,경기도 남양주시 진접읍 해밀예당3로 171,not_operating
+repair,26569,하나카서비스,경기도 남양주시 호평로45번길 25(호평동),not_operating
+repair,26570,올레카센타,경기도 남양주시 진접읍 양진로1002번길 24-1,not_operating
+repair,26571,스타카공업사,경기도 남양주시 진접읍 진벌로 105,not_operating
+repair,26572,우정자동차정비,경기도 남양주시 오남읍 진건오남로 786-1,not_operating
+repair,26573,더 모나코,경기도 남양주시 화도읍 창현리 497-17,not_operating
+repair,26574,스피드메이트 남양주제일점,경기도 남양주시 별내면 청학로 75,not_operating
+repair,26575,동진자동차공업사,경기도 남양주시 화도읍 수레로 1137,not_operating
+repair,26576,성진자동차공업사,경기도 남양주시 진건읍 경춘북로 737,not_operating
+repair,26577,ANT motors,경기도 남양주시 진접읍 팔야로 91-24,not_operating
+repair,26578,주식회사 탑기어모터스,경기도 남양주시 진접읍 해밀예당3로 167,not_operating
+repair,26579,연평현대모터스,경기도 남양주시 진접읍 양진로 979-1,not_operating
+repair,26580,조은 정비서비스,경기도 남양주시 진접읍 장현리 365-4,not_operating
+repair,26581,기아행복모터스,경기도 남양주시 오남읍 진건오남로 596-6,not_operating
+repair,26582,우성자동차공업사,경기도 남양주시 진건읍 사능리 618-4,not_operating
+repair,26583,태풍카랜드,경기도 남양주시 진접읍 양진로 979,not_operating
+repair,26584,훼미리카공업사,경기도 남양주시 진접읍 양진로 973,not_operating
+repair,26585,진성모터스,경기도 남양주시 늘을1로16번길 13(호평동),not_operating
+repair,26586,신우카센타,경기도 남양주시 오남읍 진건오남로512번길 21,not_operating
+repair,26587,효광자동차공업사,경기도 남양주시 진접읍 장현로 154,not_operating
+repair,26588,에이치케이모터스,경기도 남양주시 진건읍 진건오남로 423-1,not_operating
+repair,26589,이화커먼레일,경기도 남양주시 퇴계원읍 경춘북로 540,not_operating
+repair,26590,화도자동차공업사,경기도 남양주시 화도읍 수레로1120번길 33-1,not_operating
+repair,26591,영훈카센타,경기도 남양주시 진접읍 광릉내로 31,not_operating
+repair,26592,갑오자동차공업사,경기도 남양주시 진접읍 진벌로 21,not_operating
+repair,26593,별내경정비,경기도 남양주시 별내면 청학로 55,not_operating
+repair,26594,송천카센터,경기도 남양주시 수동면 남가로1665번길 54,not_operating
+repair,26595,티엔피,경기도 남양주시 진접읍 금강로풍경내길 5,not_operating
+repair,26596,평내아도공업사,경기도 남양주시 경춘로 1291(평내동),not_operating
+repair,26597,르노삼성자동차지정정비코너남양주대리점,경기도 남양주시 늘을1로16번길 25,not_operating
+repair,26598,포인트카공업사,경기도 남양주시 미금로241번길 42(지금동),not_operating
+repair,26599,T station 남양주점,경기도 남양주시 호평로68번길 6-1(호평동),not_operating
+repair,26600,오남현대자동차공업사,경기도 남양주시 오남읍 진건오남로 595-9,not_operating
+repair,26601,신흥자동차공업사,경기도 남양주시 호평로67번길 17,not_operating
+repair,26602,베가모터스,경기도 남양주시 화도읍 창현로 65,not_operating
+repair,26603,명진상사,경기도 남양주시 순화궁로 574(별내동),not_operating
+repair,26604,슈퍼카서비스,경기도 남양주시 미금로 176 (다산동),not_operating
+repair,26605,남현우정비센타,경기도 남양주시 오남읍 진건오남로 604,not_operating
+repair,26606,부평자동차공업사,경기도 남양주시 진접읍 광릉내로 26,not_operating
+repair,26607,현대자동차정비공업사,경기도 남양주시 화도읍 비룡로 492,not_operating
+repair,26608,현반장자동차공업사,경기도 남양주시 화도읍 가곡리 169-16,not_operating
+repair,26609,한국지엠호평바로서비스,경기도 남양주시 경춘로 925-1(금곡동),not_operating
+repair,26610,현대카센타,경기도 남양주시 와부읍 덕소로116번길 27,not_operating
+repair,26611,장복자동차공업사,경기도 남양주시 화도읍 폭포로358번길 55-2,not_operating
+repair,26612,(주)연평스피드,경기도 남양주시 진접읍 양진로 979-1,not_operating
+repair,26613,동아자동차공업사,경기도 남양주시 진접읍 장현로 39,not_operating
+repair,26614,버드나무자동차공업사,경기도 남양주시 경강로 382(삼패동),not_operating
+repair,26615,훼밀리(카)공업사,경기도 남양주시 화도읍 마석로76번길 5-1,not_operating
+repair,26616,양지카세차장,경기도 남양주시 화도읍 마석중앙로 90,not_operating
+repair,26617,광진카독크,경기도 남양주시 진건읍 사릉로469번길 21,not_operating
+repair,26618,정카세차장,경기도 남양주시 와부읍 덕소로 88-1,not_operating
+repair,26619,경인자동차공업사,경기도 남양주시 화도읍 마석중앙로 107,not_operating
+repair,26620,가곡종합자동차공업사,경기도 남양주시 화도읍 비룡로 378,not_operating
+repair,26621,마석종합카센타,경기도 남양주시 퇴계원읍 경춘북로 569-1,not_operating
+repair,26622,명문자동차공업사,경기도 남양주시 미금로 145(다산동),not_operating
+repair,26623,신도농자동차공업사,경기도 남양주시 미금로19번길 8(다산동),not_operating
+repair,26624,노아카센타,경기도 남양주시 오남읍 진건오남로 798-5,not_operating
+repair,26625,마을자동차공업사,경기도 남양주시 경춘로 1291(평내동),not_operating
+repair,26626,성도자동차공업사,경기도 남양주시 오남읍 진건오남로 711,not_operating
+repair,26627,수만자동차공업사,경기도 남양주시 경춘로476번길 10-5 (다산동),not_operating
+repair,26628,제일자동차공업사,경기도 남양주시 진건읍 양진로 337,not_operating
+repair,26629,개미자동차공업사,경기도 남양주시 화도읍 경춘로 1606,not_operating
+repair,26630,바스터즈모터스,경기도 남양주시 화도읍 녹촌로 128-15,not_operating
+repair,26631,해남자동차공업사,경기도 남양주시 경춘로611번길 8,not_operating
+repair,26632,경춘자동차공업사,경기도 남양주시 화도읍 경춘로 2028,not_operating
+repair,26633,이화자동차정비센타,경기도 남양주시 퇴계원읍 경춘북로 536,not_operating
+repair,26634,타이어코리아TK화도점,경기도 남양주시 화도읍 수레로 1181,not_operating
+repair,26643,킴스커스텀 주식회사,경기도 고양시 일산동구 동국로 197번길 10,not_operating
+repair,26688,한국지엠 백석바로서비스,경기도 고양시 일산동구 강송로73번길 7-25,not_operating
+repair,26702,OK카써비스,경기도 고양시 일산동구 산두로 17-2,not_operating
+repair,26709,종합카,경기도 고양시 일산동구 장항로 134,not_operating
+repair,26720,오토오아시스 홈플러스 일산점,"경기도 고양시 일산동구 중앙로1275번길 64, 5층",not_operating
+repair,26745,오토오아시스 홈플러스 고양터미널점,"경기도 고양시 일산동구 중앙로 1036 , B3층",not_operating
+repair,26860,골드모터스,경기도 고양시 일산서구 멱절길 35번길 168-154(법곳동),not_operating
+repair,26865,케이씨씨모터스㈜,경기도 고양시 일산서구 멱절길3(법곳동),not_operating
+repair,26878,SH모터스,경기도 고양시 일산서구 고양대로110-5(법곳동),not_operating
+repair,26892,(유)프리마모터스 일산서비스,경기도 고양시 일산서구 덕이로 50-20(덕이동),not_operating
+repair,26901,㈜유진모터스,경기도 고양시 일산서구 멱절길35번길 168-139(법곳동),not_operating
+repair,26902,Y·B MOTORS,경기도 고양시 일산서구 송산로511(덕이동),not_operating
+repair,26913,알피엠모터스,경기도 고양시 일산서구 경의로820(덕이동),not_operating
+repair,26965,오토오아시스롯데마트주엽점,"경기도 고양시 일산서구 중앙로1496, 롯데마트 주엽점 지하2층(주엽동)",not_operating
+repair,26975,타이어섹터,"경기도 고양시 일산서구 덕산로166, 가동(가좌동)",not_operating
+repair,26985,자유로오토월드,경기도 고양시 일산서구 송산로24(구산동),not_operating
+repair,27023,소닉모터스주식회사일산점,경기도 고양시 일산서구 덕이로104-12(덕이동),not_operating
+repair,27027,㈜그랜드타이어일산지점,경기도 고양시 일산서구 덕이로 50-20(덕이동),not_operating
+repair,27031,㈜가온누리엠,경기도 고양시 일산서구 멱절길124번길 6-3(대화동),not_operating
+repair,27037,신비카,경기도 고양시 일산서구 신덕로2(덕이동),not_operating
+repair,27044,열정타이어,경기도 고양시 일산서구 하이파크로7(덕이동),not_operating
+repair,27055,아트모빌,"경기도 고양시 일산서구 대산로211번길 8-15, 1층(대화동)",not_operating
+repair,27058,㈜어치브컬렉션,경기도 고양시 일산서구 덕산로57번길 13(구산동),not_operating
+repair,27156,㈜마일레오토모빌,경기도 고양시 일산동구 성석로 188,not_operating
+repair,27162,씨제이대한통운㈜,경기도 고양시 일산동구 성현로 615,not_operating
+repair,27179,에이스카모터스,경기도 고양시 일산동구 견달산로225번길 21-29,not_operating
+repair,27198,에스투지모터스,경기도 고양시 일산동구 고양대로 864-33,not_operating
+repair,27258,주식화사 제이에이치모터스,"경기도 고양시 일산동구 백마로 478, B201호",not_operating
+repair,27260,튜닝파크,경기도 고양시 일산동구 백마로 34,not_operating
+repair,27261,bro motors,"경기도 고양시 일산동구 장항로 225번길 103, 장대길 86-81",not_operating
+repair,27417,승리자동차정비공업사,경기도 평택시 탄현로 108,not_operating
+repair,27449,스피드카클리닉,경기도 평택시 고덕면 서동대로 2625,not_operating
+repair,27456,윤성모터스,경기도 평택시 평택로 180,not_operating
+repair,27462,대연카클리닉,경기도 평택시 경기대로 1581,not_operating
+repair,27466,서령자동차공업사,경기도 평택시 포승읍 포승향남로 79,not_operating
+repair,27495,카지킴이서비스,경기도 평택시 포승읍 평택항로184번길 3-39,not_operating
+repair,27506,원삼카,경기도 평택시 서탄면 서탄로 416,not_operating
+repair,27535,조니모터스,경기도 평택시 팽성읍 안정로 161-44,not_operating
+repair,27545,로드킹코리아,경기도 평택시 진위면 남부대로 651,not_operating
+repair,27546,넘버원타이어,경기도 평택시 서정북로 85,not_operating
+repair,27552,송신공업사,경기도 평택시 팽성읍 사거리길 59,not_operating
+repair,27611,이화정비카센타,경기도 평택시 평택로 169,not_operating
+repair,27629,쌍용차 전문점,경기도 평택시 송탄로 223,not_operating
+repair,27691,동신자동차정비공업사,경기도 평택시 문화촌로19번길 37,not_operating
+repair,27701,선진자동차정비,경기도 평택시 오성면 오성서로 5-12,not_operating
+repair,27710,주식회사 대성자동차서비스,경기도 평택시 도일로 135-5(도일동),not_operating
+repair,27720,송광자동차공업사,경기도 평택시 지산로 145(지산동),not_operating
+repair,27743,무지개공업사,경기도 평택시 팽성읍 안정순환로 101,not_operating
+repair,27782,주식회사 유진엔지니어링,경기도 평택시 포승읍 불당길 16-8,not_operating
+repair,27790,현대하이모터스,경기도 평택시 청원로 1416-10(가재동),not_operating
+repair,27796,상전자동차중기공장,경기도 평택시 안중읍 안중북로 151,not_operating
+repair,27830,현대정비공업사,경기도 평택시 팽성읍 동서촌로 13,not_operating
+repair,27846,큐로모터스(주),경기도 평택시 팽성읍 팽성로 113,not_operating
+repair,27862,대성카공업사,경기도 평택시 포승향남로 132,not_operating
+repair,27881,쌍용서비스프라자안중코너,경기도 평택시 포승읍 서동대로 1188,not_operating
+repair,27905,비비드프로카케어,경기도 평택시 포승읍 서동대로 771,not_operating
+repair,27910,오일몰,경기도 평택시 경기대로 1066,not_operating
+repair,27931,하나자동차공업사,경기도 평택시 서정로 131,not_operating
+repair,27939,피티씨,경기도 평택시 평남로 156,not_operating
+repair,28067,둥이모터스,울산광역시 중구 태화로 32(태화동),outside_korea_bounds
+repair,28445,중앙부분정비공장,경상북도 봉화군 봉화읍 내성로 166,not_operating
+repair,28446,대성자동차정비,경상북도 봉화군 춘양면 소천로 23,not_operating
+repair,28455,창원카써비스,경상북도 봉화군 법전면 소천로 285,not_operating
+repair,28456,신흥카전문정비공장,경상북도 봉화군 석포면 석포로1길 50-13,not_operating
+repair,28459,법전밧데리부분정비,경상북도 봉화군 법전면 법전로 39,not_operating
+repair,28460,현대자동차봉화점,경상북도 봉화군 봉화읍 봉화로 1004,not_operating
+repair,28461,물야농협자동차정비소,경상북도 봉화군 물야면 오록길 11-16,not_operating
+repair,28466,현대튠업,경상북도 봉화군 물야면 문수로 997-1,not_operating
+repair,28475,우성카도크,경상북도 봉화군 봉화읍 봉명로 6,not_operating
+repair,28479,케이비코리아,대구광역시 군위군 효령면 점말길 6-1,not_operating
+repair,28480,케이비코리아,대구광역시 군위군 효령면 점말길 6-1,not_operating
+repair,28483,군위모터스,대구광역시 군위군 군위읍 경북대로 3974,not_operating
+repair,28484,세명 수출 자동차 상사,대구광역시 군위군 군위읍 무성리 42,not_operating
+repair,28512,군위한국정비공업사,대구광역시 군위군 군위읍 금구리 866-1,not_operating
+repair,28513,군위1급정비공장,대구광역시 군위군 군위읍 정리 186,not_operating
+repair,28514,하나로자동차정비센터,대구광역시 군위군 효령면 고곡리 438,not_operating
+repair,28515,하나로부분정비,대구광역시 군위군 효령면 고곡리 438,not_operating
+repair,28516,월드카부분정비,대구광역시 군위군 우보면 이화리 1290-1,not_operating
+repair,28517,(주)광일상운,대구광역시 군위군 군위읍 경북대로 3363,not_operating
+repair,28518,오토카24시서비스,대구광역시 군위군 군위읍 서부리 543,not_operating
+repair,28519,대한부분정비업,대구광역시 군위군 군위읍 서부리 7-4,not_operating
+repair,28520,호수부분정비,대구광역시 군위군 부계면 창평리 440,not_operating
+repair,28521,소보오토카,대구광역시 군위군 소보면 송원리 703-3,not_operating
+repair,28522,명성카닥터,대구광역시 군위군 의흥면 읍내리 670,not_operating
+repair,28523,만리카서비스,대구광역시 군위군 소보면 송원리 664-6,not_operating
+repair,28524,그린카서비스,대구광역시 군위군 군위읍 동부리 674-8,not_operating
+repair,28525,군위점현대자동차,대구광역시 군위군 군위읍 서부리 217,not_operating
+repair,28526,부국부분정비,대구광역시 군위군 우보면 이화리 1282-5,not_operating
+repair,28527,동부카서비스,대구광역시 군위군 군위읍 금구리 652-2,not_operating
+repair,28528,천일카서비스,대구광역시 군위군 삼국유사면 화수리 307-2,not_operating
+repair,28542,신녕남강자동차정비공업사,경상북도 영천시 신녕면 장수로 1729,not_operating
+repair,28627,지엔비모터스㈜,경상북도 영천시 영천아이시로 109,not_operating
+repair,28712,다압카센타,전라남도 광양시 다압면 신원길 31,not_operating
+repair,28803,대성모터스,전라남도 광양시 제철로 1376(도이동),not_operating
+repair,28846,한국자동차부분정비,전라남도 광양시 나룻길 4,not_operating
+repair,28866,1급 아로모터스,강원특별자치도 화천군 화천읍 산수화로5길 17,not_operating
+repair,28867,오토자동차종합정비,강원특별자치도 화천군 사내면 포화로 1119,not_operating
+repair,28868,일급자동차부분정비,강원특별자치도 화천군 사내면 화악산로 906-3,not_operating
+repair,29149,이레산업,서울특별시 중랑구 망우로 332,not_operating
+repair,29150,기아카크리닉 망우점,서울특별시 중랑구 망우로 402,not_operating
+repair,29151,뉴카센타,서울특별시 중랑구 동일로 786,not_operating
+repair,29152,권주임카센타,서울특별시 중랑구 용마산로117길 16,not_operating
+repair,29153,한국씨티에스,서울특별시 중랑구 중랑역로 90,not_operating
+repair,29154,금성카서비스,서울특별시 중랑구 동일로 679,not_operating
+repair,29155,고봉자동차공업사,서울특별시 중랑구 중랑역로 230,not_operating
+repair,29156,벧엘카센타,서울특별시 중랑구 망우로36길 44,not_operating
+repair,29157,성연카센타,서울특별시 중랑구 망우동 523-29,not_operating
+repair,29158,동신자동차공업사,서울특별시 중랑구 겸재로 68,not_operating
+repair,29159,정한카센타,서울특별시 중랑구 중화동 310-2,not_operating
+repair,29160,서울축전사,서울특별시 중랑구 상봉동 100,not_operating
+repair,29161,소망자동차공업사,서울특별시 중랑구 용마산로 626,not_operating
+repair,29162,프로카센타,서울특별시 중랑구 공릉로14길 8,not_operating
+repair,29163,신내자동차정비센타,서울특별시 중랑구 봉화산로56길 13,not_operating
+repair,29164,레이싱카클럽,서울특별시 중랑구 중랑천로 150,not_operating
+repair,29165,곰카센타,서울특별시 중랑구 겸재로 163,not_operating
+repair,29166,강원카센타,서울특별시 중랑구 사가정로42길 33,not_operating
+repair,29167,애니카랜드(망우점),서울특별시 중랑구 용마산로 489,not_operating
+repair,29168,월드카서비스,서울특별시 중랑구 묵동 170-3,not_operating
+repair,29169,우진사,서울특별시 중랑구 상봉동 129-24,not_operating
+repair,29170,상봉점현대자동차,서울특별시 중랑구 망우로 363,not_operating
+repair,29171,영진카센타,서울특별시 중랑구 봉화산로 41,not_operating
+repair,29172,해피카랜드,서울특별시 중랑구 상봉로 11,not_operating
+repair,29173,한일카센타,서울특별시 중랑구 공릉로14길 8,not_operating
+repair,29174,대농카센타,서울특별시 중랑구 사가정로 380,not_operating
+repair,29175,도암자동차공업사,서울특별시 중랑구 봉화산로 222,not_operating
+repair,29176,성도카센타,서울특별시 중랑구 중랑역로 117,not_operating
+repair,29177,범용카센타,서울특별시 중랑구 동일로 789,not_operating
+repair,29178,동서울정비코너,서울특별시 중랑구 중랑역로 121,not_operating
+repair,29179,DB모터스,서울특별시 중랑구 상봉로 19,not_operating
+repair,29180,청지기자동차서비스,서울특별시 중랑구 면목동 162-80,not_operating
+repair,29181,한일카써비스,서울특별시 중랑구 봉우재로 78,not_operating
+repair,29182,Adamas Club 준(June) 카센타,서울특별시 중랑구 망우로 165,not_operating
+repair,29183,한일자동차공업사,서울특별시 중랑구 면목동 171-9,not_operating
+repair,29184,제원카모터스라인,서울특별시 중랑구 면목로 484,not_operating
+repair,29185,충남공업사,서울특별시 중랑구 용마산로102길 3,not_operating
+repair,29186,한신카센타,서울특별시 중랑구 겸재로9길 35,not_operating
+repair,29187,남양카인테리어,서울특별시 중랑구 동일로 595,not_operating
+repair,29188,금복자동차공업사,서울특별시 중랑구 봉우재로 227,not_operating
+repair,29189,원우카센타,서울특별시 중랑구 중랑천로 144,not_operating
+repair,29190,월드카인테리어,서울특별시 중랑구 사가정로42길 35,not_operating
+repair,29191,주신자동차공업사,서울특별시 중랑구 망우로 322,not_operating
+repair,29192,대원오토메니저,서울특별시 중랑구 동일로 604,not_operating
+repair,29193,만도프라자,서울특별시 중랑구 동일로 619,not_operating
+repair,29194,상지카인테리어,서울특별시 중랑구 상봉동 109-51,not_operating
+repair,29195,성원카공업사,서울특별시 중랑구 답십리로75길 14,not_operating
+repair,29196,현대카,서울특별시 중랑구 면목동 446,not_operating
+repair,29197,정한카크리닉,서울특별시 중랑구 동일로 866,not_operating
+repair,29198,동환자동차공업사,서울특별시 중랑구 용마산로122길 4,not_operating
+repair,29199,365카센타,서울특별시 중랑구 겸재로 172,not_operating
+repair,29200,경동카센타,서울특별시 중랑구 봉우재로 90-1,not_operating
+repair,29201,한나카센타,서울특별시 중랑구 용마산로93길 41,not_operating
+repair,29202,기지자동차공업사,서울특별시 중랑구 용마산로 718,not_operating
+repair,29203,봉화카정비센타,서울특별시 중랑구 상봉중앙로 62,not_operating
+repair,29204,현대카정비센타,서울특별시 중랑구 봉우재로 34,not_operating
+repair,29205,현대카센타,서울특별시 중랑구 중랑천로 252,not_operating
+repair,29206,현대카프라자,서울특별시 중랑구 면목로27길 61,not_operating
+repair,29207,대흥타이어,서울특별시 중랑구 공릉로 78-1,not_operating
+repair,29208,KEEPER,서울특별시 중랑구 신내동 395-35,not_operating
+repair,29209,훼미리카센타,서울특별시 중랑구 상봉동 109-29,not_operating
+repair,29210,서울카센타,서울특별시 중랑구 중랑천로 188,not_operating
+repair,29211,성호카센타,서울특별시 중랑구 답십리로77길 122,not_operating
+repair,29212,신광카센타,서울특별시 중랑구 용마산로 487,not_operating
+repair,29213,우진상사,서울특별시 중랑구 신내로 47-1,not_operating
+repair,29214,면목종합카센타,서울특별시 중랑구 동일로 490,not_operating
+repair,29215,전진카공업사,서울특별시 중랑구 묵동 425-72,not_operating
+repair,29216,기아카크리닉면목점,서울특별시 중랑구 용마산로 288,not_operating
+repair,29217,용마카센타,서울특별시 중랑구 용마산로 494,not_operating
+repair,29218,동명카서비스,서울특별시 중랑구 용마산로115길 7,not_operating
+repair,29219,스피드메이트면목점,서울특별시 중랑구 동일로 604,not_operating
+repair,29220,선운카센타세차,서울특별시 중랑구 중랑천로 49,not_operating
+repair,29221,정한공업사,서울특별시 중랑구 동일로 866,not_operating
+repair,29222,학성카정비센타,서울특별시 중랑구 중랑천로 308-1,not_operating
+repair,29223,민호카,서울특별시 중랑구 겸재로 237,not_operating
+repair,29224,민호자동차공업사,서울특별시 중랑구 중랑천로 150,not_operating
+repair,29225,동원자동차공업사,서울특별시 중랑구 신내로3길 18-8,not_operating
+repair,29226,민성모터스,서울특별시 중랑구 망우로36길 48,not_operating
+repair,29227,중화점기아오토큐,서울특별시 중랑구 봉화산로26길 4,not_operating
+repair,29228,신내하이카센타,서울특별시 중랑구 신내동 44-1,not_operating
+repair,29229,창원카센타,서울특별시 중랑구 봉우재로 167,not_operating
+repair,29230,가야카센타,서울특별시 중랑구 면목동 193-10,not_operating
+repair,29231,오토오아시스 망우점,서울특별시 중랑구 상봉동 100,not_operating
+repair,29232,현대카프라자,서울특별시 중랑구 봉우재로 204,not_operating
+repair,29233,누리카클리닉,서울특별시 중랑구 중랑천로 55,not_operating
+repair,29234,봉화카센타,서울특별시 중랑구 공릉로2길 54,not_operating
+repair,29235,동서울카센타,서울특별시 중랑구 동일로157길 65,not_operating
+repair,29236,상지자동차공업사,서울특별시 중랑구 상봉동 109-51,not_operating
+repair,29237,SK네트웍스 광진점,서울특별시 중랑구 중랑천로 59,not_operating
+repair,29238,모든자동차공업사,서울특별시 중랑구 망우동 353-1,not_operating
+repair,29239,우진카센타,서울특별시 중랑구 중랑역로 270-3,not_operating
+repair,29240,봉화카센타,서울특별시 중랑구 공릉로2길 54,not_operating
+repair,29241,평안카센타,서울특별시 중랑구 면목동 184-78,not_operating
+repair,29242,동신자동차공업사,서울특별시 중랑구 겸재로 68,not_operating
+repair,29243,삼보24시셀프세차타운,서울특별시 중랑구 봉화산로 240,not_operating
+repair,29244,동남자동차공업사,서울특별시 중랑구 겸재로 163,not_operating
+repair,29245,광명상사,서울특별시 중랑구 중랑천로 55,not_operating
+repair,29246,기아카크리닉상봉점,서울특별시 중랑구 동일로114길 2,not_operating
+repair,29247,공자자동차공업사,서울특별시 중랑구 겸재로 226-2,not_operating
+repair,29248,상림카서비스,서울특별시 중랑구 망우로 474,not_operating
+repair,29249,경희카센타,서울특별시 중랑구 봉우재로 208,not_operating
+repair,29265,소현이네 카센터,서울특별시 중랑구 용마산로 478,not_operating
+repair,29266,현대정비센타,서울특별시 중랑구 봉우재로 9,not_operating
+repair,29267,태능카인테리어,서울특별시 중랑구 동일로 922,not_operating
+repair,29268,대경카센타,서울특별시 중랑구 사가정로 372,not_operating
+repair,29273,정성카공업사,서울특별시 중랑구 봉우재로 51,not_operating
+repair,29283,오토오아시스 홈플러스 신내점,서울특별시 중랑구 신내로 201,not_operating
+repair,29284,대아상사,서울특별시 중랑구 용마산로 296-2,not_operating
+repair,29294,성연카센타,서울특별시 중랑구 상봉로 66,not_operating
+repair,29297,중앙세차카센타,서울특별시 중랑구 면목로56가길 41,not_operating
+repair,29299,스피드메이트 이마트 상봉점,서울특별시 중랑구 상봉로 118,not_operating
+repair,29303,우신카센타,서울특별시 중랑구 사가정로42길 31,not_operating
+repair,29305,대성카센타,서울특별시 중랑구 봉화산로 35,not_operating
+repair,29319,애니카랜드 신내점,서울특별시 중랑구 용마산로125길 8,not_operating
+repair,29331,대성자동차공업사,서울특별시 중랑구 용마산로 372,not_operating
+repair,29334,SS모터스,서울특별시 중랑구 용마산로 481,not_operating
+repair,29339,에스피모터스,서울특별시 중랑구 망우로 490,not_operating
+repair,29341,타이어클럽,서울특별시 중랑구 망우로 181,not_operating
+repair,29347,썬자동차공업사,서울특별시 중랑구 중랑천로 194,not_operating
+repair,29357,동현자동차공업사,서울특별시 중랑구 사가정로39길 13,not_operating
+repair,29358,코스모자동차공업사,서울특별시 중랑구 신내로 61,not_operating
+repair,29359,삼성물산(주)묵동서비스사업소,서울특별시 중랑구 동일로 893,not_operating
+repair,29360,기아자동차주식회사,서울특별시 중랑구 동일로 715,not_operating
+repair,29361,명성카센타,서울특별시 중랑구 사가정로31길 6,not_operating
+repair,29362,제일카오토서비스,서울특별시 중랑구 용마산로 470,not_operating
+repair,29363,대진자동차공업사,서울특별시 중랑구 봉화산로 89,not_operating
+repair,29364,삼성자동차공업사,서울특별시 중랑구 겸재로 141,not_operating
+repair,29365,성훈카센타,서울특별시 중랑구 중랑역로 277,not_operating
+repair,29366,형제오토밋션전문,서울특별시 중랑구 면목동 165-5,not_operating
+repair,29367,공작카센타,서울특별시 중랑구 동일로116길 60,not_operating
+repair,29368,동부자동차공업사,서울특별시 중랑구 면목로 385,not_operating
+repair,29369,신한카센타,서울특별시 중랑구 동일로101길 104,not_operating
+repair,29370,대명카센타,서울특별시 중랑구 겸재로28길 48,not_operating
+repair,29371,대성써비스센타,서울특별시 중랑구 동일로139길 25,not_operating
+repair,29372,화성카센타,서울특별시 중랑구 중랑천로 35,not_operating
+repair,29373,동양카센타,서울특별시 중랑구 숙선옹주로9길 458,not_operating
+repair,29374,대영자동차공업사,서울특별시 중랑구 망우로 330,not_operating
+repair,29375,상봉자동차공업사,서울특별시 중랑구 상봉동 79-6,not_operating
+repair,29376,금성자동차공업사,서울특별시 중랑구 중랑천로 94,not_operating
+repair,29377,동서울보링공업사,서울특별시 중랑구 상봉동 79-7,not_operating
+repair,29378,비케이모터스,서울특별시 중랑구 용마산로139가길 47,not_operating
+repair,29384,태성카,서울특별시 중랑구 면목로27길 12,not_operating
+repair,29394,신부광카인테리어,서울특별시 중랑구 면목로 426,not_operating
+repair,29397,대신카센타,서울특별시 중랑구 망우로67가길 11,not_operating
+repair,29400,민승카정비업소,서울특별시 중랑구 겸재로13길 6,not_operating
+repair,29404,모토인,서울특별시 중랑구 봉우재로 207-1,not_operating
+repair,29406,창조상사,서울특별시 중랑구 망우로 442,not_operating
+repair,29407,스피드메이트 상봉점,서울특별시 중랑구 망우로 400,not_operating
+repair,29429,금란자동차공업사,서울특별시 중랑구 중랑천로 48,not_operating
+repair,29434,우신공업사,서울특별시 중랑구 망우로 234,not_operating
+repair,29437,FA Mortors,서울특별시 중랑구 면목동 580,not_operating
+repair,29438,현대자동차공업사,서울특별시 중랑구 사가정로42길 87,not_operating
+repair,29439,오토오아시스 망우점,서울특별시 중랑구 망우로 311,not_operating
+repair,29440,에이스모터스,서울특별시 중랑구 면목동 339,not_operating
+repair,29441,망우점 현대자동차,서울특별시 중랑구 상봉로 60,not_operating
+repair,29442,TN MOTORS,서울특별시 중랑구 신내로10길 20,not_operating
+repair,29443,스피드모터스,서울특별시 중랑구 동일로 698,not_operating
+repair,29444,르노삼성자동차지정면목북부점,서울특별시 중랑구 망우로26길 49,not_operating
+repair,29445,G모터스,서울특별시 중랑구 중랑천로 55,not_operating
+repair,29446,신서울자동차공업사,서울특별시 중랑구 봉화산로 35,not_operating
+repair,29447,낙원자동차공업사,서울특별시 중랑구 중화동 311-21,not_operating
+repair,29448,신서울카센타,서울특별시 중랑구 면목동 584-35,not_operating
+repair,29449,현대카센타,서울특별시 중랑구 묵동 242,not_operating
+repair,29450,드림모터스,서울특별시 중랑구 동일로 628,not_operating
+repair,29451,이레자동차공업사,서울특별시 중랑구 상봉로19길 24,not_operating
+repair,29452,정훈카센타,서울특별시 중랑구 겸재로 114,not_operating
+repair,29453,한국금융안전부분정비,서울특별시 중랑구 용마산로 535,not_operating
+repair,29454,코리아모터스,서울특별시 중랑구 동일로 490,not_operating
+repair,29455,은혜카인테리어,서울특별시 중랑구 중랑천로 264,not_operating
+repair,29456,장군자동차공업사,서울특별시 중랑구 중랑천로 226,not_operating
+repair,29457,닥터모터스,서울특별시 중랑구 신내로10길 20,not_operating
+repair,29458,한신자동차공업사,서울특별시 중랑구 겸재로2길 77,not_operating
+repair,29459,금란정비센타,서울특별시 중랑구 용마산로116길 43,not_operating
+repair,29460,한신자동차공업사,서울특별시 중랑구 겸재로 74-1,not_operating
+repair,29461,3급대동카정비업소,서울특별시 중랑구 중랑역로 223,not_operating
+repair,29462,정광종합정비업소,서울특별시 중랑구 겸재로 131,not_operating
+repair,29463,이레카공업사,서울특별시 중랑구 용마산로122길 26,not_operating
+repair,29464,충남카센타,서울특별시 중랑구 면목로91길 14,not_operating
+repair,30144,동양모터스,"경기도 안양시 동안구 관악대로317-12, 관양 1동 관양소공원 뒤(관양동)",not_operating
+repair,30360,현대카오디오,강원특별자치도 강릉시 하평길 7(포남동),not_operating
+repair,30372,24시 공업사,강원특별자치도 강릉시 공제로 429-4(홍제동),not_operating
+repair,30373,타이어테크 하슬라점,강원특별자치도 강릉시 가작로 284(포남동),not_operating
+repair,30383,성심카센타,강원특별자치도 강릉시 포남동 1156-7,not_operating
+repair,30386,미래카크리닉,강원특별자치도 강릉시 강릉대로469번길 7(포남동),not_operating
+repair,30395,인테크,강원특별자치도 강릉시 포남동 1101번지,not_operating
+repair,30396,한국타이어 영동대리점,강원특별자치도 강릉시 동해대로 3383(죽헌동),not_operating
+repair,30398,예진카센타,강원특별자치도 강릉시 경강로 2373(송정동),not_operating
+repair,30402,준용커먼레일,강원특별자치도 강릉시 동해대로 3365(죽헌동),not_operating
+repair,30407,자동차대학,강원특별자치도 강릉시 강릉대로 344(포남동),not_operating
+repair,30410,새한종합카센타,강원특별자치도 강릉시 죽헌동 345-9,not_operating
+repair,30411,삼보카센타,강원특별자치도 강릉시 포남1동 1158-8번지,not_operating
+repair,30412,삼진기업사,강원특별자치도 강릉시 입암동 21-41,not_operating
+repair,30413,삼보카센타,강원특별자치도 강릉시 포남1동 1158-8번지,not_operating
+repair,30414,우정카센타,강원특별자치도 강릉시 포남동 1161-6,not_operating
+repair,30415,세진카센타,강원특별자치도 강릉시 포남동 1096-13,not_operating
+repair,30416,금강카랜드,강원특별자치도 강릉시 포남1동 1150-10번지,not_operating
+repair,30417,삼보기계정비,강원특별자치도 강릉시 신석길 8(유산동),not_operating
+repair,30418,타이어프로교동점,강원특별자치도 강릉시 교2동 942번지,not_operating
+repair,30419,초당로뎀카,강원특별자치도 강릉시 포남동 55-3번지,not_operating
+repair,30420,금호타이어교동직영점,강원특별자치도 강릉시 강릉대로 117(교동),not_operating
+repair,30421,교동세차장,강원특별자치도 강릉시 교1동 924-1,not_operating
+repair,30422,유일카상사,강원특별자치도 강릉시 포남동 898-20,not_operating
+repair,30423,삼성자동차공업사,강원특별자치도 강릉시 포남동 1158-16,not_operating
+repair,30424,비엔느하우스,강원특별자치도 강릉시 용지각길 18(포남동),not_operating
+repair,30425,남부종합카센타,강원특별자치도 강릉시 입암동 671-16,not_operating
+repair,30426,신진오토메틱,강원특별자치도 강릉시 포남동 1238-2,not_operating
+repair,30428,반도카센타,강원특별자치도 강릉시 입암동 413-2번지,not_operating
+repair,30430,현석카센타,강원특별자치도 강릉시 포남동 1122-18번지,not_operating
+repair,30431,종합카센타,강원특별자치도 강릉시 포남동 1166-7번지,not_operating
+repair,30433,방음천국,강원특별자치도 강릉시 주문진읍 교항리 375번지,not_operating
+repair,30434,현대카센타24시셀프세차,강원특별자치도 강릉시 주문진읍 주문리 324-11,not_operating
+repair,30435,강릉이동정비,강원특별자치도 강릉시 노암동 595-3번지,not_operating
+repair,30436,금하카센타,강원특별자치도 강릉시 사천면 사천진리 285-11,not_operating
+repair,30678,거미하이테크,제주특별자치도 제주시 일주서로 7874(연동),not_operating
+repair,30679,타이어테크 제주점,제주특별자치도 제주시 연삼로 434(이도2동),not_operating
+repair,30680,영신전문정비,제주특별자치도 제주시 구좌읍 평대13길 32,not_operating
+repair,30681,성아카센타,제주특별자치도 제주시 한림읍 한림서길 45,not_operating
+repair,30682,성주밧데리,제주특별자치도 제주시 고마로17길 43,not_operating
+repair,30683,한마음 카 프라자,제주특별자치도 제주시 연신로 91(이도2동),not_operating
+repair,30688,이호자동차공업사,제주특별자치도 제주시 일주서로 7610(이호2동),not_operating
+repair,30689,우일자동차공업사,제주특별자치도 제주시 삼도일동 796-8,not_operating
+repair,30692,남광카센타,제주특별자치도 제주시 연삼로466(이도2동),not_operating
+repair,30695,정훈자동차공업사,제주특별자치도 제주시 한림읍 한림로 176-2,not_operating
+repair,30696,동광카센타,제주특별자치도 제주시 태성로1길 4-5(일도2동),not_operating
+repair,30699,제남카센타,제주특별자치도 제주시 월랑로 12(노형동),not_operating
+repair,30704,현대카클리닉이도점,제주특별자치도 제주시 중앙로 275-2(이도2동),not_operating
+repair,30707,성대정비센타,제주특별자치도 제주시 연삼로 314,not_operating
+repair,30708,한림카센타,제주특별자치도 제주시 한림읍 한림리 1199-3,not_operating
+repair,30709,태광자동차공업사,제주특별자치도 제주시 용문로21길 1(용담2동),not_operating
+repair,30734,태경자동차써비스,제주특별자치도 제주시 연삼로 307(도남동),not_operating
+repair,30735,한마음카센타,제주특별자치도 제주시 서광로18길 5,not_operating
+repair,30736,정훈종합카클리닉,제주특별자치도 제주시 도남로 33(도남동),not_operating
+repair,30738,금오자동차공업사,제주특별자치도 제주시 오광로 125(노형동),not_operating
+repair,30740,동진카센타,제주특별자치도 제주시 남광북1길 8(이도2동),not_operating
+repair,30742,천지카센타,제주특별자치도 제주시 일주동로 455(삼양1동),not_operating
+repair,30745,한울카센터,제주특별자치도 제주시 애월읍 애월로19길 1,not_operating
+repair,30746,매직하우스,제주특별자치도 제주시 일주서로 7654(이호2동),not_operating
+repair,30747,우정카서비스,제주특별자치도 제주시 삼무로11(연동),not_operating
+repair,30748,광훈카센타,제주특별자치도 제주시 용화로11길 1(용담2동),not_operating
+repair,30749,일도카플러스,제주특별자치도 제주시 연삼로 459(이도2동),not_operating
+repair,30750,공항카공업사,제주특별자치도 제주시 용담로서길 5(용담2동),not_operating
+repair,30753,화북카포스,제주특별자치도 제주시 선반남2길 20(화북2동),not_operating
+repair,30758,카맨샾(구.오거리카맨샵),제주특별자치도 제주시 정든로 29,not_operating
+repair,30760,소망자동차공업사,제주특별자치도 제주시 북성로 51(삼도2동),not_operating
+repair,30762,인화종합카센타,제주특별자치도 제주시 동광로21길 7,not_operating
+repair,30763,신도자동차공업사,제주특별자치도 제주시 동성길 68(오라3동),not_operating
+repair,30764,한국타이어신제주점,제주특별자치도 제주시 원노형로 54(노형동),not_operating
+repair,30765,해경전문정비,제주특별자치도 제주시 원노형5길 30,not_operating
+repair,30769,동산카센타,제주특별자치도 제주시 연북로 130(연동),not_operating
+repair,30773,골든카공업사 연동점,제주특별자치도 제주시 제원1길 24(연동),not_operating
+repair,30774,오토피아한림상사,제주특별자치도 제주시 한림읍 한림로 807,not_operating
+repair,30779,세기종합카센타,제주특별자치도 제주시 오래물길 12-10,not_operating
+repair,30780,송당자동차병원,제주특별자치도 제주시 구좌읍 중산간동로 2231,not_operating
+repair,30784,덕종3급자동차정비소,제주특별자치도 제주시 남광북3길 44(이도2동),not_operating
+repair,30785,삼공주카센타,제주특별자치도 제주시 진동로 74-6(화북1동),not_operating
+repair,30787,월광자동차공업사,제주특별자치도 제주시 용해로 80-18(용담2동),not_operating
+repair,30919,카젠,경기도 용인시 처인구 중부대로 1213,not_operating
+repair,30920,경기카서비스,경기도 용인시 기흥구 동탄기흥로 704,not_operating
+repair,30921,오토웍스,경기도 용인시 기흥구 동백죽전대로 295,not_operating
+repair,30939,남양카,전북특별자치도 전주시 덕진구 두간5길 12,not_operating
+repair,31031,(주)오토모빌,경기도 용인시 처인구 모현읍 백옥대로 2265,not_operating
+repair,31032,주식회사 모빌월드모터스,경기도 용인시 기흥구 용구대로 2308,not_operating
+repair,31033,타이어프로(구성점),경기도 용인시 기흥구 용구대로 2441,not_operating
+repair,31090,영진배선사,강원특별자치도 강릉시 수문길 61(옥천동),not_operating
+repair,31091,광림특장써비스,강원특별자치도 강릉시 유산동 81-3번지,not_operating
+repair,31092,오토오아시스 교동택지점,강원특별자치도 강릉시 하슬라로 233(교동),not_operating
+repair,31183,구산카센타,강원특별자치도 강릉시 구정면 191번지 4호,not_operating
+repair,31185,로뎀카센타,강원특별자치도 강릉시 포남1동 1161-12,not_operating
+repair,31186,웰컴투카센타,강원특별자치도 강릉시 경강로 2274,not_operating
+repair,31187,동서울카세차장,강원특별자치도 강릉시 교동 162-232번지,not_operating
+repair,31188,태현카센타,강원특별자치도 강릉시 공제로 429-4(홍제동),not_operating
+repair,31190,성실카센터,강원특별자치도 강릉시 주문진읍 매맥이아랫길 6-5,not_operating
+repair,31192,한국타이어 성덕대리점,강원특별자치도 강릉시 입암로 43(입암동),not_operating
+repair,31194,어라카정비동,강원특별자치도 강릉시 교2동 613-12번지,not_operating
+repair,31195,공단종합카센타,강원특별자치도 강릉시 강변로534번길 14(입암동),not_operating
+repair,31196,부산종합카센타,강원특별자치도 강릉시 사천면 사천진리 285-11번지,not_operating
+repair,31197,강릉오토,강원특별자치도 강릉시 포남동 1118-1,not_operating
+repair,31199,주영카센타,강원특별자치도 강릉시 주문진읍 주문리 47-4번지,not_operating
+repair,31201,황제카써비스,강원특별자치도 강릉시 옥천동 282-3,not_operating
+repair,31203,홍제오일교환소(경정비),강원특별자치도 강릉시 경강로 1928-5(홍제동),not_operating
+repair,31204,안목종합카,강원특별자치도 강릉시 견소동 253-2,not_operating
+repair,31205,쌍용자동차써비스프라자강릉코너,강원특별자치도 강릉시 입암동 423-8,not_operating
+repair,31206,큰다리카센타,강원특별자치도 강릉시 주문진읍 교항리 72-18,not_operating
+repair,31208,경포카써비스,강원특별자치도 강릉시 지변동 674-1,not_operating
+repair,31210,모타카센타,강원특별자치도 강릉시 남구길30번길 25-1(포남동),not_operating
+repair,31211,정수카센타,강원특별자치도 강릉시 교1동 1741-5 205,not_operating
+repair,31213,강남오토써비스,강원특별자치도 강릉시 율곡초교길 31(교동),not_operating
+repair,31214,신영카센타,강원특별자치도 강릉시 교동 723-5번지,not_operating
+repair,31216,로드카써비스,강원특별자치도 강릉시 노암동 255-4,not_operating
+repair,31217,장원카인테리어,강원특별자치도 강릉시 주문진읍 교항리 60-6번지,not_operating
+repair,31218,금하카세차장,강원특별자치도 강릉시 사천면 사천진리 285-11번지,not_operating
+repair,31219,구산경정비센타,강원특별자치도 강릉시 성산면 구산리 245번지 외1,not_operating
+repair,31220,호신카센타,강원특별자치도 강릉시 성산면 금산리 1064번지,not_operating
+repair,31223,기분좋은카센타,강원특별자치도 강릉시 경강로 1849(홍제동),not_operating
+repair,31224,동명카써비스,강원특별자치도 강릉시 포남동 1232-8,not_operating
+repair,31225,대성카센타,강원특별자치도 강릉시 주문진읍 교항리 298-20,not_operating
+repair,31226,강원모터스,강원특별자치도 강릉시 홍제동 998-11번지,not_operating
+repair,31232,이화카프랜드,강원특별자치도 강릉시 성덕포남로 76(입암동),not_operating
+repair,31234,신신카 서비스,강원특별자치도 강릉시 포남동 1162번지 9호,not_operating
+repair,31236,대학카센터,강원특별자치도 강릉시 하슬라로 191(교동),not_operating
+repair,31237,세종카센타,강원특별자치도 강릉시 포남동 1005-210 191,not_operating
+repair,31238,금호카독크센타,강원특별자치도 강릉시 송정동 827번지 18호,not_operating
+repair,31241,최우선카클리닉,강원특별자치도 강릉시 강릉대로 349-7(포남동),not_operating
+repair,31243,남양카도크,강원특별자치도 강릉시 포남동 1133-9,not_operating
+repair,31245,신성카센타,강원특별자치도 강릉시 주문진읍 준문4리 14반 349-1,not_operating
+repair,31246,대양타이어,강원특별자치도 강릉시 옥계면 현내리 267번지,not_operating
+repair,31248,세종카센타,강원특별자치도 강릉시 강릉대로 329(포남동),not_operating
+repair,31249,공단하체,"강원특별자치도 강릉시 성산면 구산리 245,246",not_operating
+repair,31250,매일카경정비,강원특별자치도 강릉시 교2동 131-4,not_operating
+repair,31255,동림카센타,강원특별자치도 강릉시 교1동 943-3,not_operating
+repair,31257,회산경정비,강원특별자치도 강릉시 회산로408번길 13-3(홍제동),not_operating
+repair,31258,보성카센타,강원특별자치도 강릉시 옥천동 157-2,not_operating
+repair,31260,타이어프로강릉점,강원특별자치도 강릉시 가작로 185(교동),not_operating
+repair,31261,예스카클리닉,강원특별자치도 강릉시 성덕포남로188번길 14(포남동),not_operating
+repair,31262,태백산맥,강원특별자치도 강릉시 공항길43번길 49(병산동),not_operating
+repair,31263,아시아카센타,강원특별자치도 강릉시 죽헌동 345번지 9호,not_operating
+repair,31266,(주)이수상사,강원특별자치도 강릉시 경강로 1976(남문동),not_operating
+repair,31267,신신세차장,강원특별자치도 강릉시 포남동 1162-9,not_operating
+repair,31273,한국타이어자동차대학,강원특별자치도 강릉시 포남동 1173번지 1호,not_operating
+repair,31274,현대카,강원특별자치도 강릉시 홍제동 233-9,not_operating
+repair,31276,옥천자동차공업사,강원특별자치도 강릉시 옥계면 현내리 559번지,not_operating
+repair,31279,금조카서비스,강원특별자치도 강릉시 주문진읍 연주로 466,not_operating
+repair,31282,뉴국제카센타,강원특별자치도 강릉시 포남동 1187-16,not_operating
+repair,31283,SK네트웍스(주)오죽헌점,강원특별자치도 강릉시 교동 315-1,not_operating
+repair,31284,콜자동차서비스,강원특별자치도 강릉시 청량동 560-8,not_operating
+repair,31285,그랜드카써비스,강원특별자치도 강릉시 포남동 1122-18,not_operating
+repair,31286,카토피아,강원특별자치도 강릉시 중기1길 8(옥천동),not_operating
+repair,31290,삼거리카공업사,강원특별자치도 강릉시 옥계면 현내시장길 25,not_operating
+repair,31291,붕붕밧데리카센타,강원특별자치도 강릉시 교동 340-3,not_operating
+repair,31299,붕붕카센타,강원특별자치도 강릉시 성덕포남로182번길 29(포남동),not_operating
+repair,31300,동방카센타,강원특별자치도 강릉시 강릉대로 230(교동),not_operating
+repair,31302,옥계카인테리어,강원특별자치도 강릉시 옥계면 현내리 129번지 2호,not_operating
+repair,31303,콘테이너카써비스,강원특별자치도 강릉시 포남동 1180번지 5호,not_operating
+repair,31306,성지공업사,강원특별자치도 강릉시 송정동 552,not_operating
+repair,31309,오토오아시스 월드컵점,강원특별자치도 강릉시 강릉대로313번길 60(포남동),not_operating
+repair,31310,티스테이션 강릉포남점,강원특별자치도 강릉시 강릉대로 312(포남동),not_operating
+repair,31311,한빈카인테리어,강원특별자치도 강릉시 주문진읍 주문리 산 92,not_operating
+repair,31312,극동카센타,강원특별자치도 강릉시 가작로 284(포남동),not_operating
+repair,31315,금호타이어(주)강릉대리점,강원특별자치도 강릉시 강동면 모전리 45-3,not_operating
+repair,31316,"최,김씨카센타",강원특별자치도 강릉시 교2동 714-9~10,not_operating
+repair,31322,(합)동아정비사업소,강원특별자치도 강릉시 입암동 21번지 13호,not_operating
+repair,31323,금호타이어 옥계점,강원특별자치도 강릉시 옥계면 옥계로 1022,not_operating
+repair,31325,주수타이어,강원특별자치도 강릉시 옥계면 동해대로 241-2,not_operating
+repair,31328,성남밧데리,강원특별자치도 강릉시 성산면 경강로 1377-9,not_operating
+repair,31329,프로카써비스,강원특별자치도 강릉시 포남1동 1150-2,not_operating
+repair,31330,달리그라카센타,강원특별자치도 강릉시 옥천동 216,not_operating
+repair,31348,토탈카센타,경기도 용인시 수지구 대지로3번길 45,not_operating
+repair,31349,현대 오토,"경기도 용인시 기흥구 신정로41번길 5-1, 363동(신갈동)",not_operating
+repair,31350,스카이카서비스,경기도 용인시 기흥구 평촌1로8번길 11-19,not_operating
+repair,31351,두창자동차정비공업사,경기도 용인시 처인구 원삼면 백원로 265,not_operating
+repair,31352,영덕점현대자동차,경기도 용인시 기흥구 흥덕중앙로 92,not_operating
+repair,31353,타이어서비스,경기도 용인시 수지구 풍덕천로197번길 7,not_operating
+repair,31354,태양자동차공업사,경기도 용인시 처인구 모현읍 백옥대로 2175,not_operating
+repair,31355,오토오아시스(영덕점),경기도 용인시 기흥구 흥덕2로65번길 20-14,not_operating
+repair,31356,GM대우 상현정비,경기도 용인시 수지구 포은대로 300,not_operating
+repair,31357,A.P.G,경기도 용인시 처인구 포곡읍 선장1로 25,not_operating
+repair,31358,A.P.G,경기도 용인시 처인구 포곡읍 선장1로 25,not_operating
+repair,31359,송전자동차공업사,경기도 용인시 처인구 이동읍 경기동로687번길 31,not_operating
+repair,31360,스피드메이트 대지산점,경기도 용인시 수지구 대지로 92,not_operating
+repair,31374,오토컴즈,경기도 용인시 기흥구 중부대로 724,not_operating
+repair,31375,주식회사 기흥현대자동차서비스,"경기도 용인시 기흥구 용구대로 2216, 104동(신갈동)",not_operating
+repair,31376,EO 모터라이프,경기도 용인시 기흥구 지삼로198번길 17,not_operating
+repair,31377,팀그립,경기도 용인시 처인구 모현읍 곡현로656번길 2-4,not_operating
+repair,31378,성실카센타,경기도 용인시 기흥구 마북로 98,not_operating
+repair,31379,Cornering(코너링),경기도 용인시 기흥구 중부대로 845-1,not_operating
+repair,31380,스미트메이트 이마트구성주유소점,경기도 용인시 기흥구 용구대로 2441,not_operating
+repair,31381,두두 정비 서비스,경기도 용인시 수지구 포은대로 300,not_operating
+repair,31382,현대자동차 서천점,경기도 용인시 기흥구 서그내로53번길 3-29,not_operating
+repair,31383,메트로카공업사,경기도 용인시 수지구 풍덕천로197번길 3-6,not_operating
+repair,31384,남동1급자동차공업사,경기도 용인시 처인구 백옥대로 914,not_operating
+repair,31385,카프로샵,경기도 용인시 기흥구 평촌1로8번길 11-19,not_operating
+repair,31386,세아자동차정비(주),경기도 용인시 기흥구 구성로 322-1,not_operating
+repair,31387,원태호 자동차 오토케어,경기도 용인시 수지구 수지로 497,not_operating
+repair,31388,쌍용 오토,경기도 용인시 기흥구 용구대로 2301,not_operating
+repair,31389,로컬 모터스,경기도 용인시 기흥구 신갈로 12,not_operating
+repair,31390,U-CAR,경기도 용인시 기흥구 용구대로2469번길 132,not_operating
+repair,31391,삼진자동차공업사,경기도 용인시 처인구 양지면 송주로 2,not_operating
+repair,31392,만도상사,경기도 용인시 처인구 금학로 413-25,not_operating
+repair,31393,대영모터스,경기도 용인시 처인구 양지면 중부대로 1867,not_operating
+repair,31394,신우이천공업,경기도 용인시 기흥구 사은로 56,not_operating
+repair,31395,정진카센타,경기도 용인시 기흥구 신구로22번길 22,not_operating
+repair,31406,우일자동차정비(주),인천광역시 미추홀구 염전로 138(도화동),not_operating
+repair,31445,전진자동차카센타,인천광역시 미추홀구 수봉북로 3(도화동),not_operating
+repair,31482,황소카센타,강원특별자치도 강릉시 성덕포남로182번길 19(포남동),not_operating
+repair,31483,카스타트,강원특별자치도 강릉시 교동 925번지 4호,not_operating
+repair,31484,조이앤카,강원특별자치도 강릉시 해안로 127(송정동),not_operating
+repair,31486,진성카센타,강원특별자치도 강릉시 포남동 1237번지 1호,not_operating
+repair,31487,알프스모터스,강원특별자치도 강릉시 홍제동 745-1,not_operating
+repair,31490,후덕카센타,강원특별자치도 강릉시 포남동 1005-235,not_operating
+repair,31491,대성종합카센타,강원특별자치도 강릉시 남산초교길12번길 39(내곡동),not_operating
+repair,31492,연곡세차장,강원특별자치도 강릉시 연곡면 방내리 24-1,not_operating
+repair,31493,두꺼비카센타,강원특별자치도 강릉시 포남동 1056번지 4호,not_operating
+repair,31496,조흥카,강원특별자치도 강릉시 성덕포남로182번길 7(포남동),not_operating
+repair,31497,삼성자동차(주),강원특별자치도 강릉시 옥천동 172,not_operating
+repair,31498,맑음카프라자,강원특별자치도 강릉시 주문진읍 교항리 183-1,not_operating
+repair,31499,소나무카정비,강원특별자치도 강릉시 주문진읍 신리천로 87,not_operating
+repair,31501,주문진자동차백화점,강원특별자치도 강릉시 주문진읍 교항리 370-13,not_operating
+repair,31502,자동차백화점,강원특별자치도 강릉시 노암동 279번지 17호,not_operating
+repair,31506,동서타이어,강원특별자치도 강릉시 주문진읍 교항리 29,not_operating
+repair,31511,국제정비공업사,강원특별자치도 강릉시 성덕포남로168번길 4(포남동),not_operating
+repair,31513,골든카센타,강원특별자치도 강릉시 강릉대로 344(포남동),not_operating
+repair,31514,원일종합카센타,강원특별자치도 강릉시 주문진읍 연주로 505,not_operating
+repair,31517,성원카클리닉,강원특별자치도 강릉시 강릉대로 365(포남동),not_operating
+repair,31519,대우자동차판매(주),인천광역시 부평구 부평대로 337(청천동),not_operating
+repair,31523,용봉자동차정비센타,강원특별자치도 강릉시 포남동 1166-3,not_operating
+repair,31525,대한종합카센타,강원특별자치도 강릉시 죽헌동 305번지 4호,not_operating
+repair,31527,영동카센타,강원특별자치도 강릉시 남구길18번길 25(포남동),not_operating
+repair,31531,동서밧데리,강원특별자치도 강릉시 주문진읍 교항리 114-3,not_operating
+repair,31556,소안 중앙 카센타,전라남도 완도군 소안면 소안로 226,not_operating
+repair,31557,원동자동차공업사,전라남도 완도군 군외면 원동1길 12,not_operating
+repair,31558,동서카정비세차장,전라남도 완도군 노화읍 노화로 685,not_operating
+repair,31559,완도캠바사,전라남도 완도군 완도읍 개포로 11-14,not_operating
+repair,31560,청산자동차공업사,전라남도 완도군 청산면 도청4길 15-2,not_operating
+repair,31561,완성자동차공업사,전라남도 완도군 군외면 청해진로 330,not_operating
+repair,31562,개포오토하수스,전라남도 완도군 완도읍 장보고대로 213,not_operating
+repair,31563,광주공업사,전라남도 완도군 완도읍 장보고대로 12,not_operating
+repair,31564,한국종합카센타,전라남도 완도군 완도읍 개포로 172,not_operating
+repair,31565,중앙자동차공업사,전라남도 완도군 완도읍 군내리 1229-1,not_operating
+repair,31566,제일자동차공업사,전라남도 완도군 완도읍 장보고대로 12,not_operating
+repair,31567,한덕부분정비공업사,전라남도 완도군 완도읍 개포로 171,not_operating
+repair,31568,최신카센타,전라남도 완도군 완도읍 군내리 1273-15,not_operating
+repair,31569,노화선경공업사,전라남도 완도군 노화읍 노화로 649,not_operating
+repair,31570,완도카센타,전라남도 완도군 완도읍 개포로 18,not_operating
+repair,31571,금호3급부분정비,전라남도 완도군 완도읍 장보고대로 231-1,not_operating
+repair,31572,해동부분정비공업사,전라남도 완도군 노화읍 노화북로 449-213,not_operating
+repair,31573,새한자동차공업사,전라남도 완도군 완도읍 개포로145번길 38-2,not_operating
+repair,31574,현대카센타,전라남도 완도군 완도읍 개포로159번길 19(미림빌1차),not_operating
+repair,31575,현대공업사,전라남도 완도군 고금면 고금동로 82,not_operating
+repair,31576,원동부분정비공업사,전라남도 완도군 군외면 원동길 26,not_operating
+repair,31577,군외대성공업사,전라남도 완도군 군외면 청해진로 136,not_operating
+repair,31602,히트모터스,인천광역시 미추홀구 방축로 240(도화동),not_operating
+repair,31620,현대카센타,전라남도 완도군 신지면 신지로 445,not_operating
+repair,31621,대성종합자동차공업사,전라남도 완도군 노화읍 노화서로 93,not_operating
+repair,31913,수자동차공업사,경기도 군포시 엘에스로91번길 94,not_operating
+repair,31931,보람카센타,강원특별자치도 강릉시 홍제동 998번지 1호,not_operating
+repair,31937,B&B타이어마스타,제주특별자치도 제주시 일주서로 7266(외도1동),not_operating
+repair,31939,프리미어오토모빌(주),제주특별자치도 제주시 연삼로 145(오라3동),not_operating
+repair,31940,새천년정비사업소,제주특별자치도 제주시 탑동로 89(삼도2동),not_operating
+repair,31941,유카로오토모빌(주) 제주지점,제주특별자치도 제주시 연삼로 125(오라3동),not_operating
+repair,31942,타이어마트 노형점,제주특별자치도 제주시 광평중길 84(노형동),not_operating
+repair,31944,오토플러스(주) 제주지점,제주특별자치도 제주시 아연로 300(오등동),not_operating
+repair,31948,(뉴)챔피언 카 서비스,제주특별자치도 제주시 신대로12길 27(연동),not_operating
+repair,31949,미남자동차정비,제주특별자치도 제주시 한림읍 한림로 718,not_operating
+repair,31951,우리자동차,제주특별자치도 제주시 봉개동 1876,not_operating
+repair,31956,성일카,제주특별자치도 제주시 한림읍 한림상로 4,not_operating
+repair,31958,화북수정종합카센타,제주특별자치도 제주시 청풍남8길 2(화북1동),not_operating
+repair,31960,비전모터스,제주특별자치도 제주시 연삼로 459(이도2동),not_operating
+repair,31964,엔카공업사,제주특별자치도 제주시 일주동로 146(화북1동),not_operating
+repair,31965,AG모터스,제주특별자치도 제주시 연삼로 132(오라3동),not_operating
+repair,31974,119타이어 도남점,제주특별자치도 제주시 연삼로 309(도남동),not_operating
+repair,31975,㈜케이티렌탈(변경:롯데렌탈㈜),제주특별자치도 제주시 용해로 92(용담2동),not_operating
+repair,31977,통일 카인테리어,제주특별자치도 제주시 제성1길 30(도두2동),not_operating
+repair,31978,㈜케이디 렌트카,제주특별자치도 제주시 정존13길 4(노형동),not_operating
+repair,31979,㈜제주사랑렌트카,제주특별자치도 제주시 연미길 103(연동),not_operating
+repair,31983,㈜월드렌트카,제주특별자치도 제주시 오일장중길 39(도두1동),not_operating
+repair,31984,해모루자동차공업사(청신자동차공업사),제주특별자치도 제주시 도남로 33(도남동),not_operating
+repair,31987,레인보우오토주식회사,제주특별자치도 제주시 연삼로 75(오라3동),not_operating
+repair,31990,프리미어모터스㈜제주서비스센터,제주특별자치도 제주시 청풍남8길 56(화북2동),not_operating
+repair,31999,한림모터스,제주특별자치도 제주시 한림읍 한림로 718,not_operating
+repair,32004,유카로오토모빌(주)제주 아우디,제주특별자치도 제주시 연삼로 111(오라3동),not_operating
+repair,32006,케이씨씨오토모빌㈜,제주특별자치도 제주시 연삼로 136(오라3동),not_operating
+repair,32007,㈜넥스트모빌(구.㈜봉봉오토모빌),제주특별자치도 제주시 오일장중길 100(도두1동),not_operating
+repair,32009,힐 렌터카,제주특별자치도 제주시 용마서길 24-13(용담3동),not_operating
+repair,32011,금아카공업사,제주특별자치도 제주시 간월동로 42(아라이동),not_operating
+repair,32012,한길카센타,제주특별자치도 제주시 연북로 668(이도2동),not_operating
+repair,32017,테슬라코리아 유한회사 제주 애월점,제주특별자치도 제주시 애월읍 중산간서로 6432,not_operating
+repair,32032,조아렌트카㈜,제주특별자치도 제주시 오일장중길 39(도두1동),not_operating
+repair,32034,신도자동차,제주특별자치도 제주시 동성길 68(오라3동),not_operating
+repair,32044,봉황자동차공업사,서울특별시 구로구 남부순환로 1082-58(구로동),not_operating
+repair,32051,흥왕실업㈜자가정비,서울특별시 구로구 경서로 71(고척동),not_operating
+repair,32054,㈜구로현주모터스,서울특별시 구로구 서부샛길 822(구로동),not_operating
+repair,32062,케이지모빌리티㈜ 서울서비스센터,서울특별시 구로구 구로동로 243(구로동),not_operating
+repair,32064,대광자동차정비공업㈜,서울특별시 구로구 중앙로 69(고척동),not_operating
+repair,32069,선명자동차정비,서울특별시 구로구 중앙로 77(고척동),not_operating
+repair,32085,타이어프로 구로점,서울특별시 구로구 시흥대로 539(구로동),not_operating
+repair,32087,독일자동차,서울특별시 구로구 구로동로29길 37(구로동),not_operating
+repair,32122,관공공업사,강원특별자치도 강릉시 입암동 21-35번지,not_operating
+repair,32127,JK모터스,강원특별자치도 강릉시 경강로 1846(홍제동),not_operating
+repair,32154,제주특장산업기계,제주특별자치도 제주시 선반로 61(화북1동),not_operating
+repair,32157,L모터스(구.아트모터스),제주특별자치도 제주시 용담로서길 5(용담2동),not_operating
+repair,32158,삼성상사 간월점,제주특별자치도 제주시 간월동로3길 36-2(아라2동),not_operating
+repair,32161,㈜제주다움렌트카,제주특별자치도 제주시 어영길 26(용담3동),not_operating
+repair,32168,에스케이렌터카서비스 주식회사,제주특별자치도 제주시 덕지2길 6(이호1동),not_operating
+repair,32170,Lee모터스,제주특별자치도 제주시 화남로 36(화북1동),not_operating
+repair,32235,미성자동차공업사,강원특별자치도 고성군 토성면 동해대로 4853,not_operating
+repair,32280,션킴모터스 인천직영점,인천광역시 미추홀구 아암대로227번길 10,not_operating
+repair,32365,상촌자동차정비,충청북도 영동군 상촌면 민주지산로 2995-1,not_operating
+repair,32366,신일카센타,충청북도 영동군 영동읍 상부용로 1-3,not_operating
+repair,32371,영동종합밧데리,충청북도 영동군 영동읍 학산영동로 1180,not_operating
+repair,32389,석봉모터스,경기도 군포시 공단로 56,not_operating
+repair,32398,금강3급부분공업사,경기도 군포시 공단로 278-4,not_operating
+repair,32400,오토오아시스 당정스타점,경기도 군포시 고산로 109,not_operating
+repair,32416,벧엘자동차공업사,경기도 군포시 산본로 63,not_operating
+repair,32434,에이스카센타,경기도 군포시 번영로 82,not_operating
+repair,32503,금호타이어용산대리점,충청북도 영동군 용산면 남부로 1406,not_operating
+repair,32508,대영공업사,충청북도 영동군 영동읍 동정로 18-38,not_operating
+repair,32510,형제카인테리어,충청북도 영동군 영동읍 학산영동로 1152,not_operating
+repair,32515,온누리자동차정비,충청북도 영동군 영동읍 영동황간로 28,not_operating
+repair,32926,우리카인테리어,제주특별자치도 제주시 연동3길 10(연동),not_operating
+repair,32927,소망자동차서비스,경기도 용인시 수지구 현암로89번길 6,not_operating
+repair,32928,(주)현대삼일자동차공업사,경기도 용인시 수지구 신수로683번길 15,not_operating
+repair,32929,중앙자동차공업사,경기도 용인시 기흥구 신정로41번길 1-1,not_operating
+repair,32930,지에스서비스,경기도 용인시 수지구 현암로 128-1,not_operating
+repair,32931,진성한국타이어,경기도 용인시 처인구 양지면 주북로 129,not_operating
+repair,32932,스피트메이트 보라점,경기도 용인시 기흥구 용구대로 1835,not_operating
+repair,32933,한솔카서비스,경기도 용인시 수지구 용구대로2771번길 31-1,not_operating
+repair,32934,명진모터스,경기도 용인시 기흥구 용구대로 2355,not_operating
+repair,32935,카랜드미션,경기도 용인시 처인구 포곡읍 곡현로 217,not_operating
+repair,32936,수지모터스,경기도 용인시 수지구 수지로 112,not_operating
+repair,32937,HGMOTOR,경기도 용인시 기흥구 구성로53번길 2,not_operating
+repair,32938,오토오아시스 언남신도시점,경기도 용인시 기흥구 마북로2번길 69,not_operating
+repair,32939,삼일3급자동차정비공업사,경기도 용인시 기흥구 신갈로 85-1,not_operating
+repair,32940,진목3급자동차공업사,경기도 용인시 처인구 남사읍 천덕산로 321,not_operating
+repair,33022,에스모터스,경기도 용인시 기흥구 구성로 254(청덕동),not_operating
+repair,33232,애니카랜드구례점,전라남도 구례군 구례읍 양정4길 2,not_operating
+repair,33241,온천카센터,전라남도 구례군 산동면 원촌리 38,not_operating
+repair,33242,명승자동차부분정비공업사,전라남도 구례군 구례읍 구례1길 14,not_operating
+repair,33595,대현모터스,강원특별자치도 강릉시 율곡로 2648(청량동),not_operating
+repair,33597,동아자동차공업사,강원특별자치도 강릉시 입암동 21번지 39호,not_operating
+repair,33598,공단자동차공업사,강원특별자치도 강릉시 입암동 65-1번지,not_operating
+repair,33599,대성자동차공업사,강원특별자치도 강릉시 주문진읍 교항리 491번지 1호,not_operating
+repair,33601,명일자동차공업사,강원특별자치도 강릉시 율곡로 2600(청량동),not_operating
+repair,33602,강원모터스(주),강원특별자치도 강릉시 강변로534번길 37(입암동),not_operating
+repair,33603,동민자동차정비공업사,강원특별자치도 강릉시 강변로534번길 85(입암동),not_operating
+repair,33605,로얄자동차정비공업사,강원특별자치도 강릉시 강변로670번길 13(두산동),not_operating
+repair,33608,(주)관동공업사,강원특별자치도 강릉시 강변로534번길 37(입암동),not_operating
+repair,33616,기아(주)강릉서비스센터,강원특별자치도 강릉시 강변로604번길 11-4(입암동),not_operating
+repair,33978,삼천리카센타,강원특별자치도 강릉시 강릉대로 362(포남동),not_operating
+repair,34289,고진모터스 주식회사,서울특별시 동대문구 천호대로 445,not_operating
+repair,34420,로드런,서울특별시 동대문구 장안벚꽃로 29,not_operating
+repair,34494,솔향모터스,강원특별자치도 강릉시 남구길29번길 22(포남동),not_operating
+repair,34496,동서자동차공업사,강원특별자치도 강릉시 옥가로 26(옥천동),not_operating
+repair,34497,진주자동차공업사,강원특별자치도 강릉시 남구길29번길 22(포남동),not_operating
+repair,34499,강일자동차공업사,강원특별자치도 강릉시 강변로 526(입암동),not_operating
+repair,34501,광신모터스,강원특별자치도 강릉시 주문진읍 연주로 329,not_operating
+repair,34507,우성자동차정비공업사,강원특별자치도 강릉시 율곡로 3058(교동),not_operating
+repair,34808,다모아카센타,경기도 용인시 처인구 이동읍 백옥대로621번길 4,not_operating
+repair,34809,명진카크리닉,경기도 용인시 수지구 수지로296번길 30,not_operating
+repair,34810,블루모터스,경기도 용인시 처인구 경안천로 282,not_operating
+repair,34811,조은카센타,경기도 용인시 기흥구 용구대로2469번길 82,not_operating
+repair,34812,(주)신기엔지니어링,경기도 용인시 기흥구 동백죽전대로175번길 4-1,not_operating
+repair,34813,대도카센타,경기도 용인시 처인구 백옥대로 954,not_operating
+repair,34814,동의보감자동차,경기도 용인시 기흥구 중부대로 756,not_operating
+repair,34815,카프랜드,경기도 용인시 기흥구 용구대로 2291,not_operating
+repair,34816,저먼모터스(주),경기도 용인시 기흥구 중부대로 42,not_operating
+repair,34817,동일카센타,경기도 용인시 처인구 양지면 중부대로 2533,not_operating
+repair,34818,SKES(주),경기도 용인시 처인구 백옥대로 1410,not_operating
+repair,34819,둘리자동차공업사,경기도 용인시 처인구 금령로78번길 6-6,not_operating
+repair,34820,동남카센타,경기도 용인시 처인구 금령로 189,not_operating
+repair,34821,동서카매니아,경기도 용인시 처인구 동부로 39,not_operating
+repair,34822,용인자동차공업(주),경기도 용인시 처인구 백옥대로 1290,not_operating
+repair,34823,세종자동차공업사,경기도 용인시 기흥구 석현로 1,not_operating
+repair,34824,놀부카센타,경기도 용인시 기흥구 사은로 74,not_operating
+repair,34825,동성자동차정비공업사,경기도 용인시 처인구 백암면 죽양대로 1454,not_operating
+repair,34826,용인카정비공업사,경기도 용인시 처인구 중부대로 1712,not_operating
+repair,34827,중앙카센타,경기도 용인시 수지구 풍덕천로 191,not_operating
+repair,34828,동백자동차공업사,경기도 용인시 기흥구 언동로217번길 1,not_operating
+repair,34829,(주)동은자동차공업사,"경기도 용인시 기흥구 농서로 48, 665동(농서동)",not_operating
+repair,34830,쌍용자동차공업사,경기도 용인시 처인구 백옥대로 914,not_operating
+repair,34831,성진카프라자,경기도 용인시 기흥구 신갈로 15,not_operating
+repair,34832,피트인오토써비스,경기도 용인시 기흥구 중부대로 137,not_operating
+repair,34833,기아카클리닉 구성점,경기도 용인시 기흥구 용구대로 2420,not_operating
+repair,34834,매일카프라자,경기도 용인시 기흥구 중부대로 397,not_operating
+repair,34835,차사랑자동차공업사,경기도 용인시 기흥구 용구대로 2301,not_operating
+repair,34836,용인 A.S 정비,경기도 용인시 처인구 중부대로 1583,not_operating
+repair,34837,새천년카센타,경기도 용인시 처인구 남사읍 경기동로 19,not_operating
+repair,34838,극동타이어,경기도 용인시 수지구 포은대로 537,not_operating
+repair,34839,상오종합자동차공업(주),경기도 용인시 수지구 수지로 97,not_operating
+repair,34840,엔젤카크리닉,경기도 용인시 기흥구 용구대로 2366,not_operating
+repair,34841,대명카센타,경기도 용인시 기흥구 구성로 84,not_operating
+repair,34842,번영공업사,경기도 용인시 기흥구 신갈로 12,not_operating
+repair,34843,광명자동차공업사,경기도 용인시 처인구 백옥대로 1238,not_operating
+repair,34844,현대자동차공업사,경기도 용인시 기흥구 어정로 103,not_operating
+repair,34845,동화카센타,경기도 용인시 기흥구 중부대로 419,not_operating
+repair,34846,자동차마을,경기도 용인시 기흥구 구성로 111,not_operating
+repair,34847,동화카센타,경기도 용인시 기흥구 중부대로 419,not_operating
+repair,34848,SK글로벌(주)구갈신도시점,경기도 용인시 기흥구 기흥로 68,not_operating
+repair,34849,휴넥스정비,경기도 용인시 처인구 경안천로 214-6,not_operating
+repair,34850,수성자동차정비공업사,경기도 용인시 기흥구 용구대로 1845,not_operating
+repair,34851,구성현대공업사,경기도 용인시 기흥구 용구대로 2216,not_operating
+repair,34852,SK글로벌(주) SK죽전점,경기도 용인시 수지구 용구대로 2751,not_operating
+repair,34853,송강자동차정비공업사,경기도 용인시 기흥구 용구대로 1834,not_operating
+repair,34854,현대모터스,경기도 용인시 기흥구 농서로 19,not_operating
+repair,34855,제일카서비스,경기도 용인시 기흥구 중부대로 261,not_operating
+repair,34856,미성오토오아시스,경기도 용인시 처인구 백옥대로 1416,not_operating
+repair,34857,(주)아이모터스,경기도 용인시 기흥구 석성로 110,not_operating
+repair,34858,대신 카 센타,경기도 용인시 처인구 모현읍 백옥대로 2533,not_operating
+repair,34859,차사랑인젝션정비공업사,경기도 용인시 처인구 중부대로1353번길 6,not_operating
+repair,34860,벨로시티,경기도 용인시 수지구 용구대로 2767-1,not_operating
+repair,34861,전국냉동화물(카센타),경기도 용인시 처인구 원삼면 좌찬로 101,not_operating
+repair,34862,중부폐차산업차차차수리점,경기도 용인시 처인구 경안천로 156,not_operating
+repair,34863,상현자동차정비공업사,경기도 용인시 수지구 광교호수로 415,not_operating
+repair,34864,자동차를 고치는 집,경기도 용인시 처인구 이동읍 이원로 75,not_operating
+repair,34865,동양아우토반자동차공업사,경기도 용인시 기흥구 중부대로56번길 6,not_operating
+repair,34866,대신 경정비 공업사,경기도 용인시 기흥구 신갈로 111,not_operating
+repair,34867,현대자동차구성동부점,경기도 용인시 기흥구 중부대로 804,not_operating
+repair,34868,25시정비공업사,경기도 용인시 처인구 양지면 죽양대로2016번길 56,not_operating
+repair,34869,카랜드,경기도 용인시 기흥구 공세로 98,not_operating
+repair,34870,SK글로벌(주),경기도 용인시 기흥구 용구대로 2381,not_operating
+repair,34871,월드카써비스,경기도 용인시 수지구 수지로 86,not_operating
+repair,34872,고림자동차공업사,경기도 용인시 처인구 한터로 78,not_operating
+repair,34873,자동차의집,경기도 용인시 기흥구 중부대로 771,not_operating
+repair,34874,백암카센타,경기도 용인시 기흥구 기흥로 26-1,not_operating
+repair,34875,신용티에스,경기도 용인시 처인구 중부대로 1216,not_operating
+repair,34876,정평자동차공업사,경기도 용인시 수지구 풍덕천로30번길 7-1,not_operating
+repair,34877,새서울카써비스,경기도 용인시 수지구 수지로 350,not_operating
+repair,34878,정성자동차 정비공업사,경기도 용인시 처인구 모현읍 백옥대로 2110,not_operating
+repair,34879,E.M.S자동차공업사,경기도 용인시 수지구 문인로3번길 14,not_operating
+repair,34880,카맨파크,경기도 용인시 처인구 포곡읍 곡현로133번길 5,not_operating
+repair,34881,R and H ZONE,경기도 용인시 처인구 중부대로 1755,not_operating
+repair,34882,만덕빵구,경기도 용인시 기흥구 중부대로 376,not_operating
+repair,34883,오토테크,경기도 용인시 기흥구 기흥로 34,not_operating
+repair,34884,토탈카서비스,경기도 용인시 수지구 용구대로2790번길 7,not_operating
+repair,34885,대현정비공업사,경기도 용인시 처인구 백암면 죽양대로 1427-44,not_operating
+repair,34886,에스엠코리아,경기도 용인시 수지구 용구대로 2748,not_operating
+repair,34887,한일오토랜드,경기도 용인시 처인구 중부대로 1393,not_operating
+repair,34888,쌍용자동차전문점,경기도 용인시 기흥구 신정로 115,not_operating
+repair,34914,탑코리아자동차정비,전라북도 고창군 고창읍 율계신월길 60,not_operating
+repair,34915,삼성자동차공업사,전라북도 고창군 고창읍 백양길 10,not_operating
+repair,34922,슈퍼카랜드,전라북도 고창군 고창읍 보릿골로 48,not_operating
+repair,34923,왕세카센타,전라북도 고창군 고수면 고인돌대로 1416-3,not_operating
+repair,34924,성두카센타,전라북도 고창군 고창읍 고인돌대로 1897-9,not_operating
+repair,34925,평화자동차종합써비스,전라북도 고창군 고창읍 덕산월계길 1,not_operating
+repair,34926,대성자동차공업사,전라북도 고창군 대산면 대성로 203,not_operating
+repair,34927,오스피드자동차공업사,전라북도 고창군 고창읍 소반2길 6,not_operating
+repair,35434,백마자동차,서울특별시 구로구 경서로7길 6(고척동),not_operating
+repair,35438,신오류자동차정비공업사,서울특별시 구로구 경인로 161(오류동),not_operating
+repair,35454,MUTANT,서울특별시 구로구 벚꽃로 420-1(구로동),not_operating
+repair,35635,로열모터스,서울특별시 송파구 송이로 190(문정동),not_operating
+repair,35638,중앙카경정비,서울특별시 송파구 오금로 167(방이동),not_operating
+repair,35676,굴다리자동차정비공업사,서울특별시 구로구 고척로23길 30(개봉동),not_operating
+repair,35679,신안카서비스,서울특별시 구로구 고척로21길 13(개봉동),not_operating
+repair,35682,신영자동차정비공업사,서울특별시 구로구 가마산로 134(구로동),not_operating
+repair,35903,애니카 서비스(2025.4.7. 등록취소),경기도 김포시 김포한강2로 24번길 116-57 (장기동),not_operating
+repair,35922,S.K네트윅스(주)오터스용인구갈,경기도 용인시 기흥구 어정로 52,not_operating
+repair,35923,현대카서비스,경기도 용인시 기흥구 삼성2로42번길 4,not_operating
+repair,35924,SK네트윅스(주)정비센타 행복점,경기도 용인시 처인구 백옥대로 959,not_operating
+repair,35925,용인모터스,경기도 용인시 처인구 금령로 31,not_operating
+repair,35926,미케닉,경기도 용인시 기흥구 용구대로 2138,not_operating
+repair,35927,우리카센타,경기도 용인시 처인구 양지면 양지로 101,not_operating
+repair,35928,현대오토피아,경기도 용인시 처인구 용인대학로 38,not_operating
+repair,35929,명성자동차월드,경기도 용인시 기흥구 동탄기흥로 707,not_operating
+repair,35930,스피드메이트 기흥톨게이트점,경기도 용인시 기흥구 삼성2로 34,not_operating
+repair,35931,엘지 오토오아시스 구갈점,경기도 용인시 기흥구 중부대로 520,not_operating
+repair,35932,엘지오토오아시스 구갈점,경기도 용인시 기흥구 중부대로 520,not_operating
+repair,35933,오토 오아시스 남동점,경기도 용인시 처인구 백옥대로 993,not_operating
+repair,35934,남성카독크,경기도 용인시 수지구 풍덕천로160번길 22,not_operating
+repair,35935,(주)씨에스플러스 수원영통점,경기도 용인시 기흥구 중부대로 64,not_operating
+repair,35936,(주)카퍼스트,경기도 용인시 기흥구 관곡로 54,not_operating
+repair,35937,현대특수렉카(주),경기도 용인시 수지구 포은대로 147,not_operating
+repair,35938,토탈 카센타,경기도 용인시 수지구 용구대로2790번길 7,not_operating
+repair,35939,한일카센타,경기도 용인시 기흥구 구성로 156,not_operating
+repair,35940,자동차 나라,경기도 용인시 처인구 양지면 중부대로 1952,not_operating
+repair,35941,엘지칼텍스정유(주),경기도 용인시 수지구 용구대로 2769,not_operating
+repair,35942,중앙카센타,경기도 용인시 처인구 중부대로 1429,not_operating
+repair,35943,유전자동차공업사,경기도 용인시 기흥구 신갈로 142,not_operating
+repair,35944,한우리자동차공업사,경기도 용인시 처인구 모현읍 곡현로 458,not_operating
+repair,35945,금호타이어 (신안특약점),경기도 용인시 기흥구 중부대로 234,not_operating
+repair,35946,매직파워 모터스,경기도 용인시 수지구 포은대로 300,not_operating
+repair,35947,워크스,경기도 용인시 처인구 포곡읍 포곡로278번길 12,not_operating
+repair,35948,진영자동차정비공업사,경기도 용인시 기흥구 어정로 99-1,not_operating
+repair,36079,하귀카센타,제주특별자치도 제주시 애월읍 항몽로 66,not_operating
+repair,36080,동부카인테리어,제주특별자치도 제주시 구좌읍 종달로 46,not_operating
+repair,36081,한라카크리닉,제주특별자치도 제주시 일주동로 146(화북1동),not_operating
+repair,36082,달성상사,제주특별자치도 제주시 연삼로 812-1(화북2동),not_operating
+repair,36085,고산카센타,제주특별자치도 제주시 한경면 고산리 2868-3,not_operating
+repair,36086,세림공업사,제주특별자치도 제주시 구좌읍 세화남3길 4,not_operating
+repair,36087,영광카센타,제주특별자치도 제주시 남광로 56(이도2동),not_operating
+repair,36088,오토오아시스 백록담점,제주특별자치도 제주시 임항로 291(건입동),not_operating
+repair,36091,평화카포스,제주특별자치도 제주시 선반남1길 76(화북1동),not_operating
+repair,36097,세창카인테리어,제주특별자치도 제주시 진동로 5,not_operating
+repair,36099,기아카클리닉 한경점,제주특별자치도 제주시 한경면 수동1길 9,not_operating
+repair,36101,화북주공카공업사,제주특별자치도 제주시 일주동로 246(화북1동),not_operating
+repair,36102,오라카센타전문정비,제주특별자치도 제주시 서사로 171(오라일동),not_operating
+repair,36103,탐라카공업사,제주특별자치도 제주시 애월읍 일주서로 6808,not_operating
+repair,36104,상쾌한정비센타,제주특별자치도 제주시 청귤로 7,not_operating
+repair,36107,신차귀자동차공업사,제주특별자치도 제주시 한경면 고산남2길 21,not_operating
+repair,36108,세홍 카포스,제주특별자치도 제주시 공설로 11(삼도2동),not_operating
+repair,36111,제주스피드코너,제주특별자치도 제주시 간월동로 21(아라2동),not_operating
+repair,36116,터미널카서비스,제주특별자치도 제주시 서광로4길 12(오라1동),not_operating
+repair,36123,서부자동차써비스센타,제주특별자치도 제주시 한림읍 금악리 1029-4,not_operating
+repair,36124,삼양카크리닉,제주특별자치도 제주시 원당로5길 11-2(삼양1동),not_operating
+repair,36126,우도자동차정비,제주특별자치도 제주시 우도면 우도비양길 96-36,not_operating
+repair,36129,한라산카공업사,제주특별자치도 제주시 구좌읍 일주동로 3417,not_operating
+repair,36133,금오카클리닉(구.금호카클리닉),제주특별자치도 제주시 용해로 80-27(용담2동),not_operating
+repair,36137,주연차량정비관리센터,제주특별자치도 제주시 사장1길 14(연동),not_operating
+repair,36141,신형카센타,제주특별자치도 제주시 신대로12길 10(연동),not_operating
+repair,36143,신세기 카포스,제주특별자치도 제주시 오광로 85(이호2동),not_operating
+repair,36144,현대자동차 화북점,제주특별자치도 제주시 청풍남2길 3(화북1동),not_operating
+repair,36146,반열 모터스,제주특별자치도 제주시 일주서로 7738(도두1동),not_operating
+repair,36148,상신카인테리어,제주특별자치도 제주시 월랑로 5(노형동),not_operating
+repair,36152,준홍카공업사,제주특별자치도 제주시 연북로 134(연동),not_operating
+repair,36153,해안카,제주특별자치도 제주시 애월읍 애월해안로 114,not_operating
+repair,36159,정우자동차서비스,제주특별자치도 제주시 일주서로 7701(도두1동),not_operating
+repair,36161,명지카공업사,제주특별자치도 제주시 연삼로 342(도남동),not_operating
+repair,36162,원진자동차정비센타,제주특별자치도 제주시 우평로 127(도평동),not_operating
+repair,36164,공항카클리닉,제주특별자치도 제주시 도령로 184(연동),not_operating
+repair,36173,고려타이어->고려 씨앤엠 (KORYEO C&M),제주특별자치도 제주시 한천로 1(용담2동),not_operating
+repair,36176,신도시카클리닉,제주특별자치도 제주시 외도일동 551-7,not_operating
+repair,36181,한길카공업사,제주특별자치도 제주시 월랑로4길 3(노형동),not_operating
+repair,36182,KCS자동차,"제주특별자치도 제주시 이도이동 1063-3,18",not_operating
+repair,36183,금강카공업사,제주특별자치도 제주시 성신로1길 24(연동),not_operating
+repair,36185,프로미자주카,제주특별자치도 제주시 귀아랑길 10(연동),not_operating
+repair,36187,평화카서비스,제주특별자치도 제주시 전농로 16(삼도1동),not_operating
+repair,36188,만세자동차수리점,제주특별자치도 제주시 조천읍 신북로 263,not_operating
+repair,36190,맥스 알피엠,제주특별자치도 제주시 오광로 148(노형동),not_operating
+repair,36191,119타이어,제주특별자치도 제주시 도공로 139-1(도두1동),not_operating
+repair,36194,오토오아시스 백록담점구)스피드매이트 제주노형점,제주특별자치도 제주시 임항로 291(건입동),not_operating
+repair,36197,서부차량관리,제주특별자치도 제주시 오광로 146(노형동),not_operating
+repair,36198,신풍카,제주특별자치도 제주시 일주서로 7473(내도동),not_operating
+repair,36199,쌍둥이 차량관리->경인윤활유 타이어마트,제주특별자치도 제주시 광평동로 53(노형동),not_operating
+repair,36204,하나카센타,제주특별자치도 제주시 한림읍 명월성로 198,not_operating
+repair,36205,구좌3급자동차공업사,제주특별자치도 제주시 구좌읍 김녕로8길 32-9,not_operating
+repair,36206,신태양카플러스,제주특별자치도 제주시 아연로 21(연동),not_operating
+repair,36209,형제카서비스,제주특별자치도 제주시 일주서로 7266,not_operating
+repair,36211,금정카프렌드,제주특별자치도 제주시 원남6길 35(도남동),not_operating
+repair,36212,로드카공업사,제주특별자치도 제주시 동화로 38(화북1동),not_operating
+repair,36213,한양자동차공업사,제주특별자치도 제주시 용문로 26-3(용담2동),not_operating
+repair,36217,엔젤차량관리,제주특별자치도 제주시 동문로 153 (건입동),not_operating
+repair,36218,㈜한타제주판매,제주특별자치도 제주시 일주동로 255(화북1동),not_operating
+repair,36219,타이어타운 제주점,제주특별자치도 제주시 연삼로 154(오라2동),not_operating
+repair,36222,화북공단카공업사,제주특별자치도 제주시 화남로 7(화북1동),not_operating
+repair,36224,조은타이어마트 카공업사,제주특별자치도 제주시 연삼로 458-1(이도2동),not_operating
+repair,36227,제이피 모터스 주식회사,제주특별자치도 제주시 화남로 7(화북일동),not_operating
+repair,36234,이도점 기아오토큐,제주특별자치도 제주시 연신로 18(이도2동),not_operating
+repair,36238,타이어코리아제주점,제주특별자치도 제주시 한천로 4(용담2동),not_operating
+repair,36239,전국카센타,제주특별자치도 제주시 조천읍  종인내길 285,not_operating
+repair,36240,한일카센타,제주특별자치도 제주시 북성로 10(삼도2동),not_operating
+repair,36242,현대자동차종합서비스센타,제주특별자치도 제주시 화남로 36(화북1동),not_operating
+repair,36244,승리전문정비자동차공업사,제주특별자치도 제주시 조천읍  함덕18길 40,not_operating
+repair,36246,유 카센타,제주특별자치도 제주시 일주동로 140,not_operating
+repair,36249,신양자동차공업사,제주특별자치도 제주시 추자면 추자로 459,not_operating
+repair,36253,신창카공업사,제주특별자치도 제주시 한경면 일주서로 4199,not_operating
+repair,36257,웰빙카리페어,제주특별자치도 제주시 애월읍 일주서로 6688,not_operating
+repair,36258,스피드매이트건입점,제주특별자치도 제주시 임항로 69(건입동),not_operating
+repair,36261,하영자동차공업사,제주특별자치도 제주시 도근내길 13-4,not_operating
+repair,36262,클리어카,제주특별자치도 제주시 일주동로 198(화북1동),not_operating
+repair,36263,우성밧데리,제주특별자치도 제주시 선반로2길 21(화북1동),not_operating
+repair,36267,도이치모터스 주식회사,제주특별자치도 제주시 연삼로 120(오라3동),not_operating
+repair,36269,(주)제주스타렌탈 정비사업소,제주특별자치도 제주시 용문로 26-7(용담2동),not_operating
+repair,36281,대한카서비스,제주특별자치도 제주시 인다7길 3(아라2동),not_operating
+repair,36284,도평자동차공업사->구)오토매니아,제주특별자치도 제주시 우평로 127(도평동),not_operating
+repair,36286,오토리더스,제주특별자치도 제주시 오남로 7-1(오라1동),not_operating
+repair,36287,조천타이어,제주특별자치도 제주시 조천읍 일주동로 959,not_operating
+repair,36290,119타이어화북점,제주특별자치도 제주시 동화로 38(화북2동),not_operating
+repair,36295,T.스테이션(민속촌점),경기도 용인시 기흥구 용구대로 1886,not_operating
+repair,36296,인 곰내 (in GOM NAE),경기도 용인시 처인구 백암면 석실로34번길 72,not_operating
+repair,36297,시민모터스,경기도 용인시 처인구 중부대로 1752,not_operating
+repair,36298,(주)탈것자동차,"경기도 용인시 기흥구 중부대로 242-2, C동 2층(영덕동)",not_operating
+repair,36299,유니온모터스,경기도 용인시 처인구 남사읍 화곡로 22,not_operating
+repair,36300,메탈웍스,경기도 용인시 처인구 모현읍 외개일로 178,not_operating
+repair,36301,도이치모터스(주) 수원오토월드지점,경기도 용인시 기흥구 공세로47번길 15,not_operating
+repair,36302,뉴원카센타,경기도 용인시 기흥구 보정로114번길 8,not_operating
+repair,36303,1급 삼성공업사,경기도 용인시 기흥구 동백죽전대로 543,not_operating
+repair,36304,영모터스,경기도 용인시 처인구 중부대로 1701,not_operating
+repair,36305,오토오아시스 수지점,경기도 용인시 수지구 수지로 164,not_operating
+repair,36306,케이씨씨네트웍스 주식회사,경기도 용인시 기흥구 용구대로 1845,not_operating
+repair,36307,주식회사 케이엠에스에이,경기도 용인시 처인구 포곡읍 곡현로93번길 5,not_operating
+repair,36308,(주)화성특장,경기도 용인시 처인구 양지면 주북로 130,not_operating
+repair,36309,남경모터스,경기도 용인시 처인구 이동읍 덕성산단2로6번길 10,not_operating
+repair,36310,카닥코퍼레이션(주),경기도 용인시 수지구 용구대로 2699,not_operating
+repair,36311,유원모터스,경기도 용인시 처인구 양지면 신송로 281,not_operating
+repair,36312,에이치모터스,경기도 용인시 처인구 이동읍 백옥대로 815,not_operating
+repair,36313,주식회사 에이엠써비스,경기도 용인시 기흥구 중부대로 242,not_operating
+repair,36314,한성자동차(주) 분당판교지점,경기도 용인시 기흥구 중부대로 242,not_operating
+repair,36315,금호타이어 양지IC점,경기도 용인시 처인구 양지면 죽양대로2016번길 30,not_operating
+repair,36316,우진카공업사,경기도 용인시 처인구 남사읍 수세로 10-2,not_operating
+repair,36317,아르테모터스,경기도 용인시 처인구 원삼면 죽양대로1626번길 2-20,not_operating
+repair,36318,타이어테크 보라점,경기도 용인시 기흥구 용구대로 1882,not_operating
+repair,787,고려자동차,경상북도 상주시 경상대로 2856(개운동),duplicate_same_place
+repair,1007,위클리모터스,충청북도 음성군 음성읍 음성로 428,duplicate_same_place
+repair,3566,통정모터스,충청남도 천안시 동남구 서부대로 187 (신방동),duplicate_same_place
+repair,3519,진모터스,충청남도 천안시 동남구 통정12로 102 (신방동),duplicate_same_place
+repair,3371,중앙카라이프,충청남도 천안시 동남구 중앙로 268 (신부동),duplicate_same_place
+repair,3961,오토오아시스 홈플러스 향남점,경기도 화성시 만세구 향남읍 향남로 402,conflicting_duplicate_coordinates
+repair,4351,오토오아시스 홈플러스 향남점,경기도 화성시 만세구 향남읍 향남로 402,conflicting_duplicate_coordinates
+repair,4283,향남공업사,경기도 화성시 만세구 향남읍 서봉로 144,duplicate_same_place
+repair,4252,라온엔진,경기도 화성시 만세구 남양읍 매바위로 529-56,conflicting_duplicate_coordinates
+repair,4317,라온엔진,경기도 화성시 만세구 남양읍 매바위로 529-56,conflicting_duplicate_coordinates
+repair,4356,유창공업사,경기도 화성시 만세구 향남읍 터넉골로 220,conflicting_duplicate_coordinates
+repair,4407,유창공업사,경기도 화성시 만세구 향남읍 터넉골로 220,conflicting_duplicate_coordinates
+repair,4814,제이제이모터스,인천광역시 서해구 북항로193번길61(원창동) B동,duplicate_same_place
+repair,5200,AUT0 BEEN MOTER(오토빈모터스),서울특별시 성동구 아차산로9길 43(성수동2가),duplicate_same_place
+repair,5929,한일커먼레일,경상북도 포항시 남구 연일읍 형산강남로 406,duplicate_same_place
+repair,5983,현대자동차 남포항서비스(주),경상북도 포항시 남구 오천읍 문덕서로 177,duplicate_same_place
+repair,6186,주식회사 선경산업오성보링,충청북도 제천시 강저로 38(강제동),duplicate_same_place
+repair,6853,한성자동차㈜,서울특별시 강남구 언주로 617 (논현동),duplicate_same_place
+repair,7930,엘엔티렉서스(주) 하남종합서비스센터,"경기도 하남시 감초로 170, 3,7층(초이동)",conflicting_duplicate_coordinates
+repair,7951,엘엔티렉서스(주) 하남종합서비스센터,"경기도 하남시 감초로 170, 3,7층(초이동)",conflicting_duplicate_coordinates
+repair,7931,엘엔티토요타(주) 하남종합서비스센터,"경기도 하남시 감초로 170, 1,6층(초이동)",conflicting_duplicate_coordinates
+repair,7952,엘엔티토요타(주) 하남종합서비스센터,"경기도 하남시 감초로 170, 1,6층(초이동)",conflicting_duplicate_coordinates
+repair,9223,주식회사 남동서비스,인천광역시 남동구 논현고잔로88번길 16(고잔동),duplicate_same_place
+repair,30552,약목소형정비공장,경상북도 칠곡군 약목면 칠곡대로 724,duplicate_same_place
+repair,30553,신영자동차정비공장,경상북도 칠곡군 약목면 약목로 34-6(30),duplicate_same_place
+repair,30554,대성종합자동차정비공장,경상북도 칠곡군 왜관읍 구상길 137,duplicate_same_place
+repair,30555,다부카부분정비,경상북도 칠곡군 가산면 다부원1길 59,duplicate_same_place
+repair,30556,강북종합자동차정비,경상북도 칠곡군 동명면 경북대로 48,duplicate_same_place
+repair,30557,로얄자동차정비,경상북도 칠곡군 북삼읍 금오대로 284,duplicate_same_place
+repair,30558,오토샵부분정비,경상북도 칠곡군 석적읍 북중리3길 49,duplicate_same_place
+repair,30559,㈜한국특장,경상북도 칠곡군 가산면 진목정동길 58,duplicate_same_place
+repair,30560,한국지엠왜관바로서비스,경상북도 칠곡군 왜관읍 관문로 24,duplicate_same_place
+repair,30561,애니카랜드 칠곡점,경상북도 칠곡군 왜관읍 공단로 9,duplicate_same_place
+repair,30562,천평자동차소형정비공장,경상북도 칠곡군 가산면 천평리 8,duplicate_same_place
+repair,30563,금호타이어왜관대리점,경상북도 칠곡군 왜관읍 중앙로 259,duplicate_same_place
+repair,30564,진모터스자동차정비,경상북도 칠곡군 북삼읍 북삼로 62,duplicate_same_place
+repair,30565,21C카센타,경상북도 칠곡군 왜관읍 석전로1길 5,duplicate_same_place
+repair,30566,BB모터스,경상북도 칠곡군 북삼읍 인평중앙로 60,duplicate_same_place
+repair,30567,천평자동차부분정비업소,경상북도 칠곡군 가산면 경북대로 1582,duplicate_same_place
+repair,30568,삼일카서비스,경상북도 칠곡군 왜관읍 관문로 110,duplicate_same_place
+repair,30569,전광사자동차부분정비,경상북도 칠곡군 왜관읍 중앙로 251,duplicate_same_place
+repair,30570,우정친절카정비센타,경상북도 칠곡군 약목면 남계2길 20-16,duplicate_same_place
+repair,30571,대경1급종합자동차정비,경상북도 칠곡군 왜관읍 현대로 24,duplicate_same_place
+repair,30572,약목한국타이어대리점,경상북도 칠곡군 약목면 약목로 32,duplicate_same_place
+repair,30499,달구벌자동차부분정비,경상북도 칠곡군 왜관읍 삼청리 496-3,duplicate_same_place
+repair,30500,스피드카정비,경상북도 칠곡군 왜관읍 평장4길 32,duplicate_same_place
+repair,30501,애니카랜드 왜관점,경상북도 칠곡군 왜관읍 석전로 42,duplicate_same_place
+repair,30502,뉴신일자동차부분정비,경상북도 칠곡군 약목면 관호8길 25-17,duplicate_same_place
+repair,30503,오토오아시스 석적점,경상북도 칠곡군 석적읍 유학로 2,duplicate_same_place
+repair,30504,조은카서비스,경상북도 칠곡군 북삼읍 북삼로 12,duplicate_same_place
+repair,30544,토탈카클럽,경상북도 칠곡군 왜관읍 석전로3길 1,duplicate_same_place
+repair,30545,애니카랜드 석적점,경상북도 칠곡군 석적읍 서중리1길 10,duplicate_same_place
+repair,9874,아진보링,경상북도 칠곡군 가산면 인동가산로 796-3,duplicate_same_place
+repair,30520,아진보링,경상북도 칠곡군 가산면 인동가산로 796-3,duplicate_same_place
+repair,30546,아진보링,경상북도 칠곡군 가산면 인동가산로 796-3,duplicate_same_place
+repair,30547,오토오아시스 왜관점,경상북도 칠곡군 왜관읍 평장4길 7,duplicate_same_place
+repair,30548,삼진자동차부분정비업소,경상북도 칠곡군 왜관읍 군청2길 15,duplicate_same_place
+repair,30549,평화모터랜드,경상북도 칠곡군 약목면 칠곡대로 432,duplicate_same_place
+repair,30550,현대자동차왜관점,경상북도 칠곡군 왜관읍 관문로 148-5,duplicate_same_place
+repair,30551,신동카센타,경상북도 칠곡군 지천면 신동로 78-30,duplicate_same_place
+repair,30584,신우보링,경상북도 칠곡군 왜관읍 금산리 381-3,duplicate_same_place
+repair,30585,금곡카전문정비,경상북도 칠곡군 왜관읍 금산리 448-14,duplicate_same_place
+repair,30586,동원카모터스,경상북도 칠곡군 북삼읍 숭오리 18-2,duplicate_same_place
+repair,30587,스틸하트모터스,경상북도 칠곡군 지천면 금호로1길 14,duplicate_same_place
+repair,30588,석적바른정비,경상북도 칠곡군 석적읍 석적로 969,duplicate_same_place
+repair,30589,북삼카 오일전문점,경상북도 칠곡군 북삼읍 북삼로 140,duplicate_same_place
+repair,30590,석적점 기아오토큐,경상북도 칠곡군 석적읍 석적로 919,duplicate_same_place
+repair,30591,대남특장,경상북도 칠곡군 가산면 경북대로 1278,duplicate_same_place
+repair,30592,(주)영남종합정비,경상북도 칠곡군 지천면 금호로 272,duplicate_same_place
+repair,30593,(주)에이비씨인프라,경상북도 칠곡군 지천면 금호로1길 37-15,duplicate_same_place
+repair,30594,홍특장,경상북도 칠곡군 지천면 금송로 329-8,duplicate_same_place
+repair,30595,무성자동차정비,경상북도 칠곡군 왜관읍 군청4길 23,duplicate_same_place
+repair,30596,금호타이어남율점,경상북도 칠곡군 석적읍 남율로 57,duplicate_same_place
+repair,30597,(주)비에스코리아,경상북도 칠곡군 왜관읍 아곡8길 39,duplicate_same_place
+repair,30598,북삼종합정비공장,경상북도 칠곡군 약목면 칠곡대로 412,duplicate_same_place
+repair,30599,왜관공단자동차부분정비,경상북도 칠곡군 왜관읍 공단로 5,duplicate_same_place
+repair,30600,대성자동차부분정비,경상북도 칠곡군 가산면 경북대로 1563,duplicate_same_place
+repair,30601,순정모터스,경상북도 칠곡군 왜관읍 공단로 133,duplicate_same_place
+repair,30602,동일자동차부분정비,경상북도 칠곡군 약목면 약목로 108-9,duplicate_same_place
+repair,30543,VIP자동차부분정비업소,경상북도 칠곡군 왜관읍 군청4길 18,duplicate_same_place
+repair,30618,한국타이어 왜관IC점,경상북도 칠곡군 왜관읍 현대로 50-1,duplicate_same_place
+repair,30619,고 모터스,경상북도 칠곡군 석적읍 서중리1길 22,duplicate_same_place
+repair,30620,W-MOTORS,경상북도 칠곡군 석적읍 장곡3.1로 82,duplicate_same_place
+repair,30621,대영기업 주식회사,경상북도 칠곡군 동명면 봉암7길 63,duplicate_same_place
+repair,30622,300모터스,경상북도 칠곡군 약목면 관호리 339,duplicate_same_place
+repair,30573,동명자동차종합정비,경상북도 칠곡군 동명면 금암중앙길 71-1,duplicate_same_place
+repair,30574,왜관타이어,경상북도 칠곡군 왜관읍 칠곡대로 1717-2,duplicate_same_place
+repair,30575,태을특장차,경상북도 칠곡군 지천면 금호리 323,duplicate_same_place
+repair,30576,(주)한국비히클,경상북도 칠곡군 왜관읍 석전로 128-1,duplicate_same_place
+repair,30577,지엔비모터스(주) 왜관,경상북도 칠곡군 왜관읍 칠곡대로 1887,duplicate_same_place
+repair,30578,대구카정비,경상북도 칠곡군 약목면 남계리 36-10,duplicate_same_place
+repair,30579,장효경,경상북도 칠곡군 가산면 경북대로 1735,duplicate_same_place
+repair,30580,칠곡1급정비,경상북도 칠곡군 동명면 봉암7길 57,duplicate_same_place
+repair,30581,썬모터스,경상북도 칠곡군 석적읍 석적로 1014,duplicate_same_place
+repair,30582,스카이모터스,경상북도 칠곡군 왜관읍 현대로 133,duplicate_same_place
+repair,30583,우리모터스,경상북도 칠곡군 북삼읍 칠곡대로 188,duplicate_same_place
+repair,30606,경동상사,경상북도 칠곡군 지천면 영오먹골길 45,duplicate_same_place
+repair,30607,한주자동차종합정비,경상북도 칠곡군 동명면 봉암7길 77,duplicate_same_place
+repair,30608,(주)비티모빌러티,경상북도 칠곡군 동명면 경북대로 893,duplicate_same_place
+repair,30609,석적현대정비,경상북도 칠곡군 석적읍 유학로 146,duplicate_same_place
+repair,30610,영일산업(주)송산지점,경상북도 칠곡군 동명면 송산7길 17-14,duplicate_same_place
+repair,30611,류강석타이어(왜관점),경상북도 칠곡군 왜관읍 칠곡대로 1753,duplicate_same_place
+repair,30612,153모터스,경상북도 칠곡군 동명면 금암1길 47,duplicate_same_place
+repair,30613,(주)해머 에코 플랜트,경상북도 칠곡군 왜관읍 호국로 333-6,duplicate_same_place
+repair,30614,한국타이어 석적대리점,경상북도 칠곡군 석적읍 남율로2길 8,duplicate_same_place
+repair,30615,남율카,경상북도 칠곡군 석적읍 남율로3길 80,duplicate_same_place
+repair,30616,타이어프로 북칠곡점,경상북도 칠곡군 동명면 경북대로 58,duplicate_same_place
+repair,30617,투빈모터스,경상북도 칠곡군 가산면 심곡리 456-13,duplicate_same_place
+repair,30505,경북자동차공업사,경상북도 칠곡군 왜관읍 석전로10길 94,duplicate_same_place
+repair,30506,동화자동차정비,경상북도 칠곡군 석적읍 대교길 40,duplicate_same_place
+repair,30507,기아자동차시스템2호점,경상북도 칠곡군 왜관읍 2번도로길 103,duplicate_same_place
+repair,30508,두원자동차정비,경상북도 칠곡군 약목면 약목로 97-2,duplicate_same_place
+repair,30509,미래카부분정비,경상북도 칠곡군 석적읍 유학로 74,duplicate_same_place
+repair,30510,왜관현대종합정비,경상북도 칠곡군 기산면 칠곡대로 1279,duplicate_same_place
+repair,30511,유진 모터스,경상북도 칠곡군 왜관읍 석전로 89,duplicate_same_place
+repair,30512,3공단자동차정비공장,경상북도 칠곡군 석적읍 유학로 126,duplicate_same_place
+repair,30513,스피드메이트왜관점,경상북도 칠곡군 왜관읍 중앙로 162-2,duplicate_same_place
+repair,30514,한국타이어왜관대리점,경상북도 칠곡군 왜관읍 달오3길 20,duplicate_same_place
+repair,30515,Mr Lees Auto Repair Shop,경상북도 칠곡군 왜관읍 석전로 106,duplicate_same_place
+repair,30516,스카이자동차정비,경상북도 칠곡군 북삼읍 금오대로 230,duplicate_same_place
+repair,30517,수레자동차전문정비,경상북도 칠곡군 왜관읍 석전로10길 40,duplicate_same_place
+repair,30518,삼화자동차정비,경상북도 칠곡군 석적읍 북중리7길 30,duplicate_same_place
+repair,30519,오토마스타,경상북도 칠곡군 북삼읍 금오대로 238,duplicate_same_place
+repair,30521,금호상사,경상북도 칠곡군 석적읍 석적로 1017-14,duplicate_same_place
+repair,30522,영남종합정비공장,경상북도 칠곡군 석적읍 중지3길 76-10,duplicate_same_place
+repair,30523,은성카부분정비,경상북도 칠곡군 왜관읍 칠곡대로 1901,duplicate_same_place
+repair,30524,제일카센타,경상북도 칠곡군 동명면 금암동석4길 1-1,duplicate_same_place
+repair,30525,지엔비모터스㈜,경상북도 칠곡군 지천면 금호로 296,duplicate_same_place
+repair,30526,뉴대경자동차정비센타,경상북도 칠곡군 동명면 경북대로 252,duplicate_same_place
+repair,30527,대구카서비스,경상북도 칠곡군 왜관읍 공단로4길 6,duplicate_same_place
+repair,30528,대왕카정비,경상북도 칠곡군 북삼읍 북삼로 43,duplicate_same_place
+repair,30469,경안종합정비,경상북도 칠곡군 왜관읍 현대로 75,duplicate_same_place
+repair,30470,차병원(CAR HOSPITAL),경상북도 칠곡군 석적읍 장곡길 139-1,duplicate_same_place
+repair,30471,(주)광림특수,경상북도 칠곡군 동명면 경북대로 849,duplicate_same_place
+repair,30472,영보카센타,경상북도 칠곡군 왜관읍 현대로 40-42,duplicate_same_place
+repair,30473,우리자동차정비센타,경상북도 칠곡군 석적읍 석적로 946,duplicate_same_place
+repair,30474,EM모터스,경상북도 칠곡군 북삼읍 인강1길 49,duplicate_same_place
+repair,30475,프로카 정비,경상북도 칠곡군 석적읍 남율로15길 15,duplicate_same_place
+repair,30476,애니카랜드 북삼점,경상북도 칠곡군 북삼읍 금오대로2길 41,duplicate_same_place
+repair,30477,투컴(TO COME)자동차정비,"경상북도 칠곡군 북삼읍 북삼로 105, 107동",duplicate_same_place
+repair,30478,북삼현대서비스,경상북도 칠곡군 북삼읍 금오대로 120,duplicate_same_place
+repair,30479,북삼밧데리,경상북도 칠곡군 약목면 금오대로 15,duplicate_same_place
+repair,30480,기아오토큐왜관점,경상북도 칠곡군 왜관읍 전원4길 19,duplicate_same_place
+repair,30481,우성카센타,경상북도 칠곡군 왜관읍 석전로6길 15,duplicate_same_place
+repair,30482,명성자동차전문정비,경상북도 칠곡군 북삼읍 금오대로 136,duplicate_same_place
+repair,30483,미래정비,경상북도 칠곡군 약목면 교8길 59-6,duplicate_same_place
+repair,30484,르노삼성자동차 지정정비코너(왜관점),경상북도 칠곡군 왜관읍 관문로 11,duplicate_same_place
+repair,30485,수정카,경상북도 칠곡군 왜관읍 삼청6길 10,duplicate_same_place
+repair,30486,싸다모터스,경상북도 칠곡군 북삼읍 북삼로 198,duplicate_same_place
+repair,30487,세종자동차정비,경상북도 칠곡군 북삼읍 외율5길 121-14,duplicate_same_place
+repair,30488,동명밧데리,경상북도 칠곡군 동명면 금암중앙길 96,duplicate_same_place
+repair,30489,동서카서비스,경상북도 칠곡군 동명면 금암중앙길 25-3,duplicate_same_place
+repair,30490,황금카센타,경상북도 칠곡군 지천면 신동로1길 1,duplicate_same_place
+repair,30491,금곡카,경상북도 칠곡군 북삼읍 칠곡대로 67,duplicate_same_place
+repair,30492,(주)삼일기업 삼일타이어,경상북도 칠곡군 왜관읍 강변대로 872,duplicate_same_place
+repair,30493,신성카모터스,경상북도 칠곡군 북삼읍 북삼로 153,duplicate_same_place
+repair,30494,대우트럭대구경북판매주식회사,경상북도 칠곡군 왜관읍 칠곡대로 1921,duplicate_same_place
+repair,30495,유성카중기,경상북도 칠곡군 북삼읍 칠곡대로 61,duplicate_same_place
+repair,30496,한국도로공사경북자동차종합정비공장,경상북도 칠곡군 왜관읍 현대로 27,duplicate_same_place
+repair,30497,클리어모터스,경상북도 칠곡군 왜관읍 2산업단지1길 41,duplicate_same_place
+repair,30498,스피드모터스,경상북도 칠곡군 석적읍 동중리9길 28,duplicate_same_place
+repair,30438,(주)국제상사,경상북도 칠곡군 동명면 경북대로 16,duplicate_same_place
+repair,30439,KS셀프카,경상북도 칠곡군 왜관읍 달오1길 10-3,duplicate_same_place
+repair,30440,THE TIRE SHOP,경상북도 칠곡군 왜관읍 칠곡대로 1738,duplicate_same_place
+repair,30441,대영타이어랜드,경상북도 칠곡군 왜관읍 평장4길 6,duplicate_same_place
+repair,30442,(주)광일산업 동명지점,경상북도 칠곡군 동명면 동명팔거천2길 59-8,duplicate_same_place
+repair,30443,깜장타이어,경상북도 칠곡군 석적읍 북중리3길 8-1,duplicate_same_place
+repair,30444,동양자동차종합정비,경상북도 칠곡군 지천면 금호로 221,duplicate_same_place
+repair,30445,신세계정비센터,경상북도 칠곡군 석적읍 남중리4길 3,duplicate_same_place
+repair,30446,주식회사 태강특장,경상북도 칠곡군 지천면 금호로1길 37-23,duplicate_same_place
+repair,30447,대성자동차보링공장,경상북도 칠곡군 약목면 교8길 16-1,duplicate_same_place
+repair,30448,연합카모터스,경상북도 칠곡군 석적읍 남중리2길 16,duplicate_same_place
+repair,30449,케이지 모빌리티 왜관 서비스 프라자,경상북도 칠곡군 왜관읍 중앙로 38,duplicate_same_place
+repair,30450,OK카프라자,경상북도 칠곡군 왜관읍 관문로 103,duplicate_same_place
+repair,30451,진모터스,경상북도 칠곡군 석적읍 북중리4길 3,duplicate_same_place
+repair,30452,에이스정비센타,경상북도 칠곡군 약목면 약목로 108,duplicate_same_place
+repair,30453,부성모터스,경상북도 칠곡군 약목면 복성15길 15,duplicate_same_place
+repair,30454,팍스개러지,경상북도 칠곡군 왜관읍 석전로10길 57,duplicate_same_place
+repair,30455,명문특장,경상북도 칠곡군 왜관읍 공단로13길 16,duplicate_same_place
+repair,30456,(주)엠트럭서비스,경상북도 칠곡군 왜관읍 현대로 74,duplicate_same_place
+repair,30457,황보자동차정비,경상북도 칠곡군 석적읍 남율로15길 15,duplicate_same_place
+repair,30458,T.R.S motors,경상북도 칠곡군 약목면 교8길 39-4,duplicate_same_place
+repair,30459,월드자동차정비,경상북도 칠곡군 왜관읍 현대로 6,duplicate_same_place
+repair,30460,88고속전문정비,경상북도 칠곡군 가산면 송신로 39,duplicate_same_place
+repair,30461,고속자동차정비,경상북도 칠곡군 약목면 칠곡대로 814,duplicate_same_place
+repair,30462,남구미특장,경상북도 칠곡군 북삼읍 강변서로 415,duplicate_same_place
+repair,30463,스카이특장,경상북도 칠곡군 왜관읍 강변대로 821,duplicate_same_place
+repair,30464,영원카센터,"경상북도 칠곡군 동명면 금암동석4길 29, 1층",duplicate_same_place
+repair,30465,(주)엠엔비대구서비스,경상북도 칠곡군 왜관읍 현대로 133,duplicate_same_place
+repair,30466,타이어테크 북삼점,경상북도 칠곡군 북삼읍 금오대로 223,duplicate_same_place
+repair,30467,대원자동차정비,"경상북도 칠곡군 약목면 칠곡대로 719, 3동",duplicate_same_place
+repair,30468,주식회사 멘토모터스,경상북도 칠곡군 석적읍 석적로 1017-1,duplicate_same_place
+repair,11591,동성자동차주식회사,전남광주통합특별시 남구 송암로24번나길 13,duplicate_same_place
+repair,11607,(유)신진공업사,전남광주통합특별시 남구 송암로24번가길 8,duplicate_same_place
+repair,11772,(유)영흥자동차써비스,전남광주통합특별시 목포시 삼학로 222-4(산정동),duplicate_same_place
+repair,12431,아일공업(주),충청북도 청주시 흥덕구 사운로386번길 45,duplicate_same_place
+repair,12451,복천보링공업사,충청북도 청주시 흥덕구 송절로 75-42,duplicate_same_place
+repair,12830,상림자동차정비공장,경상북도 구미시 구미대로 142(사곡동),duplicate_same_place
+repair,13145,동산자동차공업사,전북특별자치도 익산시 목천로6길 42 (인화동1가),conflicting_duplicate_coordinates
+repair,13252,동산자동차공업사,전북특별자치도 익산시 목천로6길 42 (인화동1가),conflicting_duplicate_coordinates
+repair,13644,화순종합자동차공업사,전남광주통합특별시 화순군 화순읍 학포로 2574,duplicate_same_place
+repair,14282,강상모터스,경기도 양평군 강상면 강남로 1009,duplicate_same_place
+repair,14874,세일공업사,경기도 여주시 가남읍 본두3길 15,duplicate_same_place
+repair,15247,디엠모빌리티(주),경상남도 창원시 마산합포구 해안대로 262(신포동1가),duplicate_same_place
+repair,15877,거창고속(주)정비공장,경상남도 거창군 거창읍 강남로 236,duplicate_same_place
+repair,16163,우성카정비,경상남도 양산시 덕계로 122 (덕계동),duplicate_same_place
+repair,16264,일진자동차정비,경상남도 양산시 하북면 양산대로 2255-32,duplicate_same_place
+repair,17169,군산디젤센터,전북특별자치도 군산시 미장서로 144,duplicate_same_place
+repair,18667,오토맥스,경기도 시흥시 봉우순환로3번길 28(정왕동),conflicting_duplicate_coordinates
+repair,18668,오토맥스,경기도 시흥시 봉우순환로3번길 28(정왕동),conflicting_duplicate_coordinates
+repair,18810,경원여객자동차(주),경기도 시흥시 서해안로 81-30(정왕동),duplicate_same_place
+repair,18765,오성원동기전문정비쎈타,경기도 시흥시 군자천로 267(정왕동),duplicate_same_place
+repair,18991,공주자동차공업사,경기도 시흥시 복지로99번길 13(대야동),duplicate_same_place
+repair,19867,(주)하나디젤서비스,울산광역시 북구 무룡1로 54-1(연암동),duplicate_same_place
+repair,19954,원샷정비공업사,울산광역시 남구 월평로171번길 29,duplicate_same_place
+repair,20065,효원자동차 부분정비공업사,울산광역시 남구 수암로 44,duplicate_same_place
+repair,20390,동양커먼레일,광주광역시 서구 풍서좌로 119,duplicate_same_place
+repair,20541,선영모터스,광주광역시 서구 하남대로502번길 20-6,duplicate_same_place
+repair,20669,현대카써비스,대구광역시 서구 서대구로 94(평리동),conflicting_duplicate_coordinates
+repair,20873,현대카써비스,대구광역시 서구 서대구로 94(평리동),conflicting_duplicate_coordinates
+repair,20936,KT 모터스,부산광역시 기장군 정관읍 예림1로 6,conflicting_duplicate_coordinates
+repair,21015,KT 모터스,부산광역시 기장군 정관읍 예림1로 6,conflicting_duplicate_coordinates
+repair,25735,이배재자동차,경기도 광주시 이배재로 223,duplicate_same_place
+repair,25877,차사랑모터스,경기도 이천시 호법면 이섭대천로845번길 19,duplicate_same_place
+repair,26080,무촌자동차공업사,경기도 이천시 부발읍 무촌로18번길 56-15,duplicate_same_place
+repair,27175,메르카바,경기도 고양시 덕양구 토당로 9,duplicate_same_place
+repair,27868,상호트럭서비스,경기도 평택시 청북읍 서해로 1871,duplicate_same_place
+repair,28476,군위1급종합정비공장,대구광역시 군위군 군위읍 경북대로 3605,conflicting_duplicate_coordinates
+repair,28492,군위1급종합정비공장,대구광역시 군위군 군위읍 경북대로 3605,conflicting_duplicate_coordinates
+repair,28493,동부정비공장,대구광역시 군위군 군위읍 경북대로 3473,conflicting_duplicate_coordinates
+repair,28529,동부정비공장,대구광역시 군위군 군위읍 경북대로 3473,conflicting_duplicate_coordinates
+repair,28787,엔진모터스,전라남도 광양시 봉강면 매천로 516,duplicate_same_place
+repair,29465,제일오토공업사,경기도 안성시 공도읍 진건중길 134,conflicting_duplicate_coordinates
+repair,29641,제일오토공업사,경기도 안성시 공도읍 진건중길 134,conflicting_duplicate_coordinates
+repair,29473,안성자동차정비공업사,경기도 안성시 보개면 보개원삼로 230,duplicate_same_place
+repair,30062,그린정비,경상북도 안동시 일직면 돌고개길 6,duplicate_same_place
+repair,30857,현대자동차공업사,경기도 포천시 영북면 영북로 186,duplicate_same_place
+repair,31044,대원자동차공업사,경기도 포천시 관인면 창동로 1777,duplicate_same_place
+repair,30926,경은타이어,전북특별자치도 전주시 덕진구 명주4길 10,duplicate_same_place
+repair,30972,광명카센타,전북특별자치도 전주시 덕진구 동부대로 1198,duplicate_same_place
+repair,32475,세신자동차마을,전북특별자치도 전주시 덕진구 신복로 11,duplicate_same_place
+repair,32536,국제보링,경기도 용인시 처인구 양지면 죽양대로 2290,duplicate_same_place
+repair,32694,금호공업사,경기도 용인시 처인구 양지면 죽양대로2016번길 30,conflicting_duplicate_coordinates
+repair,32756,금호공업사,경기도 용인시 처인구 양지면 죽양대로2016번길 30,conflicting_duplicate_coordinates
+repair,32712,디씨티 레이싱(DCT RACING),경기도 용인시 처인구 포곡읍 곡현로 138-1,conflicting_duplicate_coordinates
+repair,32716,디씨티 레이싱(DCT RACING),경기도 용인시 처인구 포곡읍 곡현로 138-1,conflicting_duplicate_coordinates
+repair,32714,글로벌카모터스,경기도 용인시 처인구 포곡읍 성산로 632-6,conflicting_duplicate_coordinates
+repair,32718,글로벌카모터스,경기도 용인시 처인구 포곡읍 성산로 632-6,conflicting_duplicate_coordinates
+repair,33440,베스트 카 서비스,경기도 의왕시 사천2길 16-1(왕곡동),duplicate_same_place
+repair,33850,석창자동차공업사,전라남도 여수시 좌수영로 962-6,duplicate_same_place
+repair,34987,애니카랜드 대관령점,강원특별자치도 평창군 대관령면 경강로 5166,duplicate_same_place

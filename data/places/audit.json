@@ -1,0 +1,50 @@
+{
+  "retrievedAt": "2026-11-14T15:31:29.650683+00:00",
+  "datasets": {
+    "repair": {
+      "source": "https://www.data.go.kr/data/15028204/standard.do",
+      "originalRows": 36317,
+      "usableRows": 34061,
+      "exclusions": {
+        "not_operating": 2004,
+        "outside_korea_bounds": 1,
+        "duplicate_same_place": 221,
+        "conflicting_duplicate_coordinates": 30
+      },
+      "referenceDateMin": "2022-07-21",
+      "referenceDateMax": "2026-10-30",
+      "institutions": 223
+    },
+    "fuel": {
+      "source": "https://www.data.go.kr/data/15129441/standard.do",
+      "originalRows": 5506,
+      "usableRows": 5506,
+      "exclusions": {},
+      "referenceDateMin": "2024-08-07",
+      "referenceDateMax": "2026-10-27",
+      "institutions": 115
+    }
+  },
+  "note": "Entire public portal snapshot, not a guarantee of all current businesses. Rejected rows remain in original CSV and exclusions.csv.",
+  "files": {
+    "exclusions.csv": "c6f9d4f83781ba05bac31e657c2a6f76f94643c95b50f07c0eb116906ed44145",
+    "fuel-ready.csv": "d72e8724552fdf0fc089af5f98473a86a8284bede13d599754ddd76788c176e2",
+    "fuel.csv": "d72e8724552fdf0fc089af5f98473a86a8284bede13d599754ddd76788c176e2",
+    "raw/fuel-header.json": "af4b033414bc60a5e5dc2d4e37ad8b50ce392cd3a781f46327ebe934028e07fa",
+    "raw/fuel-page-1.json": "3acda0bef92235128c82021ca1404450540493b6b9df98d4a9c7f603a11eead1",
+    "raw/repair-header.json": "bd9ed537bbd722174906c1b86d19b4ed0ffb3f9e7499f4250d0b8d0f33e82454",
+    "raw/repair-page-1.json": "a3f37e617f781db7048e5f87f4cc1b0cb96d6394480cddcb5f04045d1f561553",
+    "raw/repair-page-2.json": "5b75883c806fb8292e03c2db1b489911f04fef5783e25668622ebfab59f63030",
+    "raw/repair-page-3.json": "80e15b16ba801956cb82784b6181679302fe59f6828a673f32dfb41b413fe67a",
+    "raw/repair-page-4.json": "c8de6be206347ece6522efbebd550835c6120661d258a40594a1f7196af1063b",
+    "repair-ready.csv": "0a6ad1274f91a320ecab2a2481726408010728bef74c0394860de326e9aceb40",
+    "repair.csv": "90672ff1fbb01748fd97f60c86a6d529ebf5e2d8fd7690f8580e7e385ecc5fa3"
+  },
+  "catalogue": {
+    "path": "places.json",
+    "version": 2026111501,
+    "places": 39567,
+    "bytes": 10283056,
+    "sha256": "a42d9babec5ee4ada8ebda6ef7b20b4066765328cbe7aae13432dcb752146622"
+  }
+}
