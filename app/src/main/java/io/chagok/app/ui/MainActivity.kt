@@ -141,6 +141,7 @@ class MainActivity : Activity() {
             detailReturn = runCatching { Screen.valueOf(state.getString("detailReturn") ?: "DIARY") }.getOrDefault(Screen.DIARY)
             state.getBundle("edits")?.let { b -> b.keySet().forEach { editValues[it] = b.getString(it).orEmpty() } }
         }
+        openVisitDraft(intent)
         vehicle = PleosVehicle(this, ::log)
         speech = SpeechInput(this, ::log) { if (resumed && !destroyed && screen == Screen.INPUT) render() }
         driving = DrivingState(this, ::log)
@@ -376,7 +377,20 @@ class MainActivity : Activity() {
         gaps.forEach { content.addView(ui.card(ui.text("${fmt.format(it.from)} → ${fmt.format(it.to)}",24f,bold=true),ui.label(it.reason))) }
     }
 
+    private fun openVisitDraft(intent: android.content.Intent) {
+        val id = intent.getStringExtra("visitDraft") ?: return
+        service.entry(id)?.takeIf { it.author == user && it.status == EntryStatus.DRAFT && it.visitId != null }?.let {
+            activeDraftId = it.id; screen = Screen.INPUT
+        }
+        intent.removeExtra("visitDraft")
+    }
+
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent); openVisitDraft(intent); render()
+    }
+
     private fun more() {
+        content.addView(ui.button("정비소·주유소 방문 감지") { startActivity(android.content.Intent(this, PlacesActivity::class.java)) })
         content.addView(ui.text("${service.profile().name} · $user",24f,Palette.sub))
         content.addView(ui.card(
             ui.actionRow("확인할 기록 ${service.reviewCount()}건","자동 감지와 작성 중인 기록",Icon.JOURNAL) { go(Screen.CANDIDATES) },ui.divider(),
@@ -532,6 +546,7 @@ class MainActivity : Activity() {
     }
 
     private fun draftCard(d: DiaryEntry) {
+        d.placeName?.let { content.addView(ui.text("방문 확인 · $it", 22f, Palette.sub)) }
         val kmInput = rememberedInput("${d.id}.km", "주행거리 km", d.odometer?.value?.let { it.toBigDecimal().stripTrailingZeros().toPlainString() }, numeric = true)
         val costInput = rememberedInput("${d.id}.cost", "비용 원", d.cost?.toString(), numeric = true)
         val amountInput = rememberedInput("${d.id}.amount", if (d.item == Item.CHARGE) "충전량 kWh (선택)" else "주유량 L (선택)", d.energyAmount?.toString(), numeric = true).apply {
@@ -643,6 +658,7 @@ class MainActivity : Activity() {
     }
 
     private fun candidates() {
+        content.addView(ui.button("장소 방문 확인 ${service.pendingVisits(user).size}건") { startActivity(android.content.Intent(this, PlacesActivity::class.java)) })
         content.addView(ui.text("금액을 몰라도 기록할 수 있어요. 미뤄 둔 내용은 여기서 이어가세요.",22f,Palette.sub))
         content.addView(ui.button(if(service.questionQueue(user).muted())"오늘 질문 다시 받기" else "오늘은 묻지 않기") {
             val q=service.questionQueue(user);if(q.muted())q.unmute()else q.muteToday();render()
