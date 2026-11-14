@@ -89,14 +89,14 @@ class CompanionSmokeTest {
                 db{s,d->assertEquals(10,s.encounters(d.profile().id,"나").size);assertTrue(s.encounters(d.profile().id,"나").all{it.count==1})}
                 a.scene.begin(Encounters.all.first(),true);repeat(90){a.scene.advance(.05f)}
                 db{s,d->assertEquals(2,s.encounters(d.profile().id,"나").single{it.id=="calico"}.count)}
-                a.inject(clear);button(a,"친구 10/10").performClick();assertTrue(a.showingCollection)
+                a.inject(clear);a.openCollection();assertTrue(a.showingCollection)
             }
             instrument.waitForIdleSync()
             instrument.uiAutomation.takeScreenshot().let{bmp->File(context.filesDir,"companion-collection.png").outputStream().use{bmp.compress(Bitmap.CompressFormat.PNG,100,it)};bmp.recycle()}
             scenario.onActivity{a->button(a,"주행으로").performClick();a.scene.pause();a.scene.preview=true;a.scene.begin(Encounters.all.first(),true);repeat(150){a.scene.advance(.05f)}}
             db{s,d->assertEquals(2,s.encounters(d.profile().id,"나").single{it.id=="calico"}.count)}
             scenario.recreate()
-            scenario.onActivity{a->a.inject(clear);a.scene.pause();assertEquals("친구 10/10",button(a,"친구 10/10").text);assertTrue(a.scene.preview)}
+            scenario.onActivity{a->a.inject(clear);a.scene.pause();assertFalse(button(a,"주행으로").isShown);assertTrue(a.scene.preview)}
         }
     }
     @Test fun bothSkinsShiftWithoutRotatingBlinkAndRespectRestrictionsAndPause() {
@@ -179,6 +179,7 @@ class CompanionSmokeTest {
                     assertEquals(w,root.width);assertEquals(0,root.left);assertEquals(w,a.scene.width)
                     for(i in 0 until header.childCount){
                         val child=header.getChildAt(i) as TextView
+                        if(child.visibility!=View.VISIBLE)continue
                         assertTrue("Header fits $widthDp dp",child.left>=0&&child.right<=header.width)
                         assertEquals("Header label stays on one line",1,child.lineCount)
                         assertEquals("Header label has no ellipsis",0,child.layout.getEllipsisCount(0))

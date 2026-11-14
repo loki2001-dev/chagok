@@ -172,7 +172,7 @@ class MonitorConnection(private val context: Context, private val update: (Monit
     fun open() {
         if (bound) return
         val intent = Intent(context, VehicleMonitorService::class.java)
-        if(!RecordingStartup.start(context,firstUse=true)) {
+        if(!RecordingStartup.start(context)) {
             val store=SqliteStore(context)
             try { update(MonitorState(enabled=store.setting(RecordingStartup.ENABLED)=="true",recordingStatus=store.setting("monitor.startError")?.takeIf { it.isNotBlank() } ?: "자동 기록 꺼짐")) } finally { store.close() }
             return

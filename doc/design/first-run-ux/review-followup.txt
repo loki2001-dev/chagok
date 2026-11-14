@@ -1,0 +1,7 @@
+
+io.chagok.app.PermissionReviewTest:......
+io.chagok.app.FirstRunExperienceTest:.....
+
+Time: 110.226
+
+OK (11 tests)

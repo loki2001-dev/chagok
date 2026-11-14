@@ -6,6 +6,8 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.Uri
+import android.provider.Settings
 import android.graphics.Color
 import android.graphics.Matrix
 import android.os.*
@@ -15,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.*
 import android.widget.*
 import io.chagok.app.data.SqliteStore
+import io.chagok.app.drive.DrivingState
 import io.chagok.app.domain.*
 import io.chagok.app.speech.*
 import io.chagok.app.ui.MainActivity
@@ -41,6 +44,16 @@ open class CompanionActivity : Activity() {
     private lateinit var diary: DiaryService
     private lateinit var speech: SpeechInput
     private lateinit var monitor: MonitorConnection
+    private var driving: DrivingState? = null
+    private var setupRequired = false
+    private var setupPowertrain: Powertrain? = null
+    private var welcome: FirstRunView? = null
+    private var todaySummary = "달리면 오늘의 운행이 자동으로 남아요"
+    private var reviewCount = 0
+    private var lastSafetyCheck = 0L
+    private var pendingMicQuestion: String? = null
+    private var pendingMicUser: String? = null
+    private var independentParked: Boolean? = null
     private lateinit var body: FrameLayout
     private lateinit var footer: TextView
     private lateinit var status: TextView
@@ -54,7 +67,6 @@ open class CompanionActivity : Activity() {
     private var resumed = false
     private var listening = false
     private var records = emptyList<EncounterRecord>()
-    private var pendingCount = 0
     private var checkedAt = 0L
     private var questionAt = 0L
     private var speechAttempt = 0
@@ -64,13 +76,27 @@ open class CompanionActivity : Activity() {
     private var visitDialog = false
     val showingCollection get() = collection?.visibility == View.VISIBLE
     val monitorState get() = state
-    private val parked get() = !state.motion.restricted && (state.motion.speedMps == null || state.motion.speedMps!! < .1f)
+    private val parked get() = if (!state.enabled) independentParked == true
+        else independentParked != false && !state.motion.restricted && (state.motion.speedMps == null || state.motion.speedMps!! < .1f)
+    protected open val setupParked get() = driving?.let { it.available && !it.restricted } == true
+    protected open fun hasAppPermission(permission: String) = checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+    protected open val vehicleSpeedGranted get() = !connectVehicle || hasAppPermission("android.car.permission.CAR_SPEED")
+    private val needsVehiclePermission get() = state.enabled && !vehicleSpeedGranted
+    protected open fun requestAppPermissions(permissions: Array<String>, requestCode: Int) = requestPermissions(permissions,requestCode)
+    protected open fun openPermissionSettings() {
+        startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName")))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Palette.configure(resources.configuration); ui = Ui(this)
         store = SqliteStore(this); diary = DiaryService(store)
+        setupRequired = FirstRunSetup(store).required
+        setupPowertrain = savedInstanceState?.getString("setupPowertrain")?.let { runCatching { Powertrain.valueOf(it) }.getOrNull() }
+        if (connectVehicle) driving = DrivingState(this) { Log.i("Chagok", it) }
         user = store.setting("user") ?: "나"; diary.selectUser(user)
+        pendingMicQuestion=savedInstanceState?.getString("pendingMicQuestion")
+        pendingMicUser=savedInstanceState?.getString("pendingMicUser")
         conversation = EnergyConversation(diary)
         speech = SpeechInput(this, { Log.i("Chagok", it) }) { if (resumed && conversation.asking && !listening) listen() }
         scene = CompanionSceneView(this).apply {
@@ -83,7 +109,7 @@ open class CompanionActivity : Activity() {
             }
             onEncounter = { toastText=it.name+" · 만남을 남겼어요";toastUntil=SystemClock.elapsedRealtime()+5000 }
         }
-        buildShell(); reloadRecords()
+        buildShell(); if (!setupRequired) reloadRecords()
         val restored = savedInstanceState?.getBundle("scene")
         if (restored != null) {
             scene.preview=restored.getBoolean("preview")
@@ -98,12 +124,33 @@ open class CompanionActivity : Activity() {
             }
         } else scene.begin(Encounters.all.first())
         monitor = MonitorConnection(this, ::applyMonitorState)
-        if (connectVehicle) requestVehiclePermissions()
+        driving?.observe { applyDrivingSafety(driving?.let { it.available && !it.restricted } == true) }
     }
     private fun requestVehiclePermissions() {
-        val wanted=listOf("android.car.permission.CAR_SPEED",Manifest.permission.RECORD_AUDIO)+if(Build.VERSION.SDK_INT>=33)listOf(Manifest.permission.POST_NOTIFICATIONS)else emptyList()
-        val missing=wanted.filter{checkSelfPermission(it)!=PackageManager.PERMISSION_GRANTED}
-        if(missing.isNotEmpty())requestPermissions(missing.toTypedArray(),1042)
+        val wanted=listOf("android.car.permission.CAR_SPEED")+if(Build.VERSION.SDK_INT>=33)listOf(Manifest.permission.POST_NOTIFICATIONS)else emptyList()
+        val missing=wanted.filterNot(::hasAppPermission)
+        if(missing.isNotEmpty()) {
+            if("android.car.permission.CAR_SPEED" in missing)store.saveSetting("permissions.speedRequested","true")
+            requestAppPermissions(missing.toTypedArray(),1042)
+        }
+    }
+    private fun recoverVehiclePermission() {
+        if (!parked) return
+        if (store.setting("permissions.speedRequested")=="true" && !shouldShowRequestPermissionRationale("android.car.permission.CAR_SPEED")) {
+            openPermissionSettings()
+        } else {
+            store.saveSetting("permissions.speedRequested","true")
+            requestAppPermissions(arrayOf("android.car.permission.CAR_SPEED"),1042)
+        }
+    }
+    private fun finishSetup(powertrain: Powertrain) {
+        driving?.refresh()
+        if (!setupRequired || !setupParked) return
+        FirstRunSetup(store).complete(powertrain)
+        setupRequired = false; welcome = null
+        buildShell(); reloadRecords()
+        if (connectVehicle) { requestVehiclePermissions(); monitor.open() }
+        if (resumed && automaticFrames) scene.resume()
     }
     private fun button(label:String, action:()->Unit)=Button(this).apply {
         text=label;textSize=24f;isAllCaps=false;minWidth=0;minimumWidth=0;minHeight=ui.dp(56);minimumHeight=ui.dp(56)
@@ -111,21 +158,27 @@ open class CompanionActivity : Activity() {
         setTextColor(Palette.text);background=ui.touch(Palette.surface,14,Palette.border);setOnClickListener{action()}
     }
     private fun buildShell() {
+        if (setupRequired) {
+            welcome = FirstRunView(this, setupPowertrain, { setupPowertrain = it }, ::finishSetup)
+            setContentView(welcome)
+            welcome?.setParked(setupParked)
+            return
+        }
         val root=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;setBackgroundColor(Palette.bg)}
         val header=LinearLayout(this).apply{gravity=Gravity.CENTER_VERTICAL}
         val title=ui.text("차곡",40f,bold=true)
         header.addView(title,LinearLayout.LayoutParams(0,WRAP_CONTENT,1f))
-        friendsButton=button("친구 0/10"){if(parked)toggleCollection()}
+        friendsButton=button("주행으로"){if(parked)hideCollection()}.apply { visibility=View.GONE }
         header.addView(friendsButton,LinearLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT).apply{marginEnd=ui.dp(8)})
         menuButton=button("메뉴"){if(parked)showMenu()};header.addView(menuButton)
         root.addView(header)
-        status=ui.text("차량 연결 중",26f,Palette.sub)
+        status=ui.text("운행 기록을 준비하고 있어요",26f,Palette.sub)
         root.addView(status)
         body=FrameLayout(this);body.addView(scene,FrameLayout.LayoutParams(MATCH_PARENT,MATCH_PARENT))
         root.addView(body,LinearLayout.LayoutParams(MATCH_PARENT,0,1f))
-        footer=ui.text("만난 친구는 자동으로 남겨요.",28f,Palette.sub).apply{accessibilityLiveRegion=View.ACCESSIBILITY_LIVE_REGION_POLITE}
+        footer=ui.text(todaySummary,28f,Palette.sub).apply{accessibilityLiveRegion=View.ACCESSIBILITY_LIVE_REGION_POLITE}
         root.addView(footer)
-        diaryButton=button("차량 일지 · 관리  ›") { if(parked) startActivity(Intent(this,MainActivity::class.java)) }.apply {
+        diaryButton=button("차량 일지 · 관리  ›") { if(parked) { if(needsVehiclePermission)recoverVehiclePermission() else openDiary() } }.apply {
             contentDescription="차량 일지와 관리 열기"
             minHeight=ui.dp(64);minimumHeight=ui.dp(64)
             visibility=if(parked)View.VISIBLE else View.GONE
@@ -145,7 +198,7 @@ open class CompanionActivity : Activity() {
                     title.textSize=if(compact)28f else if(medium)34f else 40f
                     for (button in listOf(friendsButton,menuButton)) {
                         button.textSize=if(compact)20f else if(medium)22f else 24f
-                        val label=if(button===friendsButton)"친구 10/10" else "메뉴"
+                        val label=if(button===friendsButton)"주행으로" else "메뉴"
                         val textWidth=kotlin.math.ceil(button.paint.measureText(label)).toInt()
                         button.minWidth=textWidth+button.compoundPaddingLeft+button.compoundPaddingRight
                         button.minimumWidth=button.minWidth
@@ -165,14 +218,18 @@ open class CompanionActivity : Activity() {
     }
     override fun onResume() {
         super.onResume(); resumed=true
+        driving?.refresh()
+        if (setupRequired) { welcome?.setParked(setupParked); handler.post(tick); return }
         val currentUser=store.setting("user")?:"나"
         if(currentUser!=user){
+            pendingMicQuestion=null;pendingMicUser=null
             scene.serviceVisit.cancel()
             conversation.clear();syncQuestion();user=currentUser;diary.selectUser(user);scene.director.active=null
             scene.skin=runCatching{CarSkin.valueOf(store.setting("companion.skin/$user")?:"RACER")}.getOrDefault(CarSkin.RACER)
         }
         reloadRecords();if(automaticFrames)scene.resume()
         if(connectVehicle)monitor.open()
+        resumePendingVoiceQuestion()
         handler.post(tick)
     }
     override fun onPause() {
@@ -181,9 +238,10 @@ open class CompanionActivity : Activity() {
         if(conversation.asking){conversation.defer();syncQuestion()}
         monitor.close();dialog?.dismiss();super.onPause()
     }
-    override fun onDestroy() { speech.release();store.close();super.onDestroy() }
+    override fun onDestroy() { driving?.release();speech.release();store.close();super.onDestroy() }
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig);Palette.configure(newConfig)
+        if (setupRequired) { buildShell(); return }
         val reopenCollection=showingCollection
         dialog?.dismiss();(scene.parent as? android.view.ViewGroup)?.removeView(scene);collection=null
         buildShell();updateStatus()
@@ -193,35 +251,53 @@ open class CompanionActivity : Activity() {
         state=value;scene.motion=value.motion
         if(!state.enabled)scene.serviceVisit.cancel()
         if(visitDialog && (state.motion.restricted || state.motion.parkGear != true || state.motion.speedMps?.let { kotlin.math.abs(it) < .3f } != true)) dialog?.dismiss()
+        enforceParkedUi()
+        resumePendingVoiceQuestion()
+    }
+    /** UX restrictions must close parked surfaces even when recording (and its callbacks) is off. */
+    protected fun applyDrivingSafety(isParked: Boolean) {
+        independentParked=isParked
+        if (setupRequired) { welcome?.setParked(setupParked); return }
+        if (::menuButton.isInitialized) { enforceParkedUi();resumePendingVoiceQuestion() }
+    }
+    private fun enforceParkedUi() {
         if(!parked){
-            if(conversation.asking && deferQuestionsWhileMoving) { speech.cancel();listening=false;conversation.defer();questionAt=SystemClock.elapsedRealtime();syncQuestion() }
+            if(conversation.asking && deferQuestionsWhileMoving) { speechAttempt++;speech.cancel();listening=false;conversation.defer();questionAt=SystemClock.elapsedRealtime();syncQuestion() }
             dialog?.dismiss()
             if(showingCollection)hideCollection()
+            scene.serviceVisit.cancel()
             if(scene.preview){scene.preview=false;scene.director.active=null;scene.director.remainingSeconds=180f}
         }
         updateStatus()
     }
     private fun updateStatus() {
+        if (setupRequired) return
         friendsButton.isEnabled=parked;menuButton.isEnabled=parked
+        friendsButton.visibility=if(showingCollection)View.VISIBLE else View.GONE
         diaryButton.visibility=if(parked)View.VISIBLE else View.GONE
-        friendsButton.text=if(showingCollection)"주행으로" else "친구 ${records.size}/10"
+        diaryButton.text=if(needsVehiclePermission)"차량 권한 허용하기" else if(reviewCount>0)"확인할 기록 ${reviewCount}건  ›" else "차량 일지 · 관리  ›"
+        diaryButton.contentDescription=if(needsVehiclePermission)"운행 기록을 위한 차량 권한 허용하기" else if(reviewCount>0)"확인할 기록 ${reviewCount}건 열기" else "차량 일지와 관리 열기"
         status.text=when{
             scene.preview->"미리보기 · 기록되지 않아요"
             !state.enabled->"자동 기록 꺼짐"
+            needsVehiclePermission->"운행 기록 준비 미완료 · 차량 권한 필요"
             state.motion.speedMps==null->"차량 속도 미수신 · 권한과 연결을 확인해 주세요"
-            !state.motion.animationAllowed->"자동 기록 중 · 주행 제한에 맞춰 연출을 쉬고 있어요"
-            state.motion.speedMps!!>.3f->"함께 가는 중"
-            else->"잠시 쉬는 중 · ${state.recordingStatus}"
+            state.motion.speedMps!!>.3f->"오늘의 운행을 기록하고 있어요"
+            else->"정차 중 · ${state.recordingStatus}"
         }
     }
     private val tick=object:Runnable{
         override fun run(){
             if(!resumed)return
             val now=SystemClock.elapsedRealtime()
+            if (now-lastSafetyCheck>=5000) { lastSafetyCheck=now;driving?.refresh() }
+            if (setupRequired) { welcome?.setParked(setupParked);handler.postDelayed(this,200);return }
             if(now-checkedAt>=1000){
                 checkedAt=now
-                val candidates=diary.pendingCandidates();pendingCount=candidates.size
+                val candidates=diary.pendingCandidates()
+                refreshSummary()
                 syncServiceVisit()
+                resumePendingVoiceQuestion()
                 if(automaticQuestions&&state.enabled&&!scene.preview&&!showingCollection&&scene.serviceVisit.frame==null&&!conversation.asking&&conversation.stage==EnergyConversation.Stage.IDLE){
                     val audio=getSystemService(android.media.AudioManager::class.java)
                     val safe = parked && state.motion.parkGear == true && state.motion.speedMps?.let { kotlin.math.abs(it) < .3f } == true
@@ -236,24 +312,36 @@ open class CompanionActivity : Activity() {
                                 .setPositiveButton("확인하기") { _, _ -> startActivity(Intent(this@CompanionActivity, io.chagok.app.ui.PlacesActivity::class.java)) }
                                 .setNegativeButton("아니요") { _, _ -> diary.rejectVisit(visit.id, user) }
                                 .setNeutralButton("나중에", null).create().also { it.setOnDismissListener { visitDialog = false }; it.show() }
-                        } else if(speech.isAvailable()) queue.next(candidates,safe)?.let { beginQuestion(it.id) }
+                        } else if(speech.isAvailable() && hasAppPermission(Manifest.permission.RECORD_AUDIO))
+                            queue.next(candidates,safe)?.let { beginQuestion(it.id) }
                     }
                 }
             }
             if(conversation.asking&&now-questionAt>=20_000){speech.cancel();listening=false;conversation.defer();questionAt=now;syncQuestion()}
             if(conversation.stage==EnergyConversation.Stage.FINISHED&&now-questionAt>=5000){conversation.clear();syncQuestion()}
             footer.text=footerMessage(when{
+                needsVehiclePermission->"운행을 기록하려면 차량 권한이 필요해요.\n이미 남긴 일지는 메뉴에서 볼 수 있어요."
                 scene.serviceVisit.frame!=null->"${scene.serviceVisit.frame!!.caption}\n방문 기념 연출 · 실제 이용 내역은 확인 후 기록해요."
                 scene.preview->"미리보기 중이에요.\n친구는 실제 기록에 남지 않아요."
                 conversation.asking->if(listening)"답변을 듣고 있어요.\n금액은 확인한 뒤 기록해요." else "음성 연결을 확인하고 있어요.\n응답이 없으면 초안으로 남겨요."
                 toastUntil>now->toastText
-                pendingCount>0->"확인할 주유·충전 후보 ${pendingCount}건\n정차 후 차량 일지에서 이어갈 수 있어요."
                 !state.enabled->"자동 기록이 꺼져 있어요.\n메뉴에서 다시 켤 수 있어요."
-                parked&&state.trip?.endedAt!=null->state.trip!!.let { "이번 운행 ${it.distanceKm?.let { d->"%.1fkm".format(d) } ?: "거리 확인 필요"} · 친구 ${it.friends.size}명\n오늘의 드라이브에 남겼어요." }
-                else->"${state.recordingStatus}\n만난 친구도 함께 남겨요."
+                state.motion.speedMps==null->"차량 연결을 확인하고 있어요.\n연결되면 운행 기록을 시작해요."
+                reviewCount>0->"$todaySummary\n${if(parked)"확인할 기록" else "정차 후 확인할 기록"} ${reviewCount}건"
+                else->"$todaySummary\n${if(parked)"필요한 금액만 확인하면 기록이 완성돼요" else "금액 확인은 정차 후에 할게요"}"
             })
             handler.postDelayed(this,200)
         }
+    }
+    private fun refreshSummary() {
+        todaySummary=CompanionSummary.today(store.trips(diary.profile().id),user,diary.today(),ZoneId.systemDefault())
+        reviewCount=diary.reviewCount()
+        updateStatus()
+    }
+    private fun openDiary() {
+        startActivity(Intent(this,MainActivity::class.java).apply {
+            if(reviewCount>0)putExtra("openReview",true)
+        })
     }
     private fun serviceVisitKey(visit: PlaceVisit) = "companion.service-visit/${visit.vehicleId}/${visit.user}/${visit.id}"
     private fun syncServiceVisit() {
@@ -281,10 +369,41 @@ open class CompanionActivity : Activity() {
     }
     private fun askedKey(id:String)="companion.asked/${diary.profile().id}/$user/$id"
     fun beginQuestion(candidateId:String):Boolean {
-        if(scene.preview||!resumed)return false
+        if(setupRequired||scene.preview||!resumed)return false
         if(!conversation.begin(candidateId,user,state.odometer))return false
         store.saveSetting(askedKey(candidateId),"true");questionAt=SystemClock.elapsedRealtime();speechAttempt++
         syncQuestion();listen();return true
+    }
+    protected fun requestVoiceQuestion(candidateId: String) {
+        if (!parked) return
+        pendingMicQuestion=candidateId;pendingMicUser=user
+        if (!hasAppPermission(Manifest.permission.RECORD_AUDIO)) {
+            requestAppPermissions(arrayOf(Manifest.permission.RECORD_AUDIO),1043)
+        } else resumePendingVoiceQuestion()
+    }
+    private fun resumePendingVoiceQuestion() {
+        val candidate=pendingMicQuestion ?: return
+        if(pendingMicUser!=user || pendingMicUser!=(store.setting("user") ?: "나")) {
+            pendingMicQuestion=null;pendingMicUser=null;return
+        }
+        if(!resumed || setupRequired || !parked || scene.preview || showingCollection || conversation.asking ||
+            dialog?.isShowing==true || !hasAppPermission(Manifest.permission.RECORD_AUDIO))return
+        // Consume only when the Activity can actually begin; permission UI may still have it paused.
+        pendingMicQuestion=null;pendingMicUser=null
+        beginQuestion(candidate)
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, results: IntArray) {
+        super.onRequestPermissionsResult(requestCode,permissions,results)
+        if(requestCode==1043) {
+            if(results.firstOrNull()==PackageManager.PERMISSION_GRANTED) {
+                resumePendingVoiceQuestion()
+            } else {
+                pendingMicQuestion=null;pendingMicUser=null
+                toastText="마이크 없이도 차량 일지에서 직접 입력할 수 있어요"
+                toastUntil=SystemClock.elapsedRealtime()+5000
+            }
+        }
+        if(requestCode==1042 && !setupRequired)updateStatus()
     }
     private fun syncQuestion(){
         scene.question=conversation.text;scene.questionHint=conversation.hint
@@ -293,7 +412,7 @@ open class CompanionActivity : Activity() {
     }
     private fun listen(){
         if(!connectVehicle||!resumed||!conversation.asking||listening||!speech.isAvailable())return
-        if(checkSelfPermission(Manifest.permission.RECORD_AUDIO)!=PackageManager.PERMISSION_GRANTED)return
+        if(!hasAppPermission(Manifest.permission.RECORD_AUDIO))return
         val token=++speechAttempt;listening=true
         speech.listen(object:SpeechCallbacks{
             override fun onState(state:ListenState){if(token==speechAttempt)listening=state!=ListenState.IDLE}
@@ -306,10 +425,9 @@ open class CompanionActivity : Activity() {
         conversation.receive(text);questionAt=SystemClock.elapsedRealtime();syncQuestion()
         if(conversation.asking)handler.postDelayed({listen()},450)
     }
-    private fun reloadRecords(){records=store.encounters(diary.profile().id,user);scene.seen=records.map{it.id}.toSet();if(::friendsButton.isInitialized)updateStatus()}
-    private fun toggleCollection(){if(showingCollection)hideCollection()else showCollection()}
+    private fun reloadRecords(){records=store.encounters(diary.profile().id,user);scene.seen=records.map{it.id}.toSet();if(::friendsButton.isInitialized)refreshSummary()}
     private fun hideCollection(){collection?.let{body.removeView(it)};collection=null;scene.visibility=View.VISIBLE;if(resumed&&automaticFrames)scene.resume();updateStatus()}
-    private fun showCollection(){
+    protected fun showCollection(){
         if(!parked)return
         collection?.let{body.removeView(it)};scene.pause();scene.visibility=View.GONE
         val list=ui.column(16).apply { setPadding(ui.dp(20),ui.dp(20),ui.dp(20),ui.dp(24)) }
@@ -345,7 +463,7 @@ open class CompanionActivity : Activity() {
     }
     private fun showMenu(){
         val options=if(scene.preview)arrayOf("다음 만남", "급가속", "왼쪽 / 오른쪽", "비 효과", "미리보기 끝내기", "주유소 방문", "정비소 방문")
-            else arrayOf("차량 스킨", "일지·차량 관리", "만난 친구들", "미뤄둔 질문 이어가기", "주행 연출 미리보기", "차량·음성 권한", if(store.setting(RecordingStartup.ENABLED)=="false")"자동 기록 켜기" else "자동 기록 종료", if(diary.questionQueue(user).muted())"오늘 질문 다시 받기" else "오늘은 묻지 않기")
+            else arrayOf("차량 스킨", "일지·차량 관리", "만난 친구들 · ${records.size}/10", "말로 기록 확인", "주행 연출 미리보기", "차량 연결 권한", if(store.setting(RecordingStartup.ENABLED)=="false")"자동 기록 켜기" else "자동 기록 종료", if(diary.questionQueue(user).muted())"오늘 질문 다시 받기" else "오늘은 묻지 않기")
         dialog=AlertDialog.Builder(this).setTitle(if(scene.preview)"주행 연출 미리보기"else "차곡").setItems(options){_,index->
             if(!parked)return@setItems
             if(scene.preview){when(index){
@@ -362,7 +480,7 @@ open class CompanionActivity : Activity() {
                 0->showSkins()
                 1->startActivity(Intent(this,MainActivity::class.java))
                 2->showCollection()
-                3->{conversation.clear();val candidate=diary.pendingCandidates().firstOrNull();if(candidate!=null)beginQuestion(candidate.id)else Toast.makeText(this,"미뤄둔 질문이 없어요",Toast.LENGTH_SHORT).show()}
+                3->{conversation.clear();val candidate=diary.pendingCandidates().firstOrNull { !it.collecting };if(candidate!=null)requestVoiceQuestion(candidate.id)else Toast.makeText(this,"지금 확인할 주유·충전 기록이 없어요",Toast.LENGTH_SHORT).show()}
                 4->{scene.serviceVisit.cancel();speech.cancel();conversation.defer();conversation.clear();syncQuestion();hideCollection();scene.preview=true;scene.previewSpeed=45f;scene.previewAcceleration=0f;scene.begin(Encounters.all.first(),true)}
                 5->requestVehiclePermissions()
                 6->{val enable=store.setting(RecordingStartup.ENABLED)=="false";store.saveSetting(RecordingStartup.ENABLED,enable.toString());monitor.close();if(!enable)stopService(Intent(this,VehicleMonitorService::class.java));monitor.open()}
@@ -374,6 +492,9 @@ open class CompanionActivity : Activity() {
         if(parked){scene.skin=CarSkin.entries[index];store.saveSetting("companion.skin/$user",scene.skin.name);scene.invalidate()};d.dismiss()
     }.setNegativeButton("닫기",null).show().also { ui.styleDialog(it) }}
     override fun onSaveInstanceState(outState:Bundle){
+        outState.putString("pendingMicQuestion",pendingMicQuestion)
+        outState.putString("pendingMicUser",pendingMicUser)
+        setupPowertrain?.let { outState.putString("setupPowertrain",it.name) }
         outState.putBundle("scene",Bundle().apply{
             putBoolean("preview",scene.preview);putString("scenery",scene.director.scenery.name);putFloat("remaining",scene.director.remainingSeconds);putString("last",scene.director.lastId)
             putFloat("travel",scene.travel);putInt("previewTurn",scene.previewTurn);putFloat("previewRain",scene.previewRain);putFloat("previewSpeed",scene.previewSpeed)
