@@ -52,9 +52,12 @@ class LandscapeUiSmokeTest {
                     Item.CABIN_FILTER to today.minusMonths(8),
                     Item.BATTERY_12V_REPLACE to today.minusMonths(3),
                 )) {
+                    // 타이어 위치 교환만 주행거리 기준을 함께 둔다: 41,200km에 교환, 권장 10,000km
+                    val distance = item == Item.TIRE_ROTATION
                     store.saveEntry(DiaryEntry("summary-$item", diary.profile().id, item, date,
-                        Instant.now(), null, null, status = EntryStatus.CONFIRMED, author = "나"))
-                    diary.setPlan(item, null, 12, "시연용 주기")
+                        Instant.now(), if (distance) FieldEvidence(41_200.0, "km", Source.USER) else null, null,
+                        status = EntryStatus.CONFIRMED, author = "나"))
+                    diary.setPlan(item, if (distance) 10_000 else null, 12, "시연용 주기")
                 }
                 for(pending in listOf(false,true)) {
                     if(pending)diary.manualDraft(Item.REFUEL,diary.today(),null,Reading.Unavailable("test"),"나")
@@ -71,6 +74,12 @@ class LandscapeUiSmokeTest {
                         assertEquals(Palette.danger, labels.single { it.text == "100% · 점검 필요" }.currentTextColor)
                         assertEquals(Palette.danger, labels.single { it.text.endsWith("% · 임박") }.currentTextColor)
                         assertTrue(labels.any { it.text.startsWith("보충 예정일 ") })
+                        assertTrue(labels.any { it.text == "최근 교환" })
+                        assertEquals("6,000km", (labels.single { it.text == "교환 후 주행" }.parent as ViewGroup)
+                            .let { it.getChildAt(1) as TextView }.text.toString())
+                        assertEquals(1, labels.count { it.text == "주행 마모도" })
+                        assertTrue(labels.any { it.text == "주기 10,000km 중 6,000km 주행 · 4,000km 남음" })
+                        assertEquals(5, labels.count { it.text == "사용 기간" })
                         assertTrue(labels.any { it.text.endsWith("% · 예정") && it.currentTextColor == Palette.accent })
                         assertTrue(labels.any { it.text == "주기 미설정 · 4개" })
                         assertTrue(labels.any { it.text == Item.BATTERY_12V_REPLACE.label })

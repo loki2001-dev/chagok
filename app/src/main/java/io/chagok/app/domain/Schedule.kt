@@ -57,18 +57,36 @@ data class ScheduleStatus(
             else -> ScheduleState.UPCOMING
         }
 
+    /**
+     * 기준 정비 이후 주행한 거리. 거리 조건을 계산할 수 있을 때만 값이 있다.
+     * 기록이 없어도 사용자가 알려 준 마지막 정비 주행거리로 다음 거리가 잡히면 계산된다.
+     */
+    val usedKm: Double?
+        get() = intervalKm?.let { interval -> remainingKm?.let { interval - it } }
+
+    /** 적용 중인 주행 주기 대비 마모도(%). 얼마나 넘겼는지 보이도록 100을 넘을 수 있다. */
+    val wearPercent: Int?
+        get() = intervalKm?.takeIf { it > 0 }?.let { interval ->
+            usedKm?.let { (it * 100 / interval).toInt().coerceAtLeast(0) }
+        }
+
+    /** 계산 기준일. 날짜 조건이 있을 때만 알 수 있다. */
+    val asOf: LocalDate?
+        get() = if (nextDate != null && remainingDays != null) nextDate.minusDays(remainingDays) else null
+
+    /** 권장 기간 대비 사용 기간(%). 100을 넘을 수 있다. */
+    val agePercent: Int?
+        get() {
+            val today = asOf ?: return null
+            if (basis == null || nextDate == null) return null
+            val interval = ChronoUnit.DAYS.between(basis.performedOn, nextDate)
+            if (interval <= 0) return null
+            return (ChronoUnit.DAYS.between(basis.performedOn, today) * 100.0 / interval).toInt().coerceAtLeast(0)
+        }
+
     /** 사용한 주기 비율. 거리와 날짜 중 진행이 빠른 쪽을 표시한다. */
     val progressPercent: Int?
-        get() {
-            val distance = intervalKm?.takeIf { it > 0 }?.let { interval ->
-                remainingKm?.let { (interval - it) * 100 / interval }
-            }
-            val date = if (basis != null && nextDate != null && remainingDays != null) {
-                val interval = ChronoUnit.DAYS.between(basis.performedOn, nextDate)
-                if (interval > 0) (interval - remainingDays) * 100.0 / interval else null
-            } else null
-            return listOfNotNull(distance, date).maxOrNull()?.toInt()?.coerceIn(0, 100)
-        }
+        get() = listOfNotNull(wearPercent, agePercent).maxOrNull()?.coerceIn(0, 100)
 }
 
 /**

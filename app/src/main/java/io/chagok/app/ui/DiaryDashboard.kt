@@ -9,6 +9,8 @@ import android.widget.LinearLayout
 import io.chagok.app.domain.*
 import io.chagok.app.domain.DiaryService.Companion.km
 import io.chagok.app.domain.DiaryService.Companion.won
+import java.time.LocalDate
+import java.time.Period
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
@@ -69,7 +71,7 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
             addView(ui.section("정비 주기", "항목을 눌러 내 차의 주기를 수정하세요."))
             val mileageLabel = service.reportedServiceKm()?.let(::km) ?: "기록 없는 항목의 기준 입력"
             addView(ui.actionRow("마지막 정비 주행거리", mileageLabel, Icon.CAR, editMileage))
-            schedules.map { status -> maintenanceCard(status) { editPlan(status.plan.item, status) } }.chunked(2).forEach { cards ->
+            schedules.map { status -> maintenanceCard(status, currentKm) { editPlan(status.plan.item, status) } }.chunked(2).forEach { cards ->
                 addView(if (cards.size == 2) pair(cards[0], cards[1]) else cards.single())
             }
             val unconfigured = items.filterNot { it in scheduledItems }
@@ -96,21 +98,62 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
         }
     }
 
-    private fun maintenanceCard(status: ScheduleStatus, open: () -> Unit): View {
+    /** "1년 3개월", "6개월", "12일"처럼 가장 큰 두 단위까지만 읽기 쉽게 적는다. */
+    private fun span(from: LocalDate, to: LocalDate): String {
+        val period = Period.between(from, to)
+        return when {
+            period.years > 0 -> "${period.years}년" + if (period.months > 0) " ${period.months}개월" else ""
+            period.months > 0 -> "${period.months}개월"
+            else -> "${period.days}일"
+        }
+    }
+
+    private fun months(count: Int) = if (count % 12 == 0) "${count / 12}년" else "${count}개월"
+
+    private fun conditionTone(state: ConditionState) = when (state) {
+        ConditionState.DUE -> Palette.danger
+        ConditionState.SOON -> Palette.warn
+        else -> Palette.accent
+    }
+
+    private fun fact(label: String, value: String) = ui.column(4).apply {
+        addView(ui.text(label, 20f, Palette.sub))
+        addView(ui.text(value, 24f, Palette.text, true))
+    }
+
+    /** 제목·퍼센트, 막대, 풀어 쓴 설명 한 줄. 색에만 기대지 않도록 수치를 문장으로도 적는다. */
+    private fun meter(title: String, percent: Int, tone: Int, detail: String) = ui.column(8).apply {
+        addView(horizontal().apply {
+            addView(ui.text(title, 22f, Palette.text, true), LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f))
+            addView(ui.text("$percent%", 24f, tone, true))
+        })
+        val ratio = percent.coerceIn(0, 100) / 100f
+        addView(horizontal().apply {
+            background = ui.round(Palette.surface2, 6)
+            clipToOutline = true
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            if (ratio > 0) addView(View(context).apply { background = ui.round(tone, 6) }, LinearLayout.LayoutParams(0, MATCH_PARENT, ratio))
+            if (ratio < 1) addView(View(context), LinearLayout.LayoutParams(0, MATCH_PARENT, 1 - ratio))
+        }, LinearLayout.LayoutParams(MATCH_PARENT, ui.dp(12)))
+        addView(ui.text(detail, 20f, Palette.sub))
+    }
+
+    private fun maintenanceCard(status: ScheduleStatus, currentKm: Double?, open: () -> Unit): View {
         val item = status.plan.item
-        val dateLabel = when {
-            item.kind == ItemKind.REPLACE || item == Item.TIRE_REPLACE -> "교체 예정일"
-            item.kind == ItemKind.INSPECT -> "점검 예정일"
-            item.kind == ItemKind.REFILL -> "보충 예정일"
-            else -> "관리 예정일"
+        // 항목 이름이 쓰는 낱말을 그대로 따른다: 엔진오일 '교환', 에어컨 필터 '교체'
+        val verb = when {
+            item.kind == ItemKind.REPLACE || item == Item.TIRE_REPLACE -> if (item.label.endsWith("교환")) "교환" else "교체"
+            item.kind == ItemKind.INSPECT -> "점검"
+            item.kind == ItemKind.REFILL -> "보충"
+            else -> "관리"
         }
-        val needsAction = when {
-            item.kind == ItemKind.REPLACE || item == Item.TIRE_REPLACE -> "교체 필요"
-            item.kind == ItemKind.INSPECT -> "점검 필요"
-            item.kind == ItemKind.REFILL -> "보충 필요"
-            else -> "관리 필요"
-        }
+        val planned = if (verb == "교환") "교체" else verb
+        val dateLabel = "$planned 예정일"
+        val needsAction = "$planned 필요"
         val percent = status.progressPercent
+        val basis = status.basis
+        val basisKm = basis?.odometer?.value
+        val drivenKm = status.usedKm ?: if (basisKm != null && currentKm != null && currentKm >= basisKm) currentKm - basisKm else null
         val label = when (status.state) {
             ScheduleState.DUE -> if (item == Item.TRANSMISSION_OIL) "교체 여부 점검" else needsAction
             ScheduleState.SOON -> "임박"
@@ -132,19 +175,46 @@ class DiaryDashboard(private val context: Context, private val ui: Ui, private v
             }
             addView(ui.text(listOfNotNull(percent?.let { "$it%" }, label).joinToString(" · "),
                 if (percent == null) 24f else 30f, tone, true))
-            if (percent != null) {
-                addView(android.widget.ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply {
-                    max = 100
-                    progress = percent
-                    progressTintList = android.content.res.ColorStateList.valueOf(tone)
-                    progressBackgroundTintList = android.content.res.ColorStateList.valueOf(Palette.surface2)
-                    importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-                }, LinearLayout.LayoutParams(MATCH_PARENT, ui.dp(12)))
+            if (basis != null) {
+                addView(horizontal().apply {
+                    gravity = Gravity.TOP
+                    addView(fact("최근 $verb", basis.performedOn.format(dates)), LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f))
+                    addView(fact("$verb 후 주행", when {
+                        drivenKm != null -> km(drivenKm)
+                        status.odometerReversed -> "확인 필요"
+                        basisKm == null -> "기록 없음"
+                        else -> "수신 대기"
+                    }), LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f).apply { marginStart = ui.dp(12) })
+                })
             }
-            status.nextDate?.let { addView(ui.text("$dateLabel ${it.format(dates)}", 20f, Palette.sub)) }
-            status.nextKm?.let { addView(ui.text("예정 거리 ${km(it)}", 20f, Palette.sub)) }
-            if (percent != null && status.kmState == ConditionState.PENDING) {
-                addView(ui.text("거리 기준 계산 보류", 20f, Palette.sub))
+            // 첫 정비 전 냉각수처럼 적용 주기가 계획값과 다를 수 있어 ScheduleStatus의 적용값을 쓴다
+            val interval = status.intervalKm
+            val wear = status.wearPercent
+            val used = status.usedKm
+            val leftKm = status.remainingKm
+            if (interval != null && wear != null && used != null && leftKm != null) {
+                addView(ui.divider())
+                val rest = if (leftKm > 0) "${km(leftKm)} 남음" else if (leftKm < 0) "${km(-leftKm)} 지남" else "주기 도달"
+                addView(meter("주행 마모도", wear, conditionTone(status.kmState),
+                    "주기 ${km(interval.toDouble())} 중 ${km(used)} 주행 · $rest"))
+            } else if (status.kmState == ConditionState.PENDING) {
+                addView(ui.divider())
+                addView(ui.text(if (status.odometerReversed) "주행 마모도 · 주행거리 확인이 필요해요" else "주행 마모도 · 주행거리를 확인하면 계산해요", 20f, Palette.sub))
+            }
+            val age = status.agePercent
+            val today = status.asOf
+            val nextDate = status.nextDate
+            val intervalMonths = status.intervalMonths
+            if (basis != null && age != null && today != null && nextDate != null && intervalMonths != null) {
+                addView(ui.divider())
+                val rest = when {
+                    today.isBefore(nextDate) -> "${span(today, nextDate)} 남음"
+                    today.isAfter(nextDate) -> "${span(nextDate, today)} 지남"
+                    else -> "주기 도달"
+                }
+                addView(meter("사용 기간", age, conditionTone(status.dateState),
+                    "주기 ${months(intervalMonths)} 중 ${span(basis.performedOn, today)}째 사용 · $rest"))
+                addView(ui.text("$dateLabel ${nextDate.format(dates)}", 20f, Palette.sub))
             }
             background = ui.touch(Palette.surface, 20, if (urgent) tone else Palette.border)
             isFocusable = true
