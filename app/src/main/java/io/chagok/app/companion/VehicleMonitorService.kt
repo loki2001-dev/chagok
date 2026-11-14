@@ -16,7 +16,7 @@ import io.chagok.app.vehicle.PleosVehicle
 
 data class MonitorState(val motion: MotionSnapshot = MotionSnapshot(), val kind: EnergyKind? = null,
     val energy: Double? = null, val energyStatus: String = "차량 연결 중", val odometer: Reading = Reading.Unavailable("아직 읽지 않음"),
-    val recordingStatus: String = "기록 연결 확인 중", val enabled: Boolean = true, val trip: DriveTrip? = null)
+    val recordingStatus: String = "기록 연결 확인 중", val enabled: Boolean = true, val trip: DriveTrip? = null, val fuelVisitId: String? = null)
 
 /** The single energy tracker survives UI/background transitions. Only local vehicle data is retained. */
 class VehicleMonitorService : Service() {
@@ -87,7 +87,7 @@ class VehicleMonitorService : Service() {
             val desired = diary.energyKinds().first()
             if (state.kind != desired) {
                 generation++
-                state = state.copy(kind = desired, energy = null, energyStatus = "확인 중")
+                state = state.copy(kind = desired, fuelVisitId = null, energy = null, energyStatus = "확인 중")
                 lastEnergy = -5000
             }
             if (now - lastEnergy >= 5000) {
@@ -98,8 +98,10 @@ class VehicleMonitorService : Service() {
                         state = state.copy(energy = value, energyStatus = if (value == null) "차량 값 미수신" else "${desired.name} 수신 중")
                         // A single tracker owns baseline/candidate writes; UI activities only observe.
                         val motion=telemetry.snapshot()
-                        diary.observeEnergy(desired, if(motion.parkGear==null)null else value,
+                        val candidate = diary.observeEnergy(desired, if(motion.parkGear==null)null else value,
                             parked=driving.available&&!driving.restricted&&motion.parkGear==true)
+                        if (candidate?.kind == EnergyKind.FUEL && candidate.collecting && !candidate.gapLong)
+                            state = state.copy(fuelVisitId = candidate.id)
                         emit()
                     }
                 }
@@ -109,6 +111,8 @@ class VehicleMonitorService : Service() {
                 vehicle.readOdometer { if (!closed) { state = state.copy(odometer = it); emit() } }
             }
             state = state.copy(motion = telemetry.snapshot(now).copy(restricted = driving.restricted, animationAllowed = driving.animationAllowed))
+            if (state.motion.parkGear != true || (state.motion.speedMps ?: 1f) > .3f)
+                state = state.copy(fuelVisitId = null)
             if(now-lastTripSample>=1000) {
                 lastTripSample=now
                 val at=Instant.now()
