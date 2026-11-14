@@ -23,8 +23,44 @@
 
 **시연 영상:** [주유·정비소 통합 시연](demo/chagok-fuel-workshop.mp4) · [정비소 입출차](doc/demo/workshop-visit.mp4) · [가로 창 주행 미리보기](doc/design/landscape-v11/android-evidence/native-landscape-preview.mp4) · [초기 일지 흐름(이전 UI)](demo/chagok-demo.mp4)
 
+## 공모전 제출 정보
+
+| 항목 | 내용 |
+|---|---|
+| 앱 이름 | **차곡 (chagok)** · 팀 차곡차곡 |
+| 한 줄 소개 | 달리는 동안 차량 신호로 운행·주유·충전을 모아 두고, 정차 후 한마디로 확인하면 일지·비용·다음 관리 일정까지 정리되는 차량 일지 앱 |
+| APK | [GitHub Release v0.1.0](https://github.com/loki2001-dev/chagok/releases/tag/v0.1.0)의 `차곡차곡_차곡_release.apk` (약 131MB). GitHub의 저장소 파일 크기 제한(100MB)을 넘어 Release에 등록했습니다. [apk/](apk/README.md) 참고 |
+| 패키지 / 시작 화면 | `io.chagok.app` / `io.chagok.app.companion.CompanionActivity` |
+| 실행 방법 | [아래 요약](#실행-방법-요약) · 자세한 내용은 [개발 환경 구축 및 빌드](#개발-환경-구축-및-빌드) |
+
+### 테스트 환경
+
+| 항목 | 내용 |
+|---|---|
+| 에뮬레이터 | **Pleos Connect v2.1.0** 시스템 이미지 (`pleos_car_emulator`, Android 14 / API 34, x86_64) |
+| 화면 규격 | **1408 × 792 px, 160dpi (가로)** · RAM 4GB · Cold boot |
+| Android Emulator | 37.2.12 |
+| 차량 값 | Pleos Connect Virtual Console로 주행거리·SoC·연료·속도·기어·방향지시등·와이퍼 주입 |
+| 개발 PC | Linux(Ubuntu) x86_64 + KVM · Windows + WHPX |
+
+### 필요한 설정
+
+1. 설치할 때 `-g` 옵션으로 런타임 권한을 함께 허용합니다. 차량 권한(`CAR_DRIVE`, `CAR_ENERGY` 등)은 Normal 권한이라 자동으로 허용되고, 마이크와 위치 권한은 앱을 쓰는 중에 물어봅니다.
+2. 앱을 처음 실행하면 정차 상태(P단)에서 **차량 종류 선택 → 자동 기록 안내 → 자동 기록 시작**을 진행합니다.
+3. 주유·충전 감지를 확인하려면 Virtual Console에서 P단으로 둔 뒤 SoC(전기차) 또는 연료(내연기관) 값을 5%p 이상 올립니다.
+4. 장소 방문 확인과 도로별 주행 통계는 선택 기능입니다. 정차 중 **더보기 → 도로·정비소·주유소 감지 설정**에서 켜고 위치 권한을 허용합니다.
+
+### 실행 방법 요약
+
+```bash
+# Pleos Connect v2.1.0 에뮬레이터를 켠 뒤
+adb install -r -g 차곡차곡_차곡_release.apk
+adb shell am start -n io.chagok.app/.companion.CompanionActivity
+```
+
 ## 목차
 
+- [공모전 제출 정보](#공모전-제출-정보)
 - [핵심 원칙](#핵심-원칙)
 - [주요 기능](#주요-기능)
 - [차량 연동과 권한](#차량-연동과-권한)
