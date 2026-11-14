@@ -62,6 +62,72 @@ class RoadPackDeviceTest {
         } finally { store.close();context.deleteDatabase(database) }
     }
 
+    @Test fun rejectedOdometerRemainsRejectedAcrossDatabaseReopen() {
+        val context=InstrumentationRegistry.getInstrumentation().targetContext
+        check(context.packageName.endsWith(".roadprobe") || context.packageName.endsWith(".smoke"))
+        val database="road-recovery-${java.util.UUID.randomUUID()}.db"
+        var store=io.chagok.app.data.SqliteStore(context,database)
+        val start=Instant.parse("2026-11-15T00:00:00Z")
+        try {
+            var recorder=RoadUsageRecorder(store)
+            listOf(100.0,100.01,99.5).forEachIndexed { second,km ->
+                val at=start.plusSeconds(second.toLong())
+                recorder.sample("car",at,10f,true,RoadGrade.MOTORWAY,io.chagok.app.domain.Observation(km,at))
+            }
+            store.close();store=io.chagok.app.data.SqliteStore(context,database);recorder=RoadUsageRecorder(store)
+            recorder.sample("car",start.plusSeconds(3),10f,true,RoadGrade.MOTORWAY,io.chagok.app.domain.Observation(99.5,start.plusSeconds(2)))
+            recorder.sample("car",start.plusSeconds(4),10f,true,RoadGrade.MOTORWAY,io.chagok.app.domain.Observation(100.02,start.plusSeconds(4)))
+            val day=store.roadUsage("car").single()
+            assertEquals(.02,day.buckets.values.sumOf { it.distanceKm },1e-8)
+            assertEquals(1L,day.rejectedDistanceSamples)
+        } finally { store.close();context.deleteDatabase(database) }
+    }
+
+    @Test fun actualDetectorQueuesCompleteBeforeStatisticsWrite() {
+        val instrument=InstrumentationRegistry.getInstrumentation()
+        val context=instrument.targetContext
+        check(context.packageName.endsWith(".roadprobe") || context.packageName.endsWith(".smoke"))
+        val store=io.chagok.app.domain.MemoryStore()
+        val recorder=RoadUsageRecorder(store)
+        lateinit var detector: RoadDetector
+        instrument.runOnMainSync { detector=RoadDetector(context) {} }
+        try {
+            fun sample(km: Double, lat: Double, lon: Double): RoadGrade? {
+                val done=java.util.concurrent.CountDownLatch(1)
+                val grade=AtomicReference<RoadGrade?>()
+                val at=Instant.now()
+                instrument.runOnMainSync {
+                    val before=store.roadUsage("car")
+                    detector.sample(true,PlaceFix(lat,lon,at),at) { resolved ->
+                        grade.set(resolved)
+                        recorder.sample("car",at,10f,true,resolved,io.chagok.app.domain.Observation(km,at))
+                        done.countDown()
+                    }
+                    // Fresh fixes must not write the odometer using the previously displayed grade.
+                    assertEquals(before,store.roadUsage("car"))
+                }
+                assertTrue("road lookup completion",done.await(15,java.util.concurrent.TimeUnit.SECONDS))
+                return grade.get()
+            }
+            assertNull(sample(100.0,37.3823245,127.1033145))
+            Thread.sleep(3100)
+            assertEquals(RoadGrade.MOTORWAY,sample(100.01,37.3823245,127.1033145))
+            Thread.sleep(50)
+            assertEquals(RoadGrade.MOTORWAY,sample(100.02,37.3823245,127.1033145))
+            Thread.sleep(50)
+            assertEquals(RoadGrade.MOTORWAY,sample(100.03,37.3823245,127.1033145))
+            val before=store.roadUsage("car").single().buckets
+            val highwayKm=before.getValue(RoadBucket.MOTORWAY).distanceKm
+            val unknownKm=before[RoadBucket.UNKNOWN]?.distanceKm ?: 0.0
+            assertTrue(highwayKm > .009)
+            Thread.sleep(50)
+            assertNull(sample(100.04,0.0,0.0)) // synthetic out-of-coverage fix, not real Pleos GPS
+            val buckets=store.roadUsage("car").single().buckets
+            assertEquals(highwayKm,buckets.getValue(RoadBucket.MOTORWAY).distanceKm,1e-8)
+            assertEquals(unknownKm+.01,buckets.getValue(RoadBucket.UNKNOWN).distanceKm,1e-8)
+        } finally { instrument.runOnMainSync { detector.close() } }
+    }
+
     @Test fun actualPleosFixQueriesBundledNationalRoadPack() {
         val instrument=InstrumentationRegistry.getInstrumentation()
         val args=InstrumentationRegistry.getArguments()

@@ -34,10 +34,8 @@ class VehicleMonitorService : Service() {
     private var lastOdometer = -30000L
     private var generation = 0
     private val location by lazy { io.chagok.app.vehicle.PleosLocation(this) }
-    private var roadGrade: io.chagok.app.roads.RoadGrade? = null
     private lateinit var roadUsage: io.chagok.app.roads.RoadUsageRecorder
-    private val roads by lazy { io.chagok.app.roads.RoadDetector(this) { grade, label ->
-        roadGrade=grade
+    private val roads by lazy { io.chagok.app.roads.RoadDetector(this) { label ->
         state=state.copy(roadStatus=label); emit()
     } }
     private lateinit var visits: PlaceVisitTracker
@@ -120,9 +118,13 @@ class VehicleMonitorService : Service() {
             if(now-lastTripSample>=1000) {
                 lastTripSample=now
                 val at=Instant.now()
-                roads.sample(roadEnabled && checkSelfPermission(io.chagok.app.vehicle.PleosLocation.PERMISSION) == android.content.pm.PackageManager.PERMISSION_GRANTED, location.fix, at)
                 val healthy=driving.available&&state.motion.speedMps!=null
-                roadUsage.sample(diary.profile().id,at,state.motion.speedMps,healthy,roadGrade,(state.odometer as? Reading.Value)?.observation)
+                val roadVehicle=diary.profile().id
+                val roadSpeed=state.motion.speedMps
+                val roadKm=(state.odometer as? Reading.Value)?.observation
+                roads.sample(roadEnabled && checkSelfPermission(io.chagok.app.vehicle.PleosLocation.PERMISSION) == android.content.pm.PackageManager.PERMISSION_GRANTED, location.fix, at) { resolvedGrade ->
+                    if(!closed) roadUsage.sample(roadVehicle,at,roadSpeed,healthy,resolvedGrade,roadKm)
+                }
                 val parked=if(healthy)state.motion.parkGear?.let { it&&!driving.restricted&&kotlin.math.abs(state.motion.speedMps!!)<.3f } else null
                 if(parked!=null) {
                     val old=store.setting("monitor.parked")
