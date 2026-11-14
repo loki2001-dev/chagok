@@ -57,11 +57,19 @@ class RoadUsageRecorder(private val store: DiaryStore) {
     private var intervalContinuous=false
     private var started=false
     private var day: RoadUsageDay? = null
+    /** Latest rejected reading, and how many consecutive rejected readings agree with each other. */
+    private var disagreeing: Observation? = null
+    private var disagreements=0
+    private fun plausible(from: Observation, to: Observation): Boolean {
+        val delta=to.value-from.value
+        val seconds=Duration.between(from.receivedAt,to.receivedAt).toMillis()/1000.0
+        return delta >= 0 && delta <= seconds*.08+1.0
+    }
     fun sample(vehicleId: String, at: Instant, speedMps: Float?, healthy: Boolean,
         grade: RoadGrade?, km: Observation?) {
         if(vehicle != vehicleId) {
             vehicle=vehicleId; checkpoint=store.roadUsageCheckpoint(vehicleId)
-            day=null; started=false; intervalContinuous=false
+            day=null; started=false; intervalContinuous=false; disagreeing=null; disagreements=0
         }
         val old=checkpoint
         if(old != null && at <= old.at) return
@@ -89,14 +97,21 @@ class RoadUsageRecorder(private val store: DiaryStore) {
         if(fresh != null && (seenAt == null || fresh.receivedAt > seenAt)) {
             seenAt=fresh.receivedAt
             val anchor=odometer
-            val delta=anchor?.let { fresh.value-it.value } ?: 0.0
-            val seconds=anchor?.let { Duration.between(it.receivedAt,fresh.receivedAt).toMillis()/1000.0 } ?: 0.0
-            if(anchor == null || (delta >= 0 && delta <= seconds*.08+1.0)) {
-                if(anchor != null) add(if(intervalContinuous && sameDay) intervalBucket else RoadBucket.UNKNOWN,distance=delta)
+            if(anchor == null || plausible(anchor,fresh)) {
+                if(anchor != null) add(if(intervalContinuous && sameDay) intervalBucket else RoadBucket.UNKNOWN,distance=fresh.value-anchor.value)
                 odometer=fresh; intervalBucket=bucket; intervalContinuous=continuous
+                disagreeing=null; disagreements=0
             } else {
                 current=current.copy(rejectedDistanceSamples=current.rejectedDistanceSamples+1)
-                // Retain the last accepted anchor across errors and restarts. Recovery distance is unknown.
+                // Retain the last accepted anchor across a short glitch. But when consecutive readings agree
+                // with each other and not with the anchor, the anchor itself was wrong (a bad first value,
+                // a swapped head unit): re-anchor without counting the unknown distance across the jump.
+                val previous=disagreeing
+                disagreements=if(previous != null && plausible(previous,fresh)) disagreements+1 else 1
+                disagreeing=fresh
+                if(disagreements >= REANCHOR_AFTER) {
+                    odometer=fresh; intervalBucket=bucket; disagreeing=null; disagreements=0
+                }
                 intervalContinuous=false
             }
         }
@@ -104,5 +119,9 @@ class RoadUsageRecorder(private val store: DiaryStore) {
         store.transaction { store.saveRoadUsage(current); store.saveRoadUsageCheckpoint(vehicleId,next) }
         checkpoint=next; day=current; started=true; previousHealthy=validMotion; previousMoving=moving; previousBucket=bucket
     }
-    companion object { val ZONE: ZoneId = ZoneId.of("Asia/Seoul") }
+    companion object {
+        val ZONE: ZoneId = ZoneId.of("Asia/Seoul")
+        /** Consecutive mutually consistent readings that outvote a stored anchor. */
+        const val REANCHOR_AFTER = 3
+    }
 }
