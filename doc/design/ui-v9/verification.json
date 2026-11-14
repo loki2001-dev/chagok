@@ -1,0 +1,129 @@
+{
+  "recordedAt": "2026-11-14T15:19:26.590641+09:00",
+  "environment": {
+    "avd": "Chagok_Pleos_API_34",
+    "platform": "PLEOS 2.1.0 / Android API 34",
+    "displayPx": [
+      2560,
+      1440
+    ],
+    "densityDpi": 160,
+    "user": 10
+  },
+  "build": "passed",
+  "unit": {
+    "tests": 70,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "instrumentation": {
+    "initialCombined": {
+      "tests": 22,
+      "passed": 21,
+      "failed": 1,
+      "evidence": "device-smoke-initial.txt",
+      "failure": "UI first injected tap lost during surface/window transition"
+    },
+    "coreSuites": {
+      "ParkedDiarySmokeTest": 4,
+      "CoreSmokeTest": 7,
+      "VehicleSmokeTest": 2,
+      "CompanionSmokeTest": 6
+    },
+    "finalUiRetest": {
+      "tests": 3,
+      "passed": 3,
+      "seconds": 36.11,
+      "evidence": "ui-smoke-final.txt"
+    },
+    "uniqueCasesPassingAcrossRuns": 22,
+    "nativeDemoLayoutRetest": {
+      "tests": 1,
+      "passed": 1,
+      "seconds": 7.336,
+      "evidence": "layout-smoke-final.txt"
+    },
+    "interruptedFinalUiAttempt": {
+      "reason": "Test activity transition remained pending; stopped process and reran same APK successfully",
+      "evidence": "ui-smoke-interrupted.txt"
+    }
+  },
+  "captures": {
+    "before": 34,
+    "uiReviewAfter": 64,
+    "additionalDrivingScenes": 2,
+    "note": "Sized Android View captures; separate from native OS proof"
+  },
+  "nativeProof": {
+    "video": "android-evidence/native-parked-pages.mp4",
+    "videoDurationSeconds": 35,
+    "videoBytes": 12755023,
+    "installedNormalAppScreenshot": "android-evidence/native-installed-companion.png",
+    "panes": {
+      "io.chagok.app": {
+        "task": 1000480,
+        "left": 1718,
+        "top": 90,
+        "right": 2559,
+        "bottom": 1300,
+        "visible": true
+      },
+      "ai.umos.maps.android.navigation.app": {
+        "task": 1000422,
+        "left": 853,
+        "top": 90,
+        "right": 1694,
+        "bottom": 1300,
+        "visible": true
+      },
+      "ai.umos.drivingview": {
+        "task": 1000419,
+        "left": 0,
+        "top": 0,
+        "right": 853,
+        "bottom": 1300,
+        "visible": true
+      },
+      "ai.umos.homescreen": {
+        "task": 1000417,
+        "left": 0,
+        "top": 0,
+        "right": 2560,
+        "bottom": 1440,
+        "visible": true
+      },
+      "unknown": {
+        "task": 1000418,
+        "left": 0,
+        "top": 0,
+        "right": 2560,
+        "bottom": 1440,
+        "visible": false
+      }
+    }
+  },
+  "apks": {
+    "debug": {
+      "path": "app/build/outputs/apk/debug/app-debug.apk",
+      "bytes": 33724398,
+      "sha256": "4e0d76fedf00f615d7dbdb9d0181ecfff76ba5a6b2b7b82225c0080c9a7f6001"
+    },
+    "smoke": {
+      "path": "app/build/outputs/apk/smoke/app-smoke.apk",
+      "bytes": 41773374,
+      "sha256": "240c1fe98ca8ef66f78742dcebea2dcdef9663d116f57b3d41e2194b387a11f7"
+    },
+    "androidTest": {
+      "path": "app/build/outputs/apk/androidTest/smoke/app-smoke-androidTest.apk",
+      "bytes": 1619892,
+      "sha256": "78ac883b0951fd068a1d26c0283f214730efd84f36435e363f6cd018cbb2408f"
+    }
+  },
+  "normalApplicationDataReset": false,
+  "limitations": [
+    "Emulator verification; physical automotive screen and speech accuracy not verified",
+    "Existing production NO_VIDEO static fallback retained",
+    "An interrupted transition occurred before the final successful UI retest"
+  ]
+}

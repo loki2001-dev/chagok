@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import io.chagok.app.domain.*
 import io.chagok.app.domain.DetectionCandidate
 import io.chagok.app.domain.DiaryEntry
 import io.chagok.app.domain.DiaryStore
@@ -12,31 +13,47 @@ import io.chagok.app.domain.LearningProgress
 import io.chagok.app.domain.MaintenancePlan
 import io.chagok.app.domain.Observation
 import io.chagok.app.domain.VehicleProfile
+import io.chagok.app.domain.SharingPolicy
+import org.json.JSONArray
 import org.json.JSONObject
 import java.time.Instant
+import io.chagok.app.companion.Encounters
+import io.chagok.app.companion.EncounterRecord
 
 /**
  * 차량 안 로컬 DB (기획서 9장 '차량 안에서 시작'). 서버로 보내지 않는다.
  * 문서형 테이블 하나에 종류(kind)·키(id)·차량(owner)·JSON을 둔다.
  */
-class SqliteStore(context: Context) : DiaryStore {
-    private val helper = object : SQLiteOpenHelper(context, "chagok.db", null, Codec.VERSION) {
+class SqliteStore(context: Context, databaseName: String = "chagok.db") : DiaryStore {
+    private val helper = object : SQLiteOpenHelper(context, databaseName, null, Codec.VERSION) {
         override fun onCreate(db: SQLiteDatabase) {
             db.execSQL("CREATE TABLE doc (kind TEXT NOT NULL, id TEXT NOT NULL, owner TEXT, json TEXT NOT NULL, PRIMARY KEY(kind, id))")
             db.execSQL("CREATE INDEX doc_owner ON doc(kind, owner)")
         }
 
-        override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) = Unit
+        // v2 adds optional JSON fields and a sharing document; existing v1 rows stay readable.
+        override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+            check(oldVersion <= newVersion && newVersion <= Codec.VERSION)
+        }
     }
 
+    override fun <T> transaction(block: () -> T): T {
+        val db = helper.writableDatabase
+        db.beginTransaction()
+        return try { block().also { db.setTransactionSuccessful() } } finally { db.endTransaction() }
+    }
+
+    fun close() = helper.close()
+
     private fun put(kind: String, id: String, owner: String?, json: JSONObject) {
-        helper.writableDatabase.insertWithOnConflict(
+        val inserted = helper.writableDatabase.insertWithOnConflict(
             "doc", null,
             ContentValues().apply {
                 put("kind", kind); put("id", id); put("owner", owner); put("json", json.toString())
             },
             SQLiteDatabase.CONFLICT_REPLACE,
         )
+        check(inserted != -1L) { "기록을 저장하지 못했어요. 저장 공간을 확인해 주세요." }
     }
 
     private fun one(kind: String, id: String): JSONObject? =
@@ -67,6 +84,17 @@ class SqliteStore(context: Context) : DiaryStore {
         put("candidate", candidate.id, candidate.vehicleId, Codec.candidate(candidate))
 
     override fun progress(user: String) = all("progress", user).map(Codec::progress)
+    override fun allProgress(): List<LearningProgress> =
+        helper.readableDatabase.rawQuery("SELECT json FROM doc WHERE kind=?", arrayOf("progress")).use { cursor ->
+            buildList { while (cursor.moveToNext()) add(Codec.progress(JSONObject(cursor.getString(0)))) }
+        }
+    override fun sharing(author: String): SharingPolicy {
+        val o = one("sharing", author) ?: return SharingPolicy(author)
+        val readers = o.optJSONArray("readers")
+        return SharingPolicy(author, readers?.let { (0 until it.length()).map(it::getString).toSet() })
+    }
+    override fun saveSharing(policy: SharingPolicy) = put("sharing", policy.author, null,
+        JSONObject().putOpt("readers", policy.readers?.let { JSONArray(it.toList()) }))
     override fun saveProgress(progress: LearningProgress) =
         put("progress", "${progress.user}/${progress.topic.name}", progress.user, Codec.progress(progress))
 
@@ -80,6 +108,35 @@ class SqliteStore(context: Context) : DiaryStore {
     override fun saveLastSeen(user: String, at: Instant) = put("seen", user, null, JSONObject().put("at", at.toString()))
 
     /** 앱 설정용 작은 값 (현재 사용자 등) */
-    fun setting(key: String): String? = one("setting", key)?.getString("v")
-    fun saveSetting(key: String, value: String) = put("setting", key, null, JSONObject().put("v", value))
+    override fun setting(key: String): String? = one("setting", key)?.getString("v")
+    override fun saveSetting(key: String, value: String) = put("setting", key, null, JSONObject().put("v", value))
+
+    override fun trips(vehicleId: String) = all("trip",vehicleId).map(Codec::trip)
+    override fun saveTrip(trip: DriveTrip) = put("trip",trip.id,trip.vehicleId,Codec.trip(trip))
+    override fun gaps(vehicleId: String) = all("gap",vehicleId).map { RecordingGap(it.getString("id"),vehicleId,Instant.parse(it.getString("from")),Instant.parse(it.getString("to")),it.getString("reason")) }
+    override fun saveGap(gap: RecordingGap) = put("gap",gap.id,gap.vehicleId,JSONObject().put("id",gap.id).put("from",gap.from.toString()).put("to",gap.to.toString()).put("reason",gap.reason))
+    override fun energyCheckpoint(vehicleId: String, kind: EnergyKind) = one("energy-checkpoint","$vehicleId/${kind.name}")?.let(Codec::energyCheckpoint)
+    override fun saveEnergyCheckpoint(vehicleId: String, kind: EnergyKind, value: EnergyCheckpoint) = put("energy-checkpoint","$vehicleId/${kind.name}",vehicleId,Codec.energyCheckpoint(value))
+
+    fun encounters(vehicleId: String, user: String): List<EncounterRecord> =
+        all("encounter", "$vehicleId/$user").map { json ->
+            EncounterRecord(json.getString("scene"), json.getInt("count"),
+                Instant.parse(json.getString("first")), Instant.parse(json.getString("last")))
+        }.filter { Encounters.find(it.id) != null }
+
+    /** Receipt + collection update commit together. Replayed frame/lifecycle callbacks are idempotent. */
+    fun recordEncounter(vehicleId: String, user: String, scene: String, token: String, at: Instant): Boolean = transaction {
+        require(Encounters.find(scene) != null && token.isNotBlank() && token.length <= 100)
+        val owner = "$vehicleId/$user"
+        val receipt = "$owner/$token"
+        if (one("encounter_receipt", receipt) != null) return@transaction false
+        val key = "$owner/$scene"
+        val old = one("encounter", key)
+        put("encounter", key, owner, JSONObject().put("scene", scene)
+            .put("count", ((old?.optInt("count") ?: 0) + 1).coerceAtMost(99999))
+            .put("first", old?.optString("first") ?: at.toString()).put("last", at.toString()))
+        put("encounter_receipt", receipt, owner, JSONObject().put("scene", scene).put("at", at.toString()))
+        trips(vehicleId).firstOrNull { it.user==user&&it.endedAt==null }?.let { saveTrip(it.copy(friends=it.friends+scene)) }
+        true
+    }
 }

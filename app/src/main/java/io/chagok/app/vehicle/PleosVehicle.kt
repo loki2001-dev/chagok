@@ -133,6 +133,21 @@ class PleosVehicle(context: Context, private val log: (String) -> Unit) {
     private fun readable(config: CapabilityConfig) =
         config.accessType == AccessType.READ || config.accessType == AccessType.READ_WRITE
 
+    /** 안정 판정에는 캐시 재사용 대신 실제 재조회한 값만 보낸다. */
+    fun readEnergy(kind: EnergyKind, callback: (Double?) -> Unit) {
+        if (!started) { callback(null); return }
+        val once = Once(callback)
+        main.postDelayed({ once(null) }, TIMEOUT_MS)
+        val ok: (Int?) -> Unit = { value -> post { once(value?.toDouble()?.takeIf { it in 0.0..100.0 }) } }
+        val fail: (Exception) -> Unit = { post { once(null) } }
+        runCatching {
+            when (kind) {
+                EnergyKind.FUEL -> vehicle.getFuel().getFuelPercent(ok, fail)
+                EnergyKind.SOC -> vehicle.getEvBattery().getEvBatteryStateOfCharge(ok, fail)
+            }
+        }.onFailure { post { once(null) } }
+    }
+
     private fun post(block: () -> Unit) {
         main.post(block)
     }

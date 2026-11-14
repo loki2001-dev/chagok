@@ -17,6 +17,14 @@
     <uses-permission android:name="pleos.car.permission.STT_SERVICE" />
     <!-- Android SpeechRecognizer 대체 경로 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.car.permission.CAR_SPEED" />
+    <uses-permission android:name="android.car.permission.CAR_POWERTRAIN" />
+    <uses-permission android:name="pleos.car.permission.CAR_LIGHTS" />
+    <uses-permission android:name="pleos.car.permission.CAR_WINDOWS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <queries>
         <intent>
@@ -31,19 +39,42 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Chagok">
 
-        <!--
-            MVP의 일지 확인·일정 편집·비용·학습은 정차 전용이다 (기획서 7장 '주행 중').
-            distractionOptimized를 선언하지 않으므로 주행 중에는 플랫폼이 화면을 막는다.
-        -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.reports"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/report_paths" />
+        </provider>
+
+        <receiver android:name=".companion.RecordingBootReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+        <service android:name=".companion.VehicleMonitorService" android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="User-started, on-device vehicle diary: continuously observe fuel and battery readings to detect refueling or charging across navigation and application switches. No network, microphone, or location collection in this service." />
+        </service>
+        <!-- Read-only companion: animated artwork pauses under NO_VIDEO; parked UI is disabled
+             under UX restrictions. This declaration is not a Pleos distribution approval. -->
+        <activity android:name=".companion.CompanionActivity" android:exported="true"
+            android:launchMode="singleTask" android:resizeableActivity="true"
+            android:configChanges="uiMode|orientation|screenSize|screenLayout|smallestScreenSize|density|keyboard|keyboardHidden|navigation">
+            <meta-data android:name="distractionOptimized" android:value="true" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- Existing diary/editor/learning screens remain parked-only. -->
         <activity
             android:name=".ui.MainActivity"
             android:configChanges="uiMode|orientation|screenSize|screenLayout|smallestScreenSize|density|keyboard|keyboardHidden|navigation"
             android:exported="true"
             android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 </manifest>

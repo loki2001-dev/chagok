@@ -1,0 +1,58 @@
+내비 왼쪽 / 차곡 오른쪽 — Android 분할 주행 연출 검증
+2026-11-14 KST
+
+결과
+Pleos Connect 2.1.0 API 34 / emulator-5554 / Android user 10에서 두 앱의 동시 표시와 차곡의 움직임을 확인했다.
+화면 전체는 기본 Driving View + 내비 + 차곡의 세 영역이다. 앱 영역 안에서 내비는 왼쪽, 차곡은 오른쪽이다.
+시스템 윈도 바의 드래그/탭으로 배치했으며 am task resize로 강제 배치하지 않았다.
+
+실측
+• 내비 앱: ai.umos.maps.android.navigation.app, [853,90]–[1694,1300]
+• 차곡 시험 앱: io.chagok.app.smoke, [1718,90]–[2559,1300], 841×1210
+• Virtual Console에서 D·25km/h를 주입한 후 실제 SDK에서 6.9444447m/s 수신
+• 내비에 입력 포커스가 있고 차곡은 포커스가 없는 상태에서 두 화면 모두 표시됨
+• 5,240ms 동안 렌더 프레임 115 → 216, 도로 위치 8.500001 → 171.53336
+• 렌더러 미리보기 필드가 아닌 SDK 속도로 이동함(preview=false)
+• SDK 속도를 25 → 35 → 45 → 55 → 65km/h로 올릴 때 부스터 강도 최대 0.9987368584
+• 최종 테스트 1개 통과, 23.475초. 기존 동반 UI/DB 시험 5개도 64.778초에 통과. 단위 시험 68개 통과.
+
+시험과 일반 앱의 차이
+CompanionDrivingProbeActivity는 smoke 소스에만 존재한다. 런타임에도 .smoke 앱 ID와 에뮬레이터 하드웨어를 확인한다.
+차량 연결 상태의 restricted 값은 유지하고, 시험 화면의 animationAllowed만 true로 바꾼다.
+일반 앱은 NO_VIDEO에서 기존과 같이 연출을 정지한다. 이 실험은 Android가 Canvas 이동을 자동 차단하지 않는다는 기술적 검증이며, 지속적 장식 연출의 배포 허용을 입증하지 않는다.
+화면 구성·렌더러는 일반 CompanionActivity/CompanionSceneView를 재사용한다. 내비 포커스 시험에서 Activity의 onPause 동작을 바꾸지 않았다.
+시험 후 남긴 화면은 0km/h/P의 명시적 정차 미리보기다. 두 스킨·좌우 이동·깜빡이·부스터·비·10종 만남·말풍선 예시가 반복된다. 이 반복 시연은 실제 센서값이나 실제 금액 질문을 뜻하지 않는다.
+가상 만남은 시험 화면에서 도감에 저장하지 않는다. 일반 앱 DB는 초기화하지 않으며, 가상 신호 주입 전에 일반 앱의 수집 프로세스를 종료한다.
+
+함께 수정한 문제
+비의 반투명 색상 Paint를 차량 이미지에도 재사용해 부스터가 없는 차량이 반투명해지는 문제가 있었다.
+차량 스프라이트를 그리기 전에 alpha=255를 복원했다. 일반 debug APK에 반영하고 설치했다. 두 스킨의 기존 렌더/제한/메뉴/질문/도감 회귀 시험을 다시 통과했다.
+
+아직 확인되지 않은 부분
+• 내장 내비의 지도 배경은 비어 있다. 내비 서비스에서 Service Not Found / Unauthorized / statusCode 401 응답이 관찰됐다. 동일 로그에는 그래픽 및 Google Play Services 경고도 있다. 지도 미표시의 단일 원인을 확정하거나 서버 인증을 해결한 것은 아니다.
+• 따라서 내비 앱과의 동시 표시 및 입력 포커스 검증은 통과했지만 실제 지도 표시/목적지 안내/경로 이동은 통과로 처리하지 않았다.
+• 첫 분할 시도에서 Pleos 홈 화면과 SystemUI에 입력 처리 ANR이 발생했다. 로그를 보존했고 데이터 초기화 없이 에뮬레이터를 재시작한 후 재시험은 통과했다.
+• 에뮬레이터의 프레임 진행 확인이며 실차 30/60fps 보장은 아니다. 음성 인식·와이퍼 60초 판정 등 이전 전체 시험 결과는 android-integration.txt와 android-verification.json에 따로 남아 있다. 이번에 전체 SDK/업무 기능 시험을 전부 반복한 것으로 해석하지 않는다.
+
+증거
+android-evidence/companion-split-driving.png
+android-evidence/companion-split-driving.mp4 — 실제 SDK 주행 연동 영상
+android-evidence/companion-split-driving.json — 프레임/속도/포커스 실측
+android-evidence/companion-split-bounds.json
+android-evidence/companion-split-showcase.png
+android-evidence/companion-split-showcase.mp4 — 정차 중 두 스킨과 연출 미리보기
+android-evidence/split-window-smoke.log
+android-evidence/split-followup-native-ui-smoke.log
+android-evidence/navigation-service-error.txt — URL을 제거한 내비 오류
+android-evidence/split-window-first-attempt.log
+android-evidence/split-first-attempt-system-anr.log
+split-window-verification.json — 빌드 해시 및 검증 범위
+
+재현
+PowerShell: .\tools\companion-split-demo.ps1
+설치된 APK 사용: .\tools\companion-split-demo.ps1 -SkipBuild
+주행 시험 후 시연을 남기지 않음: .\tools\companion-split-demo.ps1 -TestOnly
+Python 3와 실행 중인 2560×1440 Pleos 에뮬레이터가 필요하다.
+
+윈도 정책 근거
+https://document.pleos.ai/docs/connect/guide/docs-design/getting-started/window

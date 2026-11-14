@@ -1,0 +1,95 @@
+차곡 주행 배경 — 와이퍼 기반 비 연출과 도로 종류
+결정 및 검증일: 2026-11-14
+
+사용자가 정한 기준
+- 와이퍼가 1분 이상 지속 작동하면 비 연출을 시작한다.
+- 비 판정 후 와이퍼 속도 단계에 따라 빗줄기를 늘린다.
+- 배경 분류는 도시/시골 대신 고속도로와 일반도로(국도·지방도)를 중심으로 한다.
+
+와이퍼 설정 단계: 실제 SDK 검증 결과
+Vehicle 2.3.2 / getCurrentWiperSwitch / 앞유리 / CAR_WINDOWS(Normal).
+checkWiperSwitchCapabilities의 앞유리 지원 목록은
+OFF, CONTINUOUS_LEVEL_1, CONTINUOUS_LEVEL_3, AUTO였으며 접근은 READ_WRITE였다.
+실제 조회 결과(각 단계 2회 확인):
+  Console Off  -> Switch OFF, State OFF
+  Console Low  -> Switch CONTINUOUS_LEVEL_1, State ON
+  Console High -> Switch CONTINUOUS_LEVEL_3, State ON
+  Console Auto -> Switch AUTO, State ON
+  Console Off  -> Switch OFF, State OFF
+쓰기 API는 사용하지 않았다. READ_WRITE라는 결과가 앱의 차량 제어 사용을 의미하지 않는다.
+
+SDK enum은 간헐 1~5, 연속 1~5, AUTO, MIST, OFF, SERVICE, OTHER를 정의한다.
+그러나 모든 차량이 전 단계를 지원하는 것은 아니다. capability에 포함된 단계만 사용한다.
+예를 들어 이번 환경의 1/3을 1~5에 단순 대입하면 최고 속도를 중간 단계로 오해하게 된다.
+지원 단계가 여러 개인 경우 동일 계열 안의 실제 지원 목록을 기준으로 상대 강도를 매긴다.
+getCurrentWiperSwitch는 설정 위치이며 실제 왕복 횟수/속도를 측정하는 값은 아니다.
+현재 SDK에는 Switch 변경 리스너가 없어 연결 중 정기 조회(초기안: 2초)와 State 이벤트를 조합한다.
+
+비 연출 판정 규칙 — 구현할 설계
+1. 앞유리 와이퍼만 기준으로 삼는다. 후면 와이퍼만 작동하면 비 판정을 시작하지 않는다.
+2. 실제 WiperState.ON을 확인한 시점부터 단조 증가 시계(elapsedRealtime)로 60초를 센다.
+3. OFF, MIST(단발 닦기), SERVICE는 시작 조건에서 제외한다.
+   연속 모드는 ON이 유지되는지 확인한다. 간헐 모드는 실제 작동을 확인한 뒤 해당 모드가
+   유지되는 동안의 대기 구간을 스위치 OFF로 끈 것과 구분한다.
+4. AUTO를 선택해 두었다는 이유만으로 비로 판단하지 않는다.
+   실제 ON 상태가 60초 유지됐을 때만 시작한다. AUTO의 짧은 ON/OFF 반복은 실차에서
+   State가 어떻게 제공되는지 확인하기 전에는 지속 작동으로 확대 해석하지 않는다.
+5. 60초 이전에는 맑은/기존 장면을 유지한다. 단계 변경만으로 시작 타이머를 초기화하지 않는다.
+6. 연결 단절, null, 조회 실패, 오래된 샘플은 지속 작동 증거로 세지 않는다.
+   재연결하면 60초 확인을 새로 시작한다. 배경 비 추정값을 실제 강수 기록으로 저장하지 않는다.
+
+비 강도와 종료 — 초기 디자인 값
+- 간헐 모드: 약한 비 범위 안에서 지원 단계에 따라 변화.
+- 연속 모드: 저속은 보통 비, 최고 지원 속도는 많은 비. 중간 지원 단계가 있으면 사이를 보간.
+- AUTO 또는 단계 판독 불가: 실제 작동으로 비가 확인된 경우 보통 비 고정.
+- 상태 미지원/연결 실패를 임의로 고속이나 폭우로 치환하지 않는다.
+- 강도 변경은 약 2초에 걸쳐 부드럽게 전환한다.
+- 비 연출 시작 후 실제 작동이 30초 동안 없으면 빗줄기를 약 3초 동안 줄인다.
+  30초/2초/3초는 화면이 갑자기 바뀌는 것을 줄이기 위한 초기 조정값이다.
+  차량 정차나 속도 0만으로 비를 끄지 않는다.
+- '1분 판정'은 앱의 연출 정책이며 실제 강수량(mm/h) 측정이나 기상 확정 정보가 아니다.
+
+AUTO의 실제 왕복 속도를 바로 쓸 수 없는 이유
+AAOS WINDSHIELD_WIPERS_PERIOD는 1회 왕복 주기를 ms로 제공하는 표준 항목이다.
+그러나 READ_WINDSHIELD_WIPERS는 Signature|Privileged 권한이며 이번 Android 14
+에뮬레이터의 permission 목록에서도 같은 보호 수준을 확인했다.
+현재 앱의 Normal/Dangerous 범위에서는 이 값을 사용할 수 있다고 가정하지 않는다.
+추가 권한 선언이나 우회는 하지 않았다. Pleos 공개 Wiper API에도 주기 getter는 없다.
+따라서 현재 확정 가능한 강도 조절은 수동 설정 단계 기반이며 AUTO의 물리 속도 연동은 미확정이다.
+
+도로 배경 분류
+표현 대상: 고속도로 / 일반도로(국도·지방도 등). 판독 불가 상태는 중립 도로.
+숲/건물 유무는 도로 종류와 별개의 풍경이므로 국도·지방도를 숲길과 동일시하지 않는다.
+향후 도로 등급 데이터가 확보되면 국도/지방도를 더 세분화할 수 있다.
+
+현재 NaviHelper 3.0.5 / navi-data 3.0.4에는 현재 roadClass/roadType 반환값이 없다.
+검토한 CurrentLocationInfo, RouteStateInfo, TripInfo/TripSummary, TrafficInfo,
+RoutePointInfo에도 현재 구간의 도로 등급은 없다.
+TurnType의 ENTER_IC/EXIT_IC는 다음 고속도로 진입·진출 안내이며 TBTInfo.distance가 붙는다.
+예: 2km 후 고속도로 진입 안내를 받았다고 현재 고속도로 배경으로 바꾸면 잘못된 판정이다.
+RouteOption.HIGHWAY는 '고속도로 우선 경로' 선택 옵션으로 현재 도로 종류가 아니다.
+경로 안내가 없는 경우, 안내 누락, 중간 재실행, 재탐색에서는 진입/진출 이력만으로도 확정할 수 없다.
+속도 100km/h나 제한속도 값만으로 고속도로를 판정하지 않는다.
+
+자동 분류에 필요한 추가 연결
+현재 위치를 실제 도로 구간에 매칭하고 해당 구간의 도로 등급을 반환하는 지도 데이터가 필요하다.
+Pleos 측에서 현재 구간 도로 등급을 공식 제공하는지 문의할 수 있고,
+제공되지 않으면 별도 지도 서비스/도로 데이터로 위치와 구간을 매칭해야 한다.
+공급자 선정·키 등록·외부 위치 전송은 이번 작업에서 하지 않았다.
+확인된 등급이 없으면 중립 도로를 쓰며, 국도나 지방도라고 임의 확정하지 않는다.
+
+이번 변경 범위와 증거
+설계 기준과 SDK 진단을 업데이트했다. 제품 화면에 60초 타이머/강도 변화를 연결한 작업은 아니다.
+기존 시안의 도심/숲길 이미지는 분류 데이터 연동 전의 이미지 실험이며 이름만 바꿔
+실제 고속도로/지방도로 판정된 것처럼 표시하지 않는다. 도로 이미지 교체는 후속 UI 구현 대상이다.
+계측 테스트: CompanionSdkProbeTest.auditWiperSwitchLevels.
+원본: wiper-sdk-probe.json, wiper-sdk-probe-instrumentation.log.
+재현: smoke/test APK 설치 후 python tools/probe-companion-sdk.py --wiper.
+현재 에뮬레이터에서 OFF/LOW/HIGH/AUTO를 읽는 것까지 검증했으며 실차 자동 모드 속도는 미검증이다.
+
+근거
+Vehicle 2.3.2 sources: api/Wiper.kt, constant/control/WiperSwitch.kt, api/implement/WiperImpl.kt.
+navi-data 3.0.4 sources: constants/TurnType.kt, constants/RouteOption.kt, data/TBTInfo.kt.
+https://developer.android.com/reference/android/car/VehiclePropertyIds#WINDSHIELD_WIPERS_PERIOD
+https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/NaviHelper/routes
+https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/api-compatibility-availability

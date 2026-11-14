@@ -1,0 +1,451 @@
+{
+  "passed": true,
+  "scene": "portrait",
+  "summaryRefocused": false,
+  "summaryDelayMs": 2010,
+  "durationSeconds": 58.38,
+  "result": {
+    "phase": "SUMMARY",
+    "error": "",
+    "speedKmh": 0,
+    "turn": 0,
+    "parked": true,
+    "restricted": false,
+    "fuelReplay": 80,
+    "baseline": 80,
+    "candidateCount": 0,
+    "confirmedCount": 1,
+    "monthTotal": 50000,
+    "stage": "FINISHED",
+    "maxBoost": 0.9986935,
+    "maxSpeedKmh": 85,
+    "savedAtMs": 2259812,
+    "summaryAtMs": 2261822,
+    "frames": 1359,
+    "skin": "RACER",
+    "landscape": false,
+    "rainConfirmed": false,
+    "rain": 0,
+    "wiperMode": "OFF",
+    "carY": 305.00726,
+    "events": [
+      {
+        "event": "READY",
+        "elapsedMs": 2191339
+      },
+      {
+        "event": "DRIVE",
+        "elapsedMs": 2209063
+      },
+      {
+        "event": "LEFT",
+        "elapsedMs": 2213578
+      },
+      {
+        "event": "RIGHT",
+        "elapsedMs": 2219217
+      },
+      {
+        "event": "ACCELERATE",
+        "elapsedMs": 2224706
+      },
+      {
+        "event": "PARK",
+        "elapsedMs": 2232813
+      },
+      {
+        "event": "REFUEL",
+        "elapsedMs": 2236762
+      },
+      {
+        "event": "RESTART",
+        "elapsedMs": 2249280
+      },
+      {
+        "event": "QUESTION",
+        "elapsedMs": 2250354
+      },
+      {
+        "event": "AMOUNT_50000",
+        "elapsedMs": 2255138
+      },
+      {
+        "event": "SAVED_50000",
+        "elapsedMs": 2259812
+      },
+      {
+        "event": "SUMMARY",
+        "elapsedMs": 2261822
+      }
+    ]
+  },
+  "checkpoints": [
+    {
+      "phase": "DRIVE",
+      "error": "",
+      "speedKmh": 35,
+      "turn": 0,
+      "parked": false,
+      "restricted": true,
+      "fuelReplay": 30,
+      "baseline": 30,
+      "candidateCount": 0,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "IDLE",
+      "maxBoost": 0,
+      "maxSpeedKmh": 35,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 351,
+      "skin": "RACER",
+      "landscape": false,
+      "rainConfirmed": false,
+      "rain": 0,
+      "wiperMode": "OFF",
+      "carY": 305.0513,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2191339
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2209063
+        }
+      ],
+      "checkpoint": "01-driving",
+      "runSeconds": 3.58
+    },
+    {
+      "phase": "LEFT",
+      "error": "",
+      "speedKmh": 35,
+      "turn": -1,
+      "parked": false,
+      "restricted": true,
+      "fuelReplay": 30,
+      "baseline": 30,
+      "candidateCount": 0,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "IDLE",
+      "maxBoost": 0,
+      "maxSpeedKmh": 35,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 388,
+      "skin": "RACER",
+      "landscape": false,
+      "rainConfirmed": false,
+      "rain": 0,
+      "wiperMode": "OFF",
+      "carY": 304.64026,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2191339
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2209063
+        },
+        {
+          "event": "LEFT",
+          "elapsedMs": 2213578
+        }
+      ],
+      "checkpoint": "02-left",
+      "runSeconds": 8.11
+    },
+    {
+      "phase": "RIGHT",
+      "error": "",
+      "speedKmh": 35,
+      "turn": 1,
+      "parked": false,
+      "restricted": true,
+      "fuelReplay": 30,
+      "baseline": 30,
+      "candidateCount": 0,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "IDLE",
+      "maxBoost": 0,
+      "maxSpeedKmh": 35,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 393,
+      "skin": "RACER",
+      "landscape": false,
+      "rainConfirmed": false,
+      "rain": 0,
+      "wiperMode": "OFF",
+      "carY": 305.5093,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2191339
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2209063
+        },
+        {
+          "event": "LEFT",
+          "elapsedMs": 2213578
+        },
+        {
+          "event": "RIGHT",
+          "elapsedMs": 2219217
+        }
+      ],
+      "checkpoint": "03-right",
+      "runSeconds": 14.08
+    },
+    {
+      "phase": "ACCELERATE",
+      "error": "",
+      "speedKmh": 85,
+      "turn": 0,
+      "parked": false,
+      "restricted": true,
+      "fuelReplay": 30,
+      "baseline": 30,
+      "candidateCount": 0,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "IDLE",
+      "maxBoost": 0.9986935,
+      "maxSpeedKmh": 85,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 447,
+      "skin": "RACER",
+      "landscape": false,
+      "rainConfirmed": false,
+      "rain": 0,
+      "wiperMode": "OFF",
+      "carY": 290.61066,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2191339
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2209063
+        },
+        {
+          "event": "LEFT",
+          "elapsedMs": 2213578
+        },
+        {
+          "event": "RIGHT",
+          "elapsedMs": 2219217
+        },
+        {
+          "event": "ACCELERATE",
+          "elapsedMs": 2224706
+        }
+      ],
+      "checkpoint": "04-boost",
+      "runSeconds": 18.47
+    },
+    {
+      "phase": "REFUEL",
+      "error": "",
+      "speedKmh": 0,
+      "turn": 0,
+      "parked": true,
+      "restricted": false,
+      "fuelReplay": 80,
+      "baseline": 80,
+      "candidateCount": 1,
+      "collecting": true,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "IDLE",
+      "maxBoost": 0.9986935,
+      "maxSpeedKmh": 85,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 1014,
+      "skin": "RACER",
+      "landscape": false,
+      "rainConfirmed": false,
+      "rain": 0,
+      "wiperMode": "OFF",
+      "carY": 305,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2191339
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2209063
+        },
+        {
+          "event": "LEFT",
+          "elapsedMs": 2213578
+        },
+        {
+          "event": "RIGHT",
+          "elapsedMs": 2219217
+        },
+        {
+          "event": "ACCELERATE",
+          "elapsedMs": 2224706
+        },
+        {
+          "event": "PARK",
+          "elapsedMs": 2232813
+        },
+        {
+          "event": "REFUEL",
+          "elapsedMs": 2236762
+        }
+      ],
+      "checkpoint": "05-refuel",
+      "runSeconds": 39.31
+    },
+    {
+      "phase": "QUESTION",
+      "error": "",
+      "speedKmh": 35,
+      "turn": 0,
+      "parked": false,
+      "restricted": true,
+      "fuelReplay": 80,
+      "baseline": 80,
+      "candidateCount": 1,
+      "collecting": false,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "AMOUNT",
+      "maxBoost": 0.9986935,
+      "maxSpeedKmh": 85,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 1158,
+      "skin": "RACER",
+      "landscape": false,
+      "rainConfirmed": false,
+      "rain": 0,
+      "wiperMode": "OFF",
+      "carY": 304.4665,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2191339
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2209063
+        },
+        {
+          "event": "LEFT",
+          "elapsedMs": 2213578
+        },
+        {
+          "event": "RIGHT",
+          "elapsedMs": 2219217
+        },
+        {
+          "event": "ACCELERATE",
+          "elapsedMs": 2224706
+        },
+        {
+          "event": "PARK",
+          "elapsedMs": 2232813
+        },
+        {
+          "event": "REFUEL",
+          "elapsedMs": 2236762
+        },
+        {
+          "event": "RESTART",
+          "elapsedMs": 2249280
+        },
+        {
+          "event": "QUESTION",
+          "elapsedMs": 2250354
+        }
+      ],
+      "checkpoint": "06-question",
+      "runSeconds": 44.97
+    },
+    {
+      "phase": "CONFIRM",
+      "error": "",
+      "speedKmh": 35,
+      "turn": 0,
+      "parked": false,
+      "restricted": true,
+      "fuelReplay": 80,
+      "baseline": 80,
+      "candidateCount": 1,
+      "collecting": false,
+      "confirmedCount": 0,
+      "monthTotal": 0,
+      "stage": "CONFIRM",
+      "maxBoost": 0.9986935,
+      "maxSpeedKmh": 85,
+      "savedAtMs": 0,
+      "summaryAtMs": 0,
+      "frames": 1270,
+      "skin": "RACER",
+      "landscape": false,
+      "rainConfirmed": false,
+      "rain": 0,
+      "wiperMode": "OFF",
+      "carY": 305.4706,
+      "events": [
+        {
+          "event": "READY",
+          "elapsedMs": 2191339
+        },
+        {
+          "event": "DRIVE",
+          "elapsedMs": 2209063
+        },
+        {
+          "event": "LEFT",
+          "elapsedMs": 2213578
+        },
+        {
+          "event": "RIGHT",
+          "elapsedMs": 2219217
+        },
+        {
+          "event": "ACCELERATE",
+          "elapsedMs": 2224706
+        },
+        {
+          "event": "PARK",
+          "elapsedMs": 2232813
+        },
+        {
+          "event": "REFUEL",
+          "elapsedMs": 2236762
+        },
+        {
+          "event": "RESTART",
+          "elapsedMs": 2249280
+        },
+        {
+          "event": "QUESTION",
+          "elapsedMs": 2250354
+        },
+        {
+          "event": "AMOUNT_50000",
+          "elapsedMs": 2255138
+        }
+      ],
+      "checkpoint": "07-confirm",
+      "runSeconds": 49.5
+    }
+  ],
+  "scope": "Real SDK speed/gear/turn/odometer; scripted fuel and STT-result replay; real detector, conversation, SQLite and summary. Emulator-only moving-question/animation override."
+}

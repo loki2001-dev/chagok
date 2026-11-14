@@ -7,6 +7,10 @@ import ai.pleos.playground.stt.listener.ResultListener
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Build
+import android.media.AudioManager
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
 import android.os.Handler
 import android.os.Looper
 import android.speech.RecognitionListener
@@ -38,7 +42,7 @@ interface SpeechCallbacks {
  * 2순위 Android 표준 SpeechRecognizer (온디바이스 엔진이 있을 때)
  * 세션은 사용자가 시작하고, [stop]으로 끝내거나 [cancel]로 버린다.
  */
-class SpeechInput(private val context: Context, private val log: (String) -> Unit) {
+class SpeechInput(private val context: Context, private val log: (String) -> Unit, private val onAvailabilityChanged: () -> Unit = {}) {
     private val main = Handler(Looper.getMainLooper())
     private val pleos = PleosSpeechToText(context.applicationContext, Mode.ON_DEVICE)
     private var pleosReady = false
@@ -46,15 +50,29 @@ class SpeechInput(private val context: Context, private val log: (String) -> Uni
     private var callbacks: SpeechCallbacks? = null
     private var lastText = ""
     private var session = 0
+    private var released = false
+    private val audio = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private val focus = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE)
+        .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ASSISTANT)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH).build())
+        .setOnAudioFocusChangeListener { change -> if (change < 0) {
+            val target = callbacks
+            cancel()
+            target?.onFailed("통화 또는 다른 오디오 사용으로 음성 입력을 중단했어요.")
+        } }.build()
+
+    private fun androidAvailable() = Build.VERSION.SDK_INT >= 31 && SpeechRecognizer.isOnDeviceRecognitionAvailable(context)
 
     /** 현재 엔진 이름. P0 확인 화면에 그대로 보여 준다 */
     var backend: String = "확인 중"
         private set
 
-    private val pleosListener = object : ResultListener {
-        override fun onReady() = ui { callbacks?.onState(ListenState.LISTENING) }
-        override fun onStartedRecognition() = ui { callbacks?.onState(ListenState.LISTENING) }
-        override fun onUpdated(stt: String, completed: Boolean) = ui {
+    private var pleosListener: ResultListener? = null
+    private fun listenerFor(token: Int) = object : ResultListener {
+        private fun active(block: () -> Unit) = ui { if (session == token && callbacks != null) block() }
+        override fun onReady() = active { callbacks?.onState(ListenState.LISTENING) }
+        override fun onStartedRecognition() = active { callbacks?.onState(ListenState.LISTENING) }
+        override fun onUpdated(stt: String, completed: Boolean) = active {
             lastText = stt
             if (completed) finish(stt) else {
                 callbacks?.onState(ListenState.RECOGNIZING)
@@ -63,37 +81,51 @@ class SpeechInput(private val context: Context, private val log: (String) -> Uni
         }
         override fun onUpdatedEpdData(on: Long, off: Long) = Unit
         override fun onUpdatedRms(rms: Double) = Unit
-        override fun onEndedRecognition() = ui { if (callbacks != null) finish(lastText) }
-        override fun onError(errorType: ErrorType) = ui { fail(describe(errorType)) }
+        override fun onEndedRecognition() = active { finish(lastText) }
+        override fun onError(errorType: ErrorType) = active { fail(describe(errorType)) }
     }
 
     init {
         pleos.initialize(object : OnInitializeListener {
             override fun onSuccess() = ui {
-                if (pleosReady) return@ui
+                if (pleosReady || released) return@ui
                 pleos.setLocale(Locale.KOREA)
-                pleos.addListener(pleosListener)
                 pleosReady = true
                 backend = "Pleos STT · ON_DEVICE · ko-KR"
                 log("stt ready: $backend")
+                onAvailabilityChanged()
             }
 
             override fun onFailure(errorType: ErrorType) = ui {
-                backend = if (SpeechRecognizer.isRecognitionAvailable(context)) "Android SpeechRecognizer" else "사용 가능한 엔진 없음"
+                if (released) return@ui
+                backend = if (androidAvailable()) "Android 온디바이스 인식" else "사용 가능한 로컬 엔진 없음"
                 log("pleos stt init failed: $errorType, backend=$backend")
+                onAvailabilityChanged()
             }
         })
     }
 
-    fun isAvailable(): Boolean = pleosReady || SpeechRecognizer.isRecognitionAvailable(context)
+    fun isAvailable(): Boolean = !released && (pleosReady || androidAvailable())
 
     fun listen(callbacks: SpeechCallbacks) {
         cancel()
         this.callbacks = callbacks
         lastText = ""
         session++
+        if (released) return fail("음성 엔진이 종료되었어요.")
+        if (audio.mode == AudioManager.MODE_IN_CALL || audio.mode == AudioManager.MODE_IN_COMMUNICATION ||
+            audio.requestAudioFocus(focus) != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            return fail("통화 또는 다른 오디오 사용 중이에요. 잠시 뒤 다시 시도해 주세요.")
+        }
         callbacks.onState(ListenState.PREPARING)
+        val current = session
+        main.postDelayed({ if (session == current && this.callbacks != null) {
+            val target = this.callbacks
+            cancel()
+            target?.onFailed("음성 입력 시간이 끝났어요. 다시 시작해 주세요.")
+        } }, 60_000L)
         if (pleosReady) {
+            pleosListener = listenerFor(current).also { pleos.addListener(it) }
             runCatching { pleos.request() }.onFailure { fail("음성 인식을 시작하지 못했어요: ${it.message}") }
             return
         }
@@ -113,66 +145,72 @@ class SpeechInput(private val context: Context, private val log: (String) -> Uni
 
     /** 세션을 버린다. 아무것도 전달하지 않는다 */
     fun cancel() {
+        session++
         val had = callbacks
         callbacks = null
-        if (pleosReady) runCatching { pleos.stop() }
+        pleosListener?.let { runCatching { pleos.removeListener(it) } }
+        pleosListener = null
+        if (pleosReady && had != null) runCatching { pleos.stop() }
         recognizer?.destroy()
         recognizer = null
+        audio.abandonAudioFocusRequest(focus)
         had?.onState(ListenState.IDLE)
     }
 
     fun release() {
+        released = true
         cancel()
+        main.removeCallbacksAndMessages(null)
         runCatching {
-            pleos.removeListener(pleosListener)
             pleos.release()
         }
     }
 
     private fun finish(text: String) {
         val target = callbacks ?: return
-        callbacks = null
-        target.onState(ListenState.IDLE)
+        cancel()
         if (text.isBlank()) target.onFailed("말소리를 듣지 못했어요.") else target.onFinal(text)
     }
 
     private fun fail(reason: String) {
         val target = callbacks ?: return
-        callbacks = null
+        cancel()
         log("stt failed: $reason")
-        target.onState(ListenState.IDLE)
         target.onFailed(reason)
     }
 
     private fun listenAndroid() {
-        if (!SpeechRecognizer.isRecognitionAvailable(context)) return fail("사용 가능한 음성 인식 엔진이 없어요. 정차 중 직접 입력해 주세요.")
-        val r = SpeechRecognizer.createSpeechRecognizer(context)
+        if (Build.VERSION.SDK_INT < 31 || !androidAvailable()) return fail("사용 가능한 로컬 음성 엔진이 없어요. 정차 중 직접 입력해 주세요.")
+        val r = SpeechRecognizer.createOnDeviceSpeechRecognizer(context)
+        val token = session
         recognizer = r
         r.setRecognitionListener(object : RecognitionListener {
-            override fun onReadyForSpeech(params: Bundle?) { callbacks?.onState(ListenState.LISTENING) }
+            override fun onReadyForSpeech(params: Bundle?) { if (session == token) callbacks?.onState(ListenState.LISTENING) }
             override fun onPartialResults(partialResults: Bundle?) {
+                if (session != token) return
                 val t = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull() ?: return
                 lastText = t
                 callbacks?.onState(ListenState.RECOGNIZING)
                 callbacks?.onPartial(t)
             }
-            override fun onResults(results: Bundle) =
-                finish(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull().orEmpty())
-            override fun onError(error: Int) = fail(androidError(error))
+            override fun onResults(results: Bundle) {
+                if (session == token) finish(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull().orEmpty())
+            }
+            override fun onError(error: Int) { if (session == token) fail(androidError(error)) }
             override fun onBeginningOfSpeech() {}
             override fun onRmsChanged(rmsdB: Float) {}
             override fun onBufferReceived(buffer: ByteArray?) {}
-            override fun onEndOfSpeech() { callbacks?.onState(ListenState.RECOGNIZING) }
+            override fun onEndOfSpeech() { if (session == token) callbacks?.onState(ListenState.RECOGNIZING) }
             override fun onEvent(eventType: Int, params: Bundle?) {}
         })
-        r.startListening(
+        runCatching { r.startListening(
             Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
                 .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 .putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR")
                 .putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
                 // 서버 STT로 넘기지 않는다
                 .putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true),
-        )
+        ) }.onFailure { fail("로컬 음성 인식을 시작하지 못했어요. 직접 입력해 주세요.") }
     }
 
     private companion object {

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Asta Sans defaults to Light (300). Pin the variable axis as well as weight metadata. -->
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+    <font android:font="@font/asta_sans" android:fontStyle="normal" android:fontWeight="500" android:fontVariationSettings="'wght' 500" />
+    <font android:font="@font/asta_sans" android:fontStyle="normal" android:fontWeight="600" android:fontVariationSettings="'wght' 600" />
+    <font android:font="@font/asta_sans" android:fontStyle="normal" android:fontWeight="650" android:fontVariationSettings="'wght' 650" />
+</font-family>
