@@ -264,7 +264,7 @@ open class CompanionActivity : Activity() {
         state=value;scene.motion=value.motion
         if (mileageQuestionKm != null && (!value.enabled || safeForTouch())) finishMileageQuestion()
         if (!safeForTouch() || !state.motion.animationAllowed) closeRepairMotion()
-        scene.fuelVisit.observe(value.fuelVisitId, value.motion)
+        scene.fuelVisit.observe(value.energyVisitId, value.kind, value.motion)
         if(!state.enabled)scene.serviceVisit.cancel()
         if(visitDialog && (state.motion.restricted || state.motion.parkGear != true || state.motion.speedMps?.let { kotlin.math.abs(it) < .3f } != true)) dialog?.dismiss()
         enforceParkedUi()

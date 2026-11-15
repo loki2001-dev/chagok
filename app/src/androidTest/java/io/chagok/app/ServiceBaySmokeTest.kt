@@ -45,22 +45,27 @@ class ServiceBaySmokeTest {
                     val name = skin.name + if(wide) "-wide" else "-tall"
                     val w = if(wide) 800 else 320
                     val h = if(wide) 400 else 500
-                    a.inject(parked)
-                    val before = capture(scene,"$name-before",w,h)
-                    a.inject(MonitorState(motion=parked,fuelVisitId=name))
-                    repeat(36) { scene.advance(.05f) }
-                    assertEquals(1f,scene.fuelVisit.position,0f)
-                    val pump = capture(scene,"$name-fuel",w,h)
-                    assertTrue(scene.contentDescription.contains("주유소"))
-                    // A strip of the original streetscape stays pixel-identical beside the pump.
-                    for (y in 8 until h step 17) assertEquals(before.getPixel(5,y), pump.getPixel(5,y))
-                    before.recycle()
-                    a.inject(parked.copy(parkGear=false,speedMps=12f))
-                    repeat(28) { scene.advance(.05f) }
-                    assertEquals(0f,scene.fuelVisit.position,0f)
-                    val road = capture(scene,"$name-road",w,h)
-                    assertFalse(pump.sameAs(road))
-                    pump.recycle(); road.recycle()
+                    for (kind in EnergyKind.entries) {
+                        val visit = MonitorState(motion = parked, kind = kind, energyVisitId = "$name-$kind")
+                        a.inject(parked)
+                        val before = capture(scene,if (kind == EnergyKind.FUEL) "$name-before" else null,w,h)
+                        a.inject(visit)
+                        repeat(36) { scene.advance(.05f) }
+                        assertEquals(1f,scene.fuelVisit.position,0f)
+                        val station = capture(scene,if (kind == EnergyKind.FUEL) "$name-fuel" else "$name-charge",w,h)
+                        assertTrue(scene.contentDescription.contains(if (kind == EnergyKind.SOC) "충전소" else "주유소"))
+                        // A strip of the original streetscape stays pixel-identical beside the station.
+                        for (y in 8 until h step 17) assertEquals(before.getPixel(5,y), station.getPixel(5,y))
+                        a.inject(parked.copy(parkGear=false,speedMps=12f))
+                        repeat(28) { scene.advance(.05f) }
+                        assertEquals(0f,scene.fuelVisit.position,0f)
+                        val road = capture(scene,if (kind == EnergyKind.FUEL) "$name-road" else null,w,h)
+                        assertFalse(station.sameAs(road))
+                        before.recycle(); station.recycle(); road.recycle()
+                        a.inject(visit)
+                        scene.advance(.1f)
+                        assertEquals(0f,scene.fuelVisit.position,0f)
+                    }
                     for (job in BayJob.entries) {
                         var elapsed = 0L
                         val view = WorkshopView(a,job,skin,setOf(Wheel.FRONT_RIGHT),clock={ elapsed }) {}
@@ -82,11 +87,8 @@ class ServiceBaySmokeTest {
                         assertFalse(leaving.sameAs(working))
                         street.recycle(); mounted.recycle(); working.recycle(); leaving.recycle()
                     }
-                    a.inject(MonitorState(motion=parked,fuelVisitId=name))
-                    scene.advance(.1f)
-                    assertEquals(0f,scene.fuelVisit.position,0f)
                 }
-                a.inject(MonitorState(motion=parked.copy(animationAllowed=false),fuelVisitId="restricted"))
+                a.inject(MonitorState(motion=parked.copy(animationAllowed=false),energyVisitId="restricted"))
                 scene.advance(.5f)
                 assertEquals(0f,scene.fuelVisit.position,0f)
             }

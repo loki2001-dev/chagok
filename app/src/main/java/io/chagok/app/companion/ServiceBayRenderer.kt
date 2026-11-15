@@ -2,6 +2,7 @@ package io.chagok.app.companion
 
 import android.content.Context
 import android.graphics.*
+import io.chagok.app.domain.EnergyKind
 import io.chagok.app.domain.Item
 import io.chagok.app.domain.Wheel
 import kotlin.math.*
@@ -43,7 +44,10 @@ internal class FuelVisit {
         private set
     private var lastVisit: String? = null
 
-    fun observe(id: String?, motion: MotionSnapshot) {
+    var stationLabel = "주유소"
+        private set
+
+    fun observe(id: String?, kind: EnergyKind?, motion: MotionSnapshot) {
         if (!motion.animationAllowed || motion.parkGear == null || motion.speedMps == null) {
             parkedAtPump = false
             position = 0f
@@ -53,6 +57,7 @@ internal class FuelVisit {
         else if (id != null && id != lastVisit && !motion.restricted) {
             parkedAtPump = true
             lastVisit = id
+            stationLabel = if (kind == EnergyKind.SOC) "충전소" else "주유소"
         }
     }
 

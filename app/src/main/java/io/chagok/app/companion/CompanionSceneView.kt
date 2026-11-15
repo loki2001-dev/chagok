@@ -227,7 +227,7 @@ class CompanionSceneView(context: Context) : View(context) {
         val description = (if(preview)"미리보기. " else "")+(if(allowed) "${if(skin==CarSkin.RACER)"네온 레이서" else "현대 세단"}. ${director.active?.scene?.name.orEmpty()}" else "자동 차량일지 기록 중. 주행 제한에 맞춰 연출을 쉬고 있어요.")+
             (if(question.isNotEmpty()) ". ${question.replace('\n',' ')} $questionHint" else "") +
             (serviceVisit.frame?.let { ". ${it.caption}. 방문 기념 연출" } ?: "")
-        val label = if (allowed && fuelVisit.position > 0f) "주유소. $description" else description
+        val label = if (allowed && fuelVisit.position > 0f) "${fuelVisit.stationLabel}. $description" else description
         if(contentDescription!=label)contentDescription=label
     }
     /** Slice at the empty asphalt, so people, kerbs and buildings never stretch with window width. */
