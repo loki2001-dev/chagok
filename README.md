@@ -21,7 +21,9 @@
 
 위 화면은 실제 앱의 View를 시연 데이터로 캡처한 것입니다. 운행 이력은 재현용 데이터이고, 충전 후보는 실제 감지 로직에 SoC 표본을 넣어 만들었으며, 음성 문장은 STT 결과 경로에 주입했습니다. 실차 주행이나 마이크 인식을 증명하는 화면은 아닙니다. 캡처 방법은 [테스트와 시연 도구](#테스트와-시연-도구)를 참고하세요.
 
-**시연 영상:** [주유·정비소 통합 시연](demo/chagok-fuel-workshop.mp4) · [정비소 입출차](doc/demo/workshop-visit.mp4) · [가로 창 주행 미리보기](doc/design/landscape-v11/android-evidence/native-landscape-preview.mp4) · [초기 일지 흐름(이전 UI)](demo/chagok-demo.mp4)
+**핵심 데모** · 내비 옆 세로 주행과 빗길 가로 주행, 충전비 확인, 정비소 방문, 차량 일지와 비용·도로별 통계를 한 편에 담았습니다. [차곡 데모 보기 · 6분 08초](demo/chagok-demo.mp4)
+
+**개별 시연** · [주유·정비소 통합 시연](demo/chagok-fuel-workshop.mp4) · [정비소 입출차](doc/demo/workshop-visit.mp4) · [가로 창 주행 미리보기](doc/design/landscape-v11/android-evidence/native-landscape-preview.mp4)
 
 ## 공모전 제출 정보
 
