@@ -23,7 +23,7 @@
 
 **핵심 데모** · 내비 옆 세로 주행과 빗길 가로 주행, 충전비 확인, 정비소 방문, 차량 일지와 비용·도로별 통계를 한 편에 담았습니다. [차곡 데모 보기 · 6분 08초](demo/chagok-demo.mp4)
 
-**개별 시연** · [주유·정비소 통합 시연](demo/chagok-fuel-workshop.mp4) · [정비소 입출차](doc/demo/workshop-visit.mp4) · [가로 창 주행 미리보기](doc/design/landscape-v11/android-evidence/native-landscape-preview.mp4)
+**개별 시연** · [정비소 입출차](doc/demo/workshop-visit.mp4) · [가로 창 주행 미리보기](doc/design/landscape-v11/android-evidence/native-landscape-preview.mp4)
 
 ## 공모전 제출 정보
 
