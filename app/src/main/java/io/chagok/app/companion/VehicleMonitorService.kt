@@ -107,6 +107,7 @@ class VehicleMonitorService : Service() {
                         val candidate = diary.observeEnergy(desired, if(motion.parkGear==null)null else value,
                             parked=driving.available&&!driving.restricted&&motion.parkGear==true)
                         if (candidate != null && candidate.collecting && !candidate.gapLong) {
+                            diary.questionQueue(store.setting("user") ?: "나").awaitDeparture(candidate.id)
                             state = state.copy(energyVisitId = candidate.id)
                         }
                         emit()

@@ -22,7 +22,6 @@ import java.time.YearMonth
 /** Explicit emulator presentation. Real speed/turn SDK; fuel and STT results are labelled replay. */
 class CompanionPresentationActivity : CompanionActivity() {
     override val connectVehicle = false
-    override val deferQuestionsWhileMoving = false
     override val automaticQuestions = false
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var db: SqliteStore
@@ -146,7 +145,7 @@ class CompanionPresentationActivity : CompanionActivity() {
                     "시연 관측 중", true, energyVisitId = energyVisitId))
                 if (phase == "RESTART" && (motion.speedMps ?: 0f) > 1f) {
                     diary.pendingCandidates().firstOrNull { !it.collecting }?.let {
-                        check(beginQuestion(it.id)); phase = "QUESTION"; event("QUESTION")
+                        check(beginQuestion(it.id, afterDeparture = true)); phase = "QUESTION"; event("QUESTION")
                     }
                 }
                 maxBoost = maxOf(maxBoost, scene.renderState.boost)

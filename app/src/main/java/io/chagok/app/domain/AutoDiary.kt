@@ -79,6 +79,20 @@ class QuestionQueue(private val store: DiaryStore, private val vehicle: String, 
     fun muteToday() { store.saveSetting(prefix+"mute",LocalDate.now(clock).toString()) }
     fun unmute() { store.saveSetting(prefix+"mute","");store.saveSetting(prefix+"lastParking","") }
     private fun parking()=store.setting("monitor.parkSequence")?.toLongOrNull() ?: 0L
+    fun awaitDeparture(id: String) {
+        val value = "${parking()}|$id"
+        if (store.setting(prefix+"departure") != value) store.saveSetting(prefix+"departure", value)
+    }
+    private fun departureId(): String? {
+        val saved = store.setting(prefix+"departure") ?: return null
+        return saved.substringAfter('|').takeIf { saved.substringBefore('|') == parking().toString() }
+    }
+    fun departure(candidates: List<DetectionCandidate>): DetectionCandidate? {
+        if (muted()) return null
+        val id = departureId() ?: return null
+        return candidates.firstOrNull { it.id == id && it.state == CandidateState.PENDING &&
+            !it.gapLong && store.setting(prefix+id) == null }
+    }
     fun offered(id: String) {
         store.saveSetting(prefix+id,"${parking()}|${clock.instant()}")
         store.saveSetting(prefix+"lastParking",parking().toString())
@@ -86,7 +100,8 @@ class QuestionQueue(private val store: DiaryStore, private val vehicle: String, 
     fun canOffer(parked: Boolean) = parked && !muted() && store.setting(prefix+"lastParking") != parking().toString()
     fun next(candidates: List<DetectionCandidate>, parked: Boolean): DetectionCandidate? {
         if(!parked||muted()||store.setting(prefix+"lastParking")==parking().toString())return null
-        return candidates.filter { it.state==CandidateState.PENDING&&!it.collecting }.sortedBy { it.after.receivedAt }.firstOrNull { c ->
+        val awaiting = departureId()
+        return candidates.filter { it.state==CandidateState.PENDING&&!it.collecting && it.id != awaiting }.sortedBy { it.after.receivedAt }.firstOrNull { c ->
             val previous=store.setting(prefix+c.id)?.split('|')
             previous==null || ((previous.firstOrNull()?.toLongOrNull() ?: Long.MAX_VALUE)<parking() &&
                 previous.getOrNull(1)?.let { runCatching { Duration.between(Instant.parse(it),clock.instant()).seconds>=60 }.getOrDefault(false) }==true)

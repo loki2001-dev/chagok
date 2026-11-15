@@ -64,6 +64,7 @@ data class MotionSnapshot(
     val speedMps: Float? = null, val acceleration: Float = 0f, val turn: Int? = null,
     val rain: Float = 0f, val wiperMode: String? = null, val wiperOn: Boolean? = null,
     val rainConfirmed: Boolean = false, val restricted: Boolean = true, val animationAllowed: Boolean = false, val parkGear: Boolean? = null,
+    val forwardGear: Boolean = false,
 )
 
 class SpeedFilter {

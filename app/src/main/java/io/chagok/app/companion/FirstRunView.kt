@@ -34,7 +34,7 @@ class FirstRunView(
     private val columns = LinearLayout(context)
     private val vehicleColumn = ui.column(12)
     private val detailsColumn = ui.column(16)
-    private val title = ui.text("운행은 자동으로,\n확인은 정차 후에", 28f, bold = true)
+    private val title = ui.text("운행은 자동으로,\n비용은 한마디로", 28f, bold = true)
     private val start = ui.button("자동 기록 시작", primary = true) {
         selected?.takeIf { parked }?.let(onStart)
     }
@@ -95,7 +95,7 @@ class FirstRunView(
             detailsColumn.layoutParams = LinearLayout.LayoutParams(if(wide)0 else MATCH_PARENT, WRAP_CONTENT, if(wide)1.3f else 0f).apply {
                 if(wide) marginStart=ui.dp(24) else topMargin=ui.dp(16)
             }
-            title.text = if(wide) "운행은 자동으로, 확인은 정차 후에" else "운행은 자동으로,\n확인은 정차 후에"
+            title.text = if(wide) "운행은 자동으로, 비용은 한마디로" else "운행은 자동으로,\n비용은 한마디로"
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }

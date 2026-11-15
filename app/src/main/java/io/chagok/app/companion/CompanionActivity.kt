@@ -33,8 +33,7 @@ import java.time.format.DateTimeFormatter
 open class CompanionActivity : Activity() {
     protected open val connectVehicle = true
     protected open val automaticFrames = true
-    // Energy amount confirmations wait for parking outside the isolated presentation.
-    protected open val deferQuestionsWhileMoving = true
+    private var departureQuestion = false
     protected open val automaticQuestions = true
     protected open fun footerMessage(message: String) = message
     lateinit var scene: CompanionSceneView; private set
@@ -278,7 +277,9 @@ open class CompanionActivity : Activity() {
     }
     private fun enforceParkedUi() {
         if(!parked){
-            if(conversation.asking && deferQuestionsWhileMoving) { speechAttempt++;speech.cancel();listening=false;conversation.defer();questionAt=SystemClock.elapsedRealtime();syncQuestion() }
+            if(conversation.asking && !(departureQuestion && state.enabled && state.motion.forwardGear && state.motion.speedMps != null)) {
+                speechAttempt++;speech.cancel();listening=false;conversation.defer();questionAt=SystemClock.elapsedRealtime();syncQuestion()
+            }
             dialog?.dismiss()
             if(showingCollection)hideCollection()
             scene.serviceVisit.cancel()
@@ -357,6 +358,9 @@ open class CompanionActivity : Activity() {
                     val audio=getSystemService(android.media.AudioManager::class.java)
                     val safe = parked && state.motion.parkGear == true && state.motion.speedMps?.let { kotlin.math.abs(it) < .3f } == true
                     val queue = diary.questionQueue(user)
+                    val energyDeparture = queue.departure(candidates)
+                    val movingForward = state.motion.forwardGear && (state.motion.speedMps ?: 0f) > .3f
+                    val voiceAvailable = speech.isAvailable() && hasAppPermission(Manifest.permission.RECORD_AUDIO)
                     val visits = if(store.setting(PlaceVisitTracker.ENABLED) == "true") diary.pendingVisits(user) else emptyList()
                     val departed = visits.lastOrNull { it.place.kind == PlaceKind.REPAIR && it.exited &&
                         store.setting(askedKey("visit/${it.id}")) != "true" }
@@ -367,6 +371,9 @@ open class CompanionActivity : Activity() {
                             queue.offered("visit/${departed.id}")
                             store.saveSetting(askedKey("visit/${departed.id}"),"true")
                             repair.begin(departed); questionAt = now; syncQuestion(); listen()
+                        } else if (movingForward && voiceAvailable && energyDeparture != null && !energyDeparture.collecting) {
+                            if (mileageQuestionKm != null) finishMileageQuestion()
+                            beginQuestion(energyDeparture.id, afterDeparture = true)
                         } else if(mileageQuestionKm == null && visit != null && queue.canOffer(safe)) {
                             queue.offered("visit/${visit.id}"); visitDialog = true
                             dialog = AlertDialog.Builder(this@CompanionActivity)
@@ -375,11 +382,10 @@ open class CompanionActivity : Activity() {
                                 .setPositiveButton("확인하기") { _, _ -> startActivity(Intent(this@CompanionActivity, io.chagok.app.ui.PlacesActivity::class.java)) }
                                 .setNegativeButton("아니요") { _, _ -> diary.rejectVisit(visit.id, user) }
                                 .setNeutralButton("나중에", null).create().also { it.setOnDismissListener { visitDialog = false }; it.show() }
-                        } else if(mileageQuestionKm == null && speech.isAvailable() && hasAppPermission(Manifest.permission.RECORD_AUDIO)) {
+                        } else if(mileageQuestionKm == null && voiceAvailable) {
                             val candidate = queue.next(candidates, safe)
                             if (candidate != null) beginQuestion(candidate.id)
-                            else if (!queue.muted() && state.motion.parkGear == false &&
-                                (state.motion.speedMps ?: 0f) > .3f) {
+                            else if (!queue.muted() && energyDeparture == null && movingForward) {
                                 val current = diary.currentKm(state.odometer)
                                 if (current != null && diary.offerServiceMileage()) {
                                     mileageQuestionKm = current
@@ -409,7 +415,7 @@ open class CompanionActivity : Activity() {
                 !state.enabled->"자동 기록이 꺼져 있어요.\n메뉴에서 다시 켤 수 있어요."
                 state.motion.speedMps==null->"차량 연결을 확인하고 있어요.\n연결되면 운행 기록을 시작해요."
                 reviewCount>0->"$todaySummary\n${if(parked)"확인할 기록" else "정차 후 확인할 기록"} ${reviewCount}건"
-                else->"$todaySummary\n${if(parked)"필요한 금액만 확인하면 기록이 완성돼요" else "금액 확인은 정차 후에 할게요"}"
+                else->"$todaySummary\n${if(parked)"필요한 금액만 확인하면 기록이 완성돼요" else "운행을 기록하고 있어요"}"
             })
             handler.postDelayed(this,200)
         }
@@ -449,9 +455,10 @@ open class CompanionActivity : Activity() {
         scene.serviceVisit.begin(visit.id,visit.place.kind)
     }
     private fun askedKey(id:String)="companion.asked/${diary.profile().id}/$user/$id"
-    fun beginQuestion(candidateId:String):Boolean {
+    fun beginQuestion(candidateId:String, afterDeparture: Boolean = false):Boolean {
         if(setupRequired||repair.active||scene.preview||!resumed||mileageQuestionKm!=null)return false
         if(!conversation.begin(candidateId,user,state.odometer))return false
+        departureQuestion = afterDeparture
         store.saveSetting(askedKey(candidateId),"true");questionAt=SystemClock.elapsedRealtime();speechAttempt++
         syncQuestion();listen();return true
     }

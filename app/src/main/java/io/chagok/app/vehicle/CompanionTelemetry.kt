@@ -7,6 +7,7 @@ import ai.pleos.playground.vehicle.constant.area.WindowValue
 import ai.pleos.playground.vehicle.constant.area.TurnSignalValue
 import ai.pleos.playground.vehicle.listener.TurnSignalStateListener
 import android.car.Car
+import android.car.VehicleGear
 import android.car.VehiclePropertyIds
 import android.car.hardware.CarPropertyValue
 import android.car.hardware.property.CarPropertyManager
@@ -27,7 +28,10 @@ class CompanionTelemetry(private val context: Context, private val log: (String)
     private val front = WindowArea(WindowValue.FRONT_WINDSHIELD)
     private val speed = SpeedFilter()
     private val rain = WiperRainPolicy()
-    private var parkGear: Boolean? = null
+    private var selectedGear: Int? = null
+    private val forwardGears = setOf(VehicleGear.GEAR_DRIVE, VehicleGear.GEAR_FIRST, VehicleGear.GEAR_SECOND,
+        VehicleGear.GEAR_THIRD, VehicleGear.GEAR_FOURTH, VehicleGear.GEAR_FIFTH, VehicleGear.GEAR_SIXTH,
+        VehicleGear.GEAR_SEVENTH, VehicleGear.GEAR_EIGHTH, VehicleGear.GEAR_NINTH)
     private var gearAt = 0L
     private var turn: Int? = null
     private var turnAt = 0L
@@ -96,9 +100,9 @@ class CompanionTelemetry(private val context: Context, private val log: (String)
             } }, { onMain { turn = null; turnReadable = false } }) }.onFailure { turn = null }
             runCatching {
                 val gear=property?.getProperty<Int>(VehiclePropertyIds.GEAR_SELECTION,0)
-                parkGear=if(gear?.status==CarPropertyValue.STATUS_AVAILABLE&&gear.value!=android.car.VehicleGear.GEAR_UNKNOWN)gear.value==android.car.VehicleGear.GEAR_PARK else null
+                selectedGear = gear?.value?.takeIf { gear.status == CarPropertyValue.STATUS_AVAILABLE && it != VehicleGear.GEAR_UNKNOWN }
                 gearAt=SystemClock.elapsedRealtime()
-            }.onFailure { parkGear=null }
+            }.onFailure { selectedGear=null }
             readWiper()
             main.postDelayed(this, 2000)
         }
@@ -123,8 +127,12 @@ class CompanionTelemetry(private val context: Context, private val log: (String)
             wiperMode = null; wiperOn = null; rain.sample(SystemClock.elapsedRealtime(), null, null, modes)
         } }, 1800)
     }
-    fun snapshot(now: Long = SystemClock.elapsedRealtime()) = MotionSnapshot(speed.speed(now), speed.acceleration(now),
-        turn.takeIf { now - turnAt in 0..5000 }, rain.tick(now), wiperMode, wiperOn, rain.confirmed,parkGear=parkGear.takeIf { now-gearAt in 0..5000 })
+    fun snapshot(now: Long = SystemClock.elapsedRealtime()): MotionSnapshot {
+        val gear = selectedGear.takeIf { now - gearAt in 0..5000 }
+        return MotionSnapshot(speed.speed(now), speed.acceleration(now), turn.takeIf { now - turnAt in 0..5000 },
+            rain.tick(now), wiperMode, wiperOn, rain.confirmed, parkGear = gear?.let { it == VehicleGear.GEAR_PARK },
+            forwardGear = gear in forwardGears)
+    }
 
     fun close() {
         running = false; generation++; wiperRequest++; main.removeCallbacksAndMessages(null)
