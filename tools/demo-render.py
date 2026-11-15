@@ -2,8 +2,8 @@
 """차곡 시연 영상 합성.
 
 demo/raw.webm 과 demo/captions.tsv (tools/demo-record.sh 결과)로
-제목 화면 + 자막이 들어간 본편 + 마무리 화면을 이어 붙여 demo/chagok-demo.mp4 를 만들고,
-README에서 바로 재생되는 demo/chagok-demo.gif 를 함께 만든다.
+초기 일지 화면에 제목과 자막을 붙여 demo/chagok-diary-legacy.mp4 와
+demo/chagok-demo.gif 를 만든다.
 """
 import subprocess
 import sys
@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DEMO = ROOT / "demo"
 RAW = DEMO / "raw.webm"
 CAPTIONS = DEMO / "captions.tsv"
-MP4 = DEMO / "chagok-demo.mp4"
+MP4 = DEMO / "chagok-diary-legacy.mp4"
 GIF = DEMO / "chagok-demo.gif"
 
 FONT = "NanumSquare_ac"

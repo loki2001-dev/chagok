@@ -105,6 +105,29 @@ class AutoDiaryTest {
         feed(49.0,parked=false);stable(40.0);stable(60.0)
         assertEquals(2,diary.pendingCandidates().size)
     }
+    @Test fun onlyThisStopsRiseIsReservedForDepartureAndOfferedOnce() {
+        for (kind in listOf(EnergyKind.SOC, EnergyKind.FUEL)) {
+            val q = diary.questionQueue(kind.name)
+            val old = DetectionCandidate("old",diary.profile().id,kind,Observation(29.0,time.at),
+                Observation(83.0,time.at),CandidateState.PENDING,false)
+            val current = old.copy(id="current")
+            val candidates = listOf(old,current)
+            assertNull(q.departure(candidates))
+            q.awaitDeparture(current.id)
+            assertEquals(old,q.next(candidates,true))
+            assertNull(q.next(listOf(current),true))
+            assertNull(q.departure(listOf(current.copy(gapLong=true))))
+            assertNull(q.departure(listOf(current.copy(state=CandidateState.EXCLUDED))))
+            q.muteToday(); assertNull(q.departure(candidates)); q.unmute()
+            assertEquals(current,DiaryService(store,time).questionQueue(kind.name).departure(candidates))
+            q.offered(current.id)
+            assertNull(q.departure(candidates))
+            time.step(61)
+            store.saveSetting("monitor.parkSequence",((store.setting("monitor.parkSequence")?.toLong() ?: 0L)+1).toString())
+            assertEquals(current,q.next(listOf(current),true))
+            assertNull(q.departure(candidates))
+        }
+    }
     @Test fun automaticQuestionsDoNotRunThroughAQueueAtOneParking() {
         candidate("first")
         val first=store.candidates(diary.profile().id).single()

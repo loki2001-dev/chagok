@@ -1,15 +1,15 @@
 # 차곡 · chagok
 
-**달리는 동안 차가 기록을 모으고, 정차 후 한마디로 확인하는 차량 일지.**
+**운행을 자동으로 기록하고, 충전·주유 뒤 다시 출발하면 비용을 묻는 차량 일지.**
 
 차곡은 **Pleos Connect(Android Automotive OS)** 에서 실행하는 차량용 앱입니다. 누적 주행거리·연료 잔량·배터리 SoC·주행 상태처럼 차가 이미 알고 있는 값으로 운행과 주유·충전을 기록합니다. 사람은 차가 알 수 없는 것, 즉 **금액과 실제로 한 정비**만 말로 확인합니다. 확인한 기록은 일지·비용 통계·다음 관리 일정·관리 도감으로 이어집니다.
 
-> 전기차로 38.2km를 달리고 충전했습니다. 정차하자 차가 “충전비, 얼마였어요?”라고 묻습니다. “1만 2천 원”, “맞아.” 두 마디로 오늘의 운행과 충전 기록, 이번 달 비용이 정리됩니다.
+> 전기차로 38.2km를 달리고 충전했습니다. 다시 출발하자 차가 “충전비, 얼마였어요?”라고 묻습니다. “1만 2천 원”, “맞아.” 두 마디로 오늘의 운행과 충전 기록, 이번 달 비용이 정리됩니다.
 
 <table>
 <tr>
 <td width="33%"><b>① 내비 옆 주행 화면</b><br><img src="doc/readme/images/01-companion.png" alt="내비게이션 옆에 두는 주행 동반 화면"></td>
-<td width="33%"><b>② 정차 후 금액 질문</b><br><img src="doc/readme/images/02-question.png" alt="충전비를 묻는 말풍선"></td>
+<td width="33%"><b>② 충전비 질문</b><br><img src="doc/readme/images/02-question.png" alt="충전비를 묻는 말풍선"></td>
 <td width="33%"><b>③ 명시적 확인 후 저장</b><br><img src="doc/readme/images/04-saved.png" alt="12,000원 기록 완료"></td>
 </tr>
 <tr>
@@ -21,14 +21,16 @@
 
 위 화면은 실제 앱의 View를 시연 데이터로 캡처한 것입니다. 운행 이력은 재현용 데이터이고, 충전 후보는 실제 감지 로직에 SoC 표본을 넣어 만들었으며, 음성 문장은 STT 결과 경로에 주입했습니다. 실차 주행이나 마이크 인식을 증명하는 화면은 아닙니다. 캡처 방법은 [테스트와 시연 도구](#테스트와-시연-도구)를 참고하세요.
 
-**시연 영상:** [주유·정비소 통합 시연](demo/chagok-fuel-workshop.mp4) · [정비소 입출차](doc/demo/workshop-visit.mp4) · [가로 창 주행 미리보기](doc/design/landscape-v11/android-evidence/native-landscape-preview.mp4) · [초기 일지 흐름(이전 UI)](demo/chagok-demo.mp4)
+**핵심 데모** · 내비 옆 세로 주행과 빗길 가로 주행, 충전비 확인, 정비소 방문, 차량 일지와 비용·도로별 통계를 한 편에 담았습니다. [차곡 데모 보기 · 6분 08초](demo/chagok-demo.mp4)
+
+**개별 시연** · [주유·정비소 통합 시연](demo/chagok-fuel-workshop.mp4) · [정비소 입출차](doc/demo/workshop-visit.mp4) · [가로 창 주행 미리보기](doc/design/landscape-v11/android-evidence/native-landscape-preview.mp4)
 
 ## 공모전 제출 정보
 
 | 항목 | 내용 |
 |---|---|
 | 앱 이름 | **차곡 (chagok)** · 팀 차곡차곡 |
-| 한 줄 소개 | 달리는 동안 차량 신호로 운행·주유·충전을 모아 두고, 정차 후 한마디로 확인하면 일지·비용·다음 관리 일정까지 정리되는 차량 일지 앱 |
+| 한 줄 소개 | 차량 신호로 운행·주유·충전을 모아 두고, 재출발 후 한마디로 비용을 확인해 일지에 남기는 차량 일지 앱 |
 | APK | [GitHub Release v0.1.0](https://github.com/loki2001-dev/chagok/releases/tag/v0.1.0)의 `차곡차곡_차곡_release.apk` (약 131MB). GitHub의 저장소 파일 크기 제한(100MB)을 넘어 Release에 등록했습니다. [apk/](apk/README.md) 참고 |
 | 패키지 / 시작 화면 | `io.chagok.app` / `io.chagok.app.companion.CompanionActivity` |
 | 실행 방법 | [아래 요약](#실행-방법-요약) · 자세한 내용은 [개발 환경 구축 및 빌드](#개발-환경-구축-및-빌드) |
@@ -78,7 +80,7 @@ adb shell am start -n io.chagok.app/.companion.CompanionActivity
 | 받지 못한 값은 0이 아니다 | 차량 값을 받지 못하면 0km·0원으로 채우지 않고 미수신으로 표시합니다. 금액 미입력과 무료(0원)도 구분합니다. |
 | 추정은 추정으로 | 잔량 상승은 주유·충전 **후보**일 뿐입니다. 퍼센트로 결제 금액·주유량(L)·충전량(kWh)을 역산하지 않습니다. |
 | 값의 출처를 남긴다 | 주행거리 등 필드마다 `차량 수신 / 사용자 입력 / 앱 계산`과 수신 시각을 보관하고, 사용자가 고쳐도 원래 관측값을 유지합니다. |
-| 주행 중에는 조작하지 않는다 | 일지 편집·설정·학습은 `CarUxRestrictions`에 따라 정차 중에만 열립니다. 질문도 P단·정차 후에 합니다. |
+| 주행 중에는 음성으로 확인 | 일지 편집·설정·학습은 `CarUxRestrictions`에 따라 정차 중에만 열립니다. 방금 충전·주유한 비용은 재출발 후 음성으로 확인합니다. |
 | 차 밖으로 보내지 않는다 | 일지는 차량 안 SQLite에 저장합니다. 원음은 보관하지 않고, 음성 인식은 온디바이스로 처리합니다. |
 
 ## 주요 기능
@@ -97,7 +99,7 @@ adb shell am start -n io.chagok.app/.companion.CompanionActivity
 
 운행 상태는 약 5초마다 저장하고, 자동 기록을 켜 두면 부팅이나 앱 업데이트 뒤 수집을 다시 시작합니다. OS가 앱을 강제로 멈추는 경우까지 항상 실행된다는 뜻은 아닙니다.
 
-### 2. 주유·충전 감지와 정차 후 음성 확인
+### 2. 주유·충전 감지와 재출발 후 음성 확인
 
 내연기관·하이브리드는 **연료 잔량**, 전기차는 **배터리 SoC**를 봅니다.
 
@@ -106,7 +108,7 @@ adb shell am start -n io.chagok.app/.companion.CompanionActivity
 3. 같은 상승 과정은 후보 하나로 갱신하고, 이미 확정·제외한 사건을 다시 만들지 않습니다.
 4. 2분을 넘는 관측 공백이 있었다면 그 사실을 후보에 표시합니다.
 
-후보가 정리되면 P단·정차, 음성 서비스, 통화 중이 아님을 확인한 뒤 차가 먼저 묻습니다.
+정차 중 잔량 상승이 감지되면 충전소 또는 주유소 입차 연출이 시작됩니다. 전진 기어로 다시 움직이면 음성 서비스와 마이크를 사용할 수 있고 통화 중이 아닐 때 이번 비용을 한 번 묻습니다. 미룬 기록은 정차 후 이어서 확인할 수 있습니다.
 
 | 사용자의 말 | 결과 |
 |---|---|
@@ -187,7 +189,7 @@ flowchart TD
     Monitor --> Detect["주유·충전 후보 감지"]
     Trip --> Store[("로컬 SQLite")]
     Detect --> Store
-    Store --> Queue["정차 후 질문 대기열"]
+    Store --> Queue["재출발 후 비용 질문 · 정차 후 미확인 기록"]
     Queue --> Scene["CompanionActivity<br/>주행 동반 화면"]
     STT["온디바이스 STT"] --> Talk["EnergyConversation<br/>초안 → 명시적 확인"]
     Scene --> Talk

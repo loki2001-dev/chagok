@@ -22,7 +22,6 @@ import java.time.YearMonth
 /** Explicit emulator presentation. Real speed/turn SDK; fuel and STT results are labelled replay. */
 class CompanionPresentationActivity : CompanionActivity() {
     override val connectVehicle = false
-    override val deferQuestionsWhileMoving = false
     override val automaticQuestions = false
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var db: SqliteStore
@@ -34,7 +33,7 @@ class CompanionPresentationActivity : CompanionActivity() {
     private var odometer: Reading = Reading.Unavailable("연결 중")
     private val rainy get() = intent.getBooleanExtra("landscapeRain", false)
     private val demoSkin get() = if (rainy) CarSkin.HYUNDAI else CarSkin.RACER
-    private var fuelVisitId: String? = null
+    private var energyVisitId: String? = null
     private var phase = "READY"
     private var fuel = 30.0
     private var lastSample = -1000L
@@ -136,17 +135,17 @@ class CompanionPresentationActivity : CompanionActivity() {
                     val parked = motion.parkGear == true && motion.speedMps?.let { it < .1f } == true
                     if (motion.speedMps != null && motion.parkGear != null) {
                         val candidate = diary.observeEnergy(EnergyKind.FUEL, fuel, parked)
-                        if (candidate?.collecting == true && !candidate.gapLong) fuelVisitId = candidate.id
-                        if (!parked) fuelVisitId = null
+                        if (candidate?.collecting == true && !candidate.gapLong) energyVisitId = candidate.id
+                        if (!parked) energyVisitId = null
                         trips.sample(diary.profile().id, "시연", Instant.now(), motion.speedMps, parked,
                             (odometer as? Reading.Value)?.observation)
                     }
                 }
                 applyMonitorState(MonitorState(motion, EnergyKind.FUEL, fuel, "시연 연료", odometer,
-                    "시연 관측 중", true, fuelVisitId = fuelVisitId))
+                    "시연 관측 중", true, energyVisitId = energyVisitId))
                 if (phase == "RESTART" && (motion.speedMps ?: 0f) > 1f) {
                     diary.pendingCandidates().firstOrNull { !it.collecting }?.let {
-                        check(beginQuestion(it.id)); phase = "QUESTION"; event("QUESTION")
+                        check(beginQuestion(it.id, afterDeparture = true)); phase = "QUESTION"; event("QUESTION")
                     }
                 }
                 maxBoost = maxOf(maxBoost, scene.renderState.boost)

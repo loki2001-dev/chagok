@@ -152,10 +152,15 @@ class CompanionSmokeTest {
             db{_,d->assertEquals(12000L,d.ledger(YearMonth.now()).total);assertEquals(1,d.drafts().size)}
             scenario.moveToState(Lifecycle.State.RESUMED)
             scenario.onActivity{assertEquals(EnergyConversation.Stage.FINISHED,it.conversation.stage)}
-            // The moving-question exception belongs only to the presentation subclass.
             scenario.onActivity { a ->
                 a.inject(clear); a.conversation.clear(); assertTrue(a.beginQuestion(candidate))
                 a.inject(clear.copy(speedMps=10f, restricted=true, animationAllowed=false))
+                assertEquals(EnergyConversation.Stage.FINISHED, a.conversation.stage)
+                val moving = clear.copy(parkGear=false, forwardGear=true, speedMps=10f, restricted=true)
+                a.inject(moving); a.conversation.clear()
+                assertTrue(a.beginQuestion(candidate, afterDeparture=true))
+                a.inject(moving); assertTrue(a.conversation.asking)
+                a.inject(moving.copy(forwardGear=false, parkGear=null))
                 assertEquals(EnergyConversation.Stage.FINISHED, a.conversation.stage)
             }
             db { _, d -> assertEquals(12000L, d.ledger(YearMonth.now()).total); assertEquals(1, d.drafts().size) }
